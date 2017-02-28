@@ -1,0 +1,24 @@
+EOL		(\r|\n|\r\n)
+whitespace 	[ \t]+
+DIGIT	[0-9]
+
+	#include "Token.h"
+	#include <vector>
+	#include <iostream>
+	#define YY_DECL extern "C" int yylex() // Use flex with c++
+	using namespace std;
+	int line = 1, col = 1;
+	vector<Token> tokens;
+
+%%
+{EOL} 				{line++; col = 1;}
+[+-]?{DIGIT}+		{tokens.push_back(Token(line,col,"integer-literal")); col += yyleng;}
+{whitespace}		{col += yyleng;}
+.					{cout << "error" << endl; col++;}
+
+%%
+
+int main()
+{
+	yylex();
+}
