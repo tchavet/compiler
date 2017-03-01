@@ -54,6 +54,7 @@ unit 	{tokens.push_back(Token(line,col,"unit")); col += yyleng;}
 while 	{tokens.push_back(Token(line,col,"while")); col += yyleng;}
 
 [A-Z][a-zA-Z0-9_]+	{tokens.push_back(Token(line,col,"type-identifier",yytext)); col += yyleng;}
+[a-z][a-zA-Z0-9_]+	{tokens.push_back(Token(line,col,"object-identifier",yytext)); col += yyleng;}
 
 {whitespace}			{col += yyleng;}
 .						{error(line,col); col++;}
