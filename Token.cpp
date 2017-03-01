@@ -1,4 +1,4 @@
-#include "Token.h"
+#include "Token.hpp"
 #include <iostream>
 
 Token::Token(int tokenLine, int tokenCol, std::string tokenType)

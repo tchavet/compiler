@@ -2,7 +2,7 @@ EOL		(\r|\n|\r\n)
 whitespace 	[ \t]+
 DIGIT	[0-9]
 
-	#include "Token.h"
+	#include "Token.hpp"
 	#include <vector>
 	#include <iostream>
 	#define YY_DECL extern "C" int yylex() // Use flex with c++
@@ -18,7 +18,3 @@ DIGIT	[0-9]
 
 %%
 
-int main()
-{
-	yylex();
-}
