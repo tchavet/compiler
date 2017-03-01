@@ -1,4 +1,4 @@
-%x NEST_COM
+%x NEST_COM LINE_COM
 
 EOL			(\r|\n|\r\n)
 whitespace 	[ \t]+
@@ -19,11 +19,19 @@ BINDIGIT	[0-1]
 	int commentDepth = 0;
 %%
 
-"(*"             { BEGIN(NEST_COM);}
-<NEST_COM>"(*"           { ++commentDepth; }
-<NEST_COM>"*)"        { if (commentDepth) --commentDepth; 
-						  else BEGIN(INITIAL); }
-<NEST_COM>.           {}
+"//"				{BEGIN(LINE_COM);}
+<LINE_COM>{EOL}		{BEGIN(INITIAL);}
+<LINE_COM>.			{}
+
+
+"(*"				{col+= yyleng; BEGIN(NEST_COM);}
+<NEST_COM>"(*"		{col+= yyleng; ++commentDepth;}
+<NEST_COM>"*)"		{col+= yyleng; 
+					 if (commentDepth) --commentDepth; 
+				   	 else BEGIN(INITIAL);}
+<NEST_COM>{EOL}		{++line; col = 1;}
+<NEST_COM>{EOF}		{error(line, col);}
+<NEST_COM>.      	{col+= yyleng;}
 
 
 {EOL} 					{line++; col = 1;}
