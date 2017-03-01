@@ -30,7 +30,7 @@ BINDIGIT	[0-1]
 					 if (commentDepth) --commentDepth; 
 				   	 else BEGIN(INITIAL);}
 <NEST_COM>{EOL}		{++line; col = 1;}
-<NEST_COM>{EOF}		{error(line, col);}
+<NEST_COM><<EOF>>	{error(line, col);}
 <NEST_COM>.      	{col+= yyleng;}
 
 
