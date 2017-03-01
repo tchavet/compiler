@@ -15,6 +15,7 @@ extern "C" FILE* yyin;
 using namespace std;
 
 list<Token> tokens;
+string filename;
 
 int main(int argc, char** argv)
 {
@@ -39,6 +40,7 @@ int main(int argc, char** argv)
 					std::cerr << "File Opening failed :" << argv[2]  << std::endl;
 					return -5;
 				}
+				filename = argv[2];
 				yyin = file;
 
 				yylex();
@@ -80,4 +82,9 @@ int main(int argc, char** argv)
 	}
 
 	return 0;
+}
+
+void error(int line, int col)
+{
+	cout << filename << ":" << line << ":" << col << ": lexical error" << endl;
 }

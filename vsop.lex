@@ -10,12 +10,13 @@ DIGIT	[0-9]
 	using namespace std;
 	int line = 1, col = 1;
 	extern list<Token> tokens;
+	void error(int line, int col);
 
 %%
 {EOL} 				{line++; col = 1;}
 [+-]?{DIGIT}+		{tokens.push_back(Token(line,col,std::string("integer-literal"))); col += yyleng;}
 {whitespace}		{col += yyleng;}
-.					{cout << "error" << endl; col++;}
+.					{error(line,col); col++;}
 
 %%
 
