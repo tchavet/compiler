@@ -4,12 +4,12 @@ DIGIT	[0-9]
 
 	#include "Token.hpp"
     #include <string>
-	#include <vector>
+	#include <list>
 	#include <iostream>
 	#define YY_DECL extern "C" int yylex() // Use flex with c++
 	using namespace std;
 	int line = 1, col = 1;
-	vector<Token> tokens;
+	extern list<Token> tokens;
 
 %%
 {EOL} 				{line++; col = 1;}
