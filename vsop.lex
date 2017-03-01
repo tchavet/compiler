@@ -3,6 +3,7 @@ whitespace 	[ \t]+
 DIGIT	[0-9]
 
 	#include "Token.hpp"
+    #include <string>
 	#include <vector>
 	#include <iostream>
 	#define YY_DECL extern "C" int yylex() // Use flex with c++
@@ -12,7 +13,7 @@ DIGIT	[0-9]
 
 %%
 {EOL} 				{line++; col = 1;}
-[+-]?{DIGIT}+		{tokens.push_back(Token(line,col,"integer-literal")); col += yyleng;}
+[+-]?{DIGIT}+		{tokens.push_back(Token(line,col,std::string("integer-literal"))); col += yyleng;}
 {whitespace}		{col += yyleng;}
 .					{cout << "error" << endl; col++;}
 
