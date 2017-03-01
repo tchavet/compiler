@@ -3,8 +3,7 @@
 class Token
 {
 public:
-	Token(int tokenLine, int tokenCol, std::string tokenType);
-	Token(int tokenLine, int tokenCol, std::string tokenType, std::string tokenValue);
+	Token(int tokenLine, int tokenCol, std::string tokenType, std::string tokenValue="");
 	void print();
 
 protected:

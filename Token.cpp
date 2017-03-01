@@ -9,11 +9,6 @@ Token::Token(int tokenLine, int tokenCol, std::string tokenType, std::string tok
 	value = tokenValue;
 }
 
-Token::Token(int tokenLine, int tokenCol, std::string tokenType)
-{
-	Token(tokenLine, tokenCol, tokenType, "");
-}
-
 void Token::print()
 {
 	std::cout<<line<<","<<col<<","<<type;
