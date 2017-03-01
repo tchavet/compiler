@@ -71,6 +71,24 @@ while 	{tokens.push_back(Token(line,col,"while",Token::Keyword)); col += yyleng;
 [A-Z][a-zA-Z0-9_]*	{tokens.push_back(Token(line,col,"type-identifier",Token::Type,yytext)); col += yyleng;}
 [a-z][a-zA-Z0-9_]*	{tokens.push_back(Token(line,col,"object-identifier",Token::Object,yytext)); col += yyleng;}
 
+\{	{tokens.push_back(Token(line,col,"lbrace",Token::Operator)); col += yyleng;}
+\}	{tokens.push_back(Token(line,col,"rbrace",Token::Operator)); col += yyleng;}
+\(	{tokens.push_back(Token(line,col,"lpar",Token::Operator)); col += yyleng;}
+\)	{tokens.push_back(Token(line,col,"rpar",Token::Operator)); col += yyleng;}
+:	{tokens.push_back(Token(line,col,"colon",Token::Operator)); col += yyleng;}
+;	{tokens.push_back(Token(line,col,"semicolon",Token::Operator)); col += yyleng;}
+,	{tokens.push_back(Token(line,col,"comma",Token::Operator)); col += yyleng;}
+\+	{tokens.push_back(Token(line,col,"plus",Token::Operator)); col += yyleng;}
+\-	{tokens.push_back(Token(line,col,"minus",Token::Operator)); col += yyleng;}
+\*	{tokens.push_back(Token(line,col,"times",Token::Operator)); col += yyleng;}
+\/	{tokens.push_back(Token(line,col,"div",Token::Operator)); col += yyleng;}
+\^	{tokens.push_back(Token(line,col,"pow",Token::Operator)); col += yyleng;}
+\.	{tokens.push_back(Token(line,col,"dot",Token::Operator)); col += yyleng;}
+=	{tokens.push_back(Token(line,col,"equal",Token::Operator)); col += yyleng;}
+\<	{tokens.push_back(Token(line,col,"lower",Token::Operator)); col += yyleng;}
+\<=	{tokens.push_back(Token(line,col,"lower-equal",Token::Operator)); col += yyleng;}
+\<\-	{tokens.push_back(Token(line,col,"assign",Token::Operator)); col += yyleng;}
+
 {whitespace}			{col += yyleng;}
 .						{error(line,col); col++;}
 
