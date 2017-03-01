@@ -1,4 +1,4 @@
-%x NEST_COM LINE_COM STR
+%x NEST_COM LINE_COM STR_LIT
 
 EOL			(\r|\n|\r\n)
 whitespace 	[ \t]+
@@ -17,7 +17,13 @@ BINDIGIT	[0-1]
 	void error(int line, int col);
 
 	int commentDepth = 0;
+	string str(); 
 %%
+
+"\""				{BEGIN(STR_LIT)}
+<STR_LIT>"\\\""		{}
+<STR_LIT>"\""		{}
+<STR_LIT>"\x"		{}
 
 "//"				{BEGIN(LINE_COM);}
 <LINE_COM>{EOL}		{++line; col = 1; BEGIN(INITIAL);}
