@@ -1,16 +1,13 @@
 #include "Token.hpp"
 #include <iostream>
 
-Token::Token(int tokenLine, int tokenCol, std::string tokenType, std::string tokenValue)
+Token::Token(int tokenLine, int tokenCol, std::string tokenType, enum Type tokenValueType, std::string tokenValue)
 {
 	line = tokenLine;
 	col = tokenCol;
 	type = tokenType;
 	value = tokenValue;
-	if(tokenValue == "")
-		valueType = Null;
-	else
-		valueType = String;
+	valueType = tokenValueType;
 }
 
 Token::Token(int tokenLine, int tokenCol, std::string tokenType, int tokenValue)
@@ -27,7 +24,7 @@ void Token::print()
 	std::cout<<line<<","<<col<<","<<type;
 	if(valueType == Int)
 		std::cout<<","<<intValue;
-	else if(valueType == String)
+	else if(valueType == Type || valueType == Object || valueType == String)
 		std::cout<<","<<value;
 	std::cout<<std::endl;
 }
