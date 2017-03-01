@@ -16,6 +16,7 @@ using namespace std;
 
 list<Token> tokens;
 string filename;
+bool err = false;
 
 int main(int argc, char** argv)
 {
@@ -76,6 +77,9 @@ int main(int argc, char** argv)
 		std::cerr << "Other Exception error:" << e.what() << std::endl;
 	}
 
+	if (err)
+		return -1;
+
 	for(list<Token>::iterator listIterator = tokens.begin(); listIterator != tokens.end(); listIterator++)
 	{
 		listIterator->print();
@@ -86,5 +90,6 @@ int main(int argc, char** argv)
 
 void error(int line, int col)
 {
-	cout << filename << ":" << line << ":" << col << ": lexical error" << endl;
+	cerr << filename << ":" << line << ":" << col << ": lexical error" << endl;
+	err = true;
 }
