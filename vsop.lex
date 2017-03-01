@@ -11,6 +11,7 @@ BINDIGIT	[0-1]
 	#include <list>
 	#include <iostream>
 	#include <cstdlib>
+	#include <sstream>
 	#define YY_DECL extern "C" int yylex() // Use flex with c++
 	using namespace std;
 	int line = 1, col = 1;
@@ -93,4 +94,16 @@ while 	{tokens.push_back(Token(line,col,"while",Token::Keyword)); col += yyleng;
 .						{error(line,col); col++;}
 
 %%
-
+std::string char2printable(char x){
+	stringstream ss;
+	if(x < 32){
+		ss <<"\\x" << std::hex << (int) x;
+		return ss.str();
+	}
+	else if( x > 126){
+		ss << "\\x" << std::hex << (int) x;
+        return ss.str();
+	}
+	ss << x;
+	return ss.str();
+}
