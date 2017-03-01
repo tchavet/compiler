@@ -21,7 +21,7 @@ BINDIGIT	[0-1]
 	string str(); 
 %%
 
-"\""				{BEGIN(STR_LIT)}
+"\""				{BEGIN(STR_LIT);}
 <STR_LIT>"\\\""		{}
 <STR_LIT>"\""		{}
 <STR_LIT>"\x"		{}
