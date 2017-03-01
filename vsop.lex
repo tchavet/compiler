@@ -13,6 +13,18 @@ DIGIT	[0-9]
 	void error(int line, int col);
 
 %%
+
+//MAXIM
+
+
+//THIB
+
+
+//MAXIME 
+
+
+//TRUC
+
 {EOL} 				{line++; col = 1;}
 [+-]?{DIGIT}+		{tokens.push_back(Token(line,col,std::string("integer-literal"))); col += yyleng;}
 {whitespace}		{col += yyleng;}
