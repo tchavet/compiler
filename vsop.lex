@@ -10,6 +10,7 @@ BINDIGIT	[0-1]
     #include <string>
 	#include <list>
 	#include <iostream>
+	#include <cstdlib>
 	#define YY_DECL extern "C" int yylex() // Use flex with c++
 	using namespace std;
 	int line = 1, col = 1;
@@ -42,9 +43,9 @@ BINDIGIT	[0-1]
 
 {EOL} 					{line++; col = 1;}
 
-[+-]?{DIGIT}+			{tokens.push_back(Token(line,col,"integer-literal",yytext)); col += yyleng;}
-[+-]?0x{HEXDIGIT}+		{tokens.push_back(Token(line,col,"integer-literal",yytext)); col += yyleng;}
-[+-]?0b{BINDIGIT}+		{tokens.push_back(Token(line,col,"integer-literal",yytext)); col += yyleng;}
+[+-]?{DIGIT}+			{tokens.push_back(Token(line,col,"integer-literal",atoi(yytext))); col += yyleng;}
+[+-]?0x{HEXDIGIT}+		{tokens.push_back(Token(line,col,"integer-literal",strtol(yytext, NULL, 16))); col += yyleng;}
+[+-]?0b{BINDIGIT}+		{tokens.push_back(Token(line,col,"integer-literal",strtol(yytext+2, NULL, 2))); col += yyleng;}
 [+-]?0[xb][a-zA-Z0-9]+	{error(line,col); col+= yyleng;}
 
 and 	{tokens.push_back(Token(line,col,"and")); col += yyleng;}
