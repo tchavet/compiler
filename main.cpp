@@ -45,7 +45,18 @@ int main(int argc, char** argv)
 				yyin = file;
 
 				yylex();
-                
+
+				if(strcmp(argv[1], "-lex") == 0)
+				{
+					for(list<Token>::iterator listIterator = tokens.begin(); listIterator != tokens.end(); listIterator++)
+					{
+						listIterator->print();
+					}
+				}
+
+				if (err)
+					return -1;
+
 				if(strcmp(argv[1], "-parse") == 0 || strcmp(argv[1], "-check") == 0)
 					std::cerr << "Not yet available" << std::endl;
 				if(strcmp(argv[1], "-check") == 0)
@@ -53,7 +64,7 @@ int main(int argc, char** argv)
 			}
 			else //error second argument as input
 			{       
-				std::cerr << "Error with input arguments";
+				std::cerr << "Error with input arguments" << std::endl;
 				return -2;
 			}
 		}//end argc == 3
@@ -77,19 +88,14 @@ int main(int argc, char** argv)
 		std::cerr << "Other Exception error:" << e.what() << std::endl;
 	}
 
-	if (err)
-		return -1;
-
-	for(list<Token>::iterator listIterator = tokens.begin(); listIterator != tokens.end(); listIterator++)
-	{
-		listIterator->print();
-	}
-
 	return 0;
 }
 
-void error(int line, int col)
+void error(int line, int col, string message="")
 {
-	cerr << filename << ":" << line << ":" << col << ": lexical error" << endl;
+	cerr << filename << ":" << line << ":" << col << ": lexical error";
+	if(message != "")
+		cerr << ": " << message;
+	cerr << endl;
 	err = true;
 }
