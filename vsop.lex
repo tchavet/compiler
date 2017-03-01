@@ -19,24 +19,25 @@ STR_BSNL	"\\" + EOL + (whitespace)*
 	int line = 1, col = 1;
 	extern list<Token> tokens;
 	void error(int line, int col);
+	std::string char2printable(char* x);
 
 	int comment_depth = 0, opening_col, opening_line;
-	string str(); 
+	string str = ""; 
 %%
 
 "\""				{opening_col = col; opening_line = line; col += yyleng; BEGIN(STR_LIT);}
 <STR_LIT>"\\\""		{col += yyleng; str += "\\\"";}
 <STR_LIT>"\""		{col += yyleng; BEGIN(INITIAL);}
-<STR_LIT>XHH		{col += yyleng; str += yytext;}
-<STR_LIT>"\\b"		{col += yyleng; str += "\x08";}
-<STR_LIT>"\\t"		{col += yyleng; str += "\x09";}
-<STR_LIT>"\\n"		{col += yyleng; str += "\x0a";}
-<STR_LIT>"\\r"		{col += yyleng; str += "\x0d";}
+<STR_LIT>XHH		{col += yyleng; str +=  yytext;}
+<STR_LIT>"\\b"		{col += yyleng; str +=  "\x08";}
+<STR_LIT>"\\t"		{col += yyleng; str +=  "\x09";}
+<STR_LIT>"\\n"		{col += yyleng; str +=  "\x0a";}
+<STR_LIT>"\\r"		{col += yyleng; str +=  "\x0d";}
 <STR_LIT>"\\\\"		{col += yyleng; str += "\\\\";}
 <STR_LIT>STR_BSNL	{col = yyleng-1; ++line;}
 <STR_LIT>"\\"		{error(line, col);}
 <STR_LIT><<EOF>>	{error(opening_line, opening_col);}
-<STR_LIT>.			{col += yyleng; str += char2printable(yytext);}
+<STR_LIT>.			{col += yyleng; str +=  char2printable(yytext);}
 
 "//"				{BEGIN(LINE_COM);}
 <LINE_COM>{EOL}		{++line; col = 1; BEGIN(INITIAL);}
@@ -44,9 +45,9 @@ STR_BSNL	"\\" + EOL + (whitespace)*
 
 
 "(*"				{opening_col = col; opening_line = line; col+= yyleng; BEGIN(NEST_COM);}
-<NEST_COM>"(*"		{col+= yyleng; ++commentDepth;}
+<NEST_COM>"(*"		{col+= yyleng; ++comment_depth;}
 <NEST_COM>"*)"		{col+= yyleng; 
-					 if (commentDepth) --commentDepth; 
+					 if (comment_depth) --comment_depth; 
 				   	 else BEGIN(INITIAL);}
 <NEST_COM>{EOL}		{++line; col = 1;}
 <NEST_COM><<EOF>>	{error(opening_line, opening_col);}
@@ -105,16 +106,17 @@ while 	{tokens.push_back(Token(line,col,"while",Token::Keyword)); col += yyleng;
 .						{error(line,col); col++;}
 
 %%
-std::string char2printable(char x){
+std::string char2printable(char* x){
+	char c = x[0];
 	stringstream ss;
-	if(x < 32){
-		ss <<"\\x" << std::hex << (int) x;
+	if(c < 32){
+		ss <<"\\x" << std::hex << (int) c;
 		return ss.str();
 	}
-	else if( x > 126){
-		ss << "\\x" << std::hex << (int) x;
+	else if( c > 126){
+		ss << "\\x" << std::hex << (int) c;
         return ss.str();
 	}
-	ss << x;
+	ss << c;
 	return ss.str();
 }
