@@ -14,19 +14,8 @@ DIGIT	[0-9]
 
 %%
 
-//MAXIM
-
-
-//THIB
-
-
-//MAXIME 
-
-
-//TRUC
-
 {EOL} 				{line++; col = 1;}
-[+-]?{DIGIT}+		{tokens.push_back(Token(line,col,std::string("integer-literal"))); col += yyleng;}
+[+-]?{DIGIT}+		{tokens.push_back(Token(line,col,std::string("integer-literal"),yytext)); col += yyleng;}
 {whitespace}		{col += yyleng;}
 .					{error(line,col); col++;}
 
