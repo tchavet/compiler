@@ -5,8 +5,8 @@ whitespace 	[ \t]+
 DIGIT		[0-9]
 HEXDIGIT	[0-9]|[a-f]|[A-F]
 BINDIGIT	[0-1]
-XHH			"\x" + HEXDIGIT + HEXDIGIT
-STR_BSNL	"\\" + EOL + (whitespace)*
+XHH			"\\x" HEXDIGIT HEXDIGIT
+STR_BSNL	"\\" EOL (whitespace)*
 
 	#include "Token.hpp"
     #include <string>
@@ -36,7 +36,7 @@ STR_BSNL	"\\" + EOL + (whitespace)*
 <STR_LIT>"\\\\"		{col += yyleng; str += "\\\\";}
 <STR_LIT>STR_BSNL	{col = yyleng-1; ++line;}
 <STR_LIT>"\\"		{error(line, col);}
-<STR_LIT><<EOF>>	{error(opening_line, opening_col);}
+<STR_LIT><<EOF>>	{error(opening_line, opening_col); BEGIN(INITIAL);}
 <STR_LIT>.			{col += yyleng; str +=  char2printable(yytext);}
 
 "//"				{BEGIN(LINE_COM);}
@@ -50,7 +50,7 @@ STR_BSNL	"\\" + EOL + (whitespace)*
 					 if (comment_depth) --comment_depth; 
 				   	 else BEGIN(INITIAL);}
 <NEST_COM>{EOL}		{++line; col = 1;}
-<NEST_COM><<EOF>>	{error(opening_line, opening_col);}
+<NEST_COM><<EOF>>	{error(opening_line, opening_col); BEGIN(INITIAL);}
 <NEST_COM>.      	{col+= yyleng;}
 
 
