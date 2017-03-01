@@ -20,7 +20,7 @@ BINDIGIT	[0-1]
 %%
 
 "//"				{BEGIN(LINE_COM);}
-<LINE_COM>{EOL}		{BEGIN(INITIAL);}
+<LINE_COM>{EOL}		{++line; BEGIN(INITIAL);}
 <LINE_COM>.			{}
 
 
