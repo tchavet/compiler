@@ -5,8 +5,8 @@ whitespace 	[ \t]+
 DIGIT		[0-9]
 HEXDIGIT	[0-9]|[a-f]|[A-F]
 BINDIGIT	[0-1]
-XHH			"\\x" HEXDIGIT HEXDIGIT
-STR_BSNL	"\\" EOL (whitespace)*
+XHH			"\\x"{HEXDIGIT}{HEXDIGIT}
+STR_BSNL	"\\"{EOL}{whitespace}*
 
 	#include "Token.hpp"
     #include <string>
@@ -28,13 +28,13 @@ STR_BSNL	"\\" EOL (whitespace)*
 "\""				{opening_col = col; opening_line = line; col += yyleng; str = "\""; BEGIN(STR_LIT);}
 <STR_LIT>"\\\""		{col += yyleng; str += "\\\"";}
 <STR_LIT>"\""		{col += yyleng; str += "\""; tokens.push_back(Token(opening_line, opening_col, "string-literal", Token::String, str)); BEGIN(INITIAL);}
-<STR_LIT>XHH		{col += yyleng; str +=  yytext;}
+<STR_LIT>{XHH}		{col += yyleng; str +=  yytext;}
 <STR_LIT>"\\b"		{col += yyleng; str +=  "\\x08";}
 <STR_LIT>"\\t"		{col += yyleng; str +=  "\\x09";}
 <STR_LIT>"\\n"		{col += yyleng; str +=  "\\x0a";}
 <STR_LIT>"\\r"		{col += yyleng; str +=  "\\x0d";}
 <STR_LIT>"\\\\"		{col += yyleng; str += "\\\\";}
-<STR_LIT>STR_BSNL	{col = yyleng-1; ++line;}
+<STR_LIT>{STR_BSNL}	{col = yyleng-1; ++line;}
 <STR_LIT>"\\"		{error(line, col);}
 <STR_LIT><<EOF>>	{error(opening_line, opening_col); BEGIN(INITIAL);}
 <STR_LIT>.			{col += yyleng; str +=  char2printable(yytext);}
