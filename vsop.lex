@@ -5,6 +5,8 @@ whitespace 	[ \t]+
 DIGIT		[0-9]
 HEXDIGIT	[0-9]|[a-f]|[A-F]
 BINDIGIT	[0-1]
+XHH			"\x" + HEXDIGIT + HEXDIGIT
+STR_BSNL	"\\" + EOL + (whitespace)*
 
 	#include "Token.hpp"
     #include <string>
@@ -18,27 +20,36 @@ BINDIGIT	[0-1]
 	extern list<Token> tokens;
 	void error(int line, int col);
 
-	int commentDepth = 0;
+	int comment_depth = 0, opening_col, opening_line;
 	string str(); 
 %%
 
-"\""				{BEGIN(STR_LIT);}
-<STR_LIT>"\\\""		{}
-<STR_LIT>"\""		{}
-<STR_LIT>"\x"		{}
+"\""				{opening_col = col; opening_line = line; col += yyleng; BEGIN(STR_LIT);}
+<STR_LIT>"\\\""		{col += yyleng; str += "\\\"";}
+<STR_LIT>"\""		{col += yyleng; BEGIN(INITIAL);}
+<STR_LIT>XHH		{col += yyleng; str += yytext;}
+<STR_LIT>"\\b"		{col += yyleng; str += "\x08";}
+<STR_LIT>"\\t"		{col += yyleng; str += "\x09";}
+<STR_LIT>"\\n"		{col += yyleng; str += "\x0a";}
+<STR_LIT>"\\r"		{col += yyleng; str += "\x0d";}
+<STR_LIT>"\\\\"		{col += yyleng; str += "\\\\";}
+<STR_LIT>STR_BSNL	{col = yyleng-1; ++line;}
+<STR_LIT>"\\"		{error(line, col);}
+<STR_LIT><<EOF>>	{error(opening_line, opening_col);}
+<STR_LIT>.			{col += yyleng; str += char2printable(yytext);}
 
 "//"				{BEGIN(LINE_COM);}
 <LINE_COM>{EOL}		{++line; col = 1; BEGIN(INITIAL);}
 <LINE_COM>.			{}
 
 
-"(*"				{col+= yyleng; BEGIN(NEST_COM);}
+"(*"				{opening_col = col; opening_line = line; col+= yyleng; BEGIN(NEST_COM);}
 <NEST_COM>"(*"		{col+= yyleng; ++commentDepth;}
 <NEST_COM>"*)"		{col+= yyleng; 
 					 if (commentDepth) --commentDepth; 
 				   	 else BEGIN(INITIAL);}
 <NEST_COM>{EOL}		{++line; col = 1;}
-<NEST_COM><<EOF>>	{error(line, col);}
+<NEST_COM><<EOF>>	{error(opening_line, opening_col);}
 <NEST_COM>.      	{col+= yyleng;}
 
 
