@@ -1,4 +1,4 @@
-%x NEST_COM LINE_COM
+%x NEST_COM LINE_COM STR
 
 EOL			(\r|\n|\r\n)
 whitespace 	[ \t]+
@@ -20,7 +20,7 @@ BINDIGIT	[0-1]
 %%
 
 "//"				{BEGIN(LINE_COM);}
-<LINE_COM>{EOL}		{++line; BEGIN(INITIAL);}
+<LINE_COM>{EOL}		{++line; col = 1; BEGIN(INITIAL);}
 <LINE_COM>.			{}
 
 
