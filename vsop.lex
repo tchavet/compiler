@@ -48,28 +48,28 @@ BINDIGIT	[0-1]
 [+-]?0b{BINDIGIT}+		{tokens.push_back(Token(line,col,"integer-literal",strtol(yytext+2, NULL, 2))); col += yyleng;}
 [+-]?0[xb][a-zA-Z0-9]+	{error(line,col); col+= yyleng;}
 
-and 	{tokens.push_back(Token(line,col,"and")); col += yyleng;}
-bool 	{tokens.push_back(Token(line,col,"bool")); col += yyleng;}
-class 	{tokens.push_back(Token(line,col,"class")); col += yyleng;}
-do 		{tokens.push_back(Token(line,col,"do")); col += yyleng;}
-else 	{tokens.push_back(Token(line,col,"else")); col += yyleng;}
-extends {tokens.push_back(Token(line,col,"extends")); col += yyleng;}
-false 	{tokens.push_back(Token(line,col,"false")); col += yyleng;}
-if  	{tokens.push_back(Token(line,col,"if")); col += yyleng;}
-in  	{tokens.push_back(Token(line,col,"in")); col += yyleng;}
-int32 	{tokens.push_back(Token(line,col,"int32")); col += yyleng;}
-isnull 	{tokens.push_back(Token(line,col,"isnull")); col += yyleng;}
-let 	{tokens.push_back(Token(line,col,"let")); col += yyleng;}
-new 	{tokens.push_back(Token(line,col,"new")); col += yyleng;}
-not 	{tokens.push_back(Token(line,col,"not")); col += yyleng;}
-string 	{tokens.push_back(Token(line,col,"string")); col += yyleng;}
-then 	{tokens.push_back(Token(line,col,"then")); col += yyleng;}
-true 	{tokens.push_back(Token(line,col,"true")); col += yyleng;}
-unit 	{tokens.push_back(Token(line,col,"unit")); col += yyleng;}
-while 	{tokens.push_back(Token(line,col,"while")); col += yyleng;}
+and 	{tokens.push_back(Token(line,col,"and",Token::Keyword)); col += yyleng;}
+bool 	{tokens.push_back(Token(line,col,"bool",Token::Keyword)); col += yyleng;}
+class 	{tokens.push_back(Token(line,col,"class",Token::Keyword)); col += yyleng;}
+do 		{tokens.push_back(Token(line,col,"do",Token::Keyword)); col += yyleng;}
+else 	{tokens.push_back(Token(line,col,"else",Token::Keyword)); col += yyleng;}
+extends {tokens.push_back(Token(line,col,"extends",Token::Keyword)); col += yyleng;}
+false 	{tokens.push_back(Token(line,col,"false",Token::Keyword)); col += yyleng;}
+if  	{tokens.push_back(Token(line,col,"if",Token::Keyword)); col += yyleng;}
+in  	{tokens.push_back(Token(line,col,"in",Token::Keyword)); col += yyleng;}
+int32 	{tokens.push_back(Token(line,col,"int32",Token::Keyword)); col += yyleng;}
+isnull 	{tokens.push_back(Token(line,col,"isnull",Token::Keyword)); col += yyleng;}
+let 	{tokens.push_back(Token(line,col,"let",Token::Keyword)); col += yyleng;}
+new 	{tokens.push_back(Token(line,col,"new",Token::Keyword)); col += yyleng;}
+not 	{tokens.push_back(Token(line,col,"not",Token::Keyword)); col += yyleng;}
+string 	{tokens.push_back(Token(line,col,"string",Token::Keyword)); col += yyleng;}
+then 	{tokens.push_back(Token(line,col,"then",Token::Keyword)); col += yyleng;}
+true 	{tokens.push_back(Token(line,col,"true",Token::Keyword)); col += yyleng;}
+unit 	{tokens.push_back(Token(line,col,"unit",Token::Keyword)); col += yyleng;}
+while 	{tokens.push_back(Token(line,col,"while",Token::Keyword)); col += yyleng;}
 
-[A-Z][a-zA-Z0-9_]+	{tokens.push_back(Token(line,col,"type-identifier",yytext)); col += yyleng;}
-[a-z][a-zA-Z0-9_]+	{tokens.push_back(Token(line,col,"object-identifier",yytext)); col += yyleng;}
+[A-Z][a-zA-Z0-9_]*	{tokens.push_back(Token(line,col,"type-identifier",Token::Type,yytext)); col += yyleng;}
+[a-z][a-zA-Z0-9_]*	{tokens.push_back(Token(line,col,"object-identifier",Token::Object,yytext)); col += yyleng;}
 
 {whitespace}			{col += yyleng;}
 .						{error(line,col); col++;}
