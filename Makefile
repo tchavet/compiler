@@ -7,7 +7,7 @@ all:    vsopc
 .PHONY: all archive clean install-tools
 
 # Your compiler
-vsopc:Token.hpp
+vsopc:clean Token.hpp
 	flex -o vsop.yy.cpp vsop.lex
 	$(CC)  *.cpp -o vsopc $(CCFLAGS)
 
