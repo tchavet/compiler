@@ -7,7 +7,7 @@ all:    vsopc
 .PHONY: all archive clean install-tools
 
 # Your compiler
-vsopc:Token.hpp
+vsopc:clean Token.hpp
 	flex -o vsop.yy.cpp vsop.lex
 	$(CC)  *.cpp -o vsopc $(CCFLAGS)
 
@@ -32,4 +32,10 @@ install-tools:
 archive:    clean
 	cd ..; tar cvJf vsopcompiler.tar.xz --exclude=.git --exclude=.svn --exclude=.svn-base vsopcompiler
 make_archive: clean
-	tar -cJf soumission.tar.xz *.cpp Makefile *.hpp *.lex
+	mkdir vsopcompiler
+	cp *.cpp  vsopcompiler/
+	cp Makefile vsopcompiler/
+	cp *.hpp vsopcompiler/
+	cp *.lex vsopcompiler/
+	tar -cJf vsopcompiler.tar.xz vsopcompiler
+	rm -r vsopcompiler
