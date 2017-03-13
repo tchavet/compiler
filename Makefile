@@ -7,9 +7,11 @@ all:    vsopc
 .PHONY: all archive clean install-tools
 
 # Your compiler
-vsopc:clean Token.hpp
+vsopc:clean
 	flex -o vsop.yy.cpp vsop.lex
-	$(CC)  *.cpp -o vsopc $(CCFLAGS)
+	bison -d vsop_parser.y -b vsop
+	$(CC)  *.c* -o vsopc  $(CCFLAGS)
+
 
 
 # Should clean built files, and keep only source code. Adapt to your language
