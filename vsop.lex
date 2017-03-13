@@ -21,7 +21,7 @@ STR_BSNL	"\\"{EOL}{whitespace}*
 
 	int line = 1, col = 1;
 	extern list<Token> tokens;
-	void error(int line, int col, string message="");
+	void lexical_error(int line, int col, string message="");
 	std::string char2printable(char* x);
 
 	int comment_depth = 0, opening_col, opening_line;
@@ -38,10 +38,10 @@ STR_BSNL	"\\"{EOL}{whitespace}*
 <STR_LIT>"\\n"		{col += yyleng; str +=  "\\x0a";}
 <STR_LIT>"\\r"		{col += yyleng; str +=  "\\x0d";}
 <STR_LIT>"\\\\"		{col += yyleng; str += "\\\\";}
-<STR_LIT>{EOL}		{error(line,col,"character '\\n' is illegal in this context.");col = 1; line++;}
+<STR_LIT>{EOL}		{lexical_error(line,col,"character '\\n' is illegal in this context.");col = 1; line++;}
 <STR_LIT>{STR_BSNL}	{col = yyleng-1; ++line;}
-<STR_LIT>"\\"		{error(line, col);}
-<STR_LIT><<EOF>>	{error(opening_line, opening_col, "string was opened but never closed"); BEGIN(INITIAL);}
+<STR_LIT>"\\"		{lexical_error(line, col);}
+<STR_LIT><<EOF>>	{lexical_error(opening_line, opening_col, "string was opened but never closed"); BEGIN(INITIAL);}
 <STR_LIT>.			{str +=  char2printable(yytext);col += yyleng;}
 
 "//"				{BEGIN(LINE_COM);}
@@ -55,7 +55,7 @@ STR_BSNL	"\\"{EOL}{whitespace}*
 					 if (comment_depth) --comment_depth; 
 				   	 else BEGIN(INITIAL);}
 <NEST_COM>{EOL}		{++line; col = 1;}
-<NEST_COM><<EOF>>	{error(com_open.back().first, com_open.back().second, "comments opened but never closed"); BEGIN(INITIAL);}
+<NEST_COM><<EOF>>	{lexical_error(com_open.back().first, com_open.back().second, "comments opened but never closed"); BEGIN(INITIAL);}
 <NEST_COM>.      	{col+= yyleng;}
 
 
@@ -64,7 +64,7 @@ STR_BSNL	"\\"{EOL}{whitespace}*
 {DIGIT}+			{tokens.push_back(Token(line,col,"integer-literal",atoi(yytext))); col += yyleng;}
 0x{HEXDIGIT}+		{tokens.push_back(Token(line,col,"integer-literal",strtol(yytext, NULL, 16))); col += yyleng;}
 0b{BINDIGIT}+		{tokens.push_back(Token(line,col,"integer-literal",strtol(yytext+2, NULL, 2))); col += yyleng;}
-0[xb][a-zA-Z0-9]*	{error(line,col,yytext + string(" is not a valid integer literal.")); col+= yyleng;}
+0[xb][a-zA-Z0-9]*	{lexical_error(line,col,yytext + string(" is not a valid integer literal.")); col+= yyleng;}
 
 and 	{tokens.push_back(Token(line,col,"and",Token::Keyword)); col += yyleng;}
 bool 	{tokens.push_back(Token(line,col,"bool",Token::Keyword)); col += yyleng;}
@@ -108,7 +108,7 @@ while 	{tokens.push_back(Token(line,col,"while",Token::Keyword)); col += yyleng;
 \<\-	{tokens.push_back(Token(line,col,"assign",Token::Operator)); col += yyleng;}
 
 {whitespace}			{col += yyleng;}
-.						{error(line,col); col++;}
+.						{lexical_error(line,col); col++;}
 
 %%
 std::string char2printable(char* x){
@@ -116,7 +116,7 @@ std::string char2printable(char* x){
 	stringstream ss;
 	if(c == 0)
 	{
-		error(line,col,"character '\\000' is illegal in this context.");
+		lexical_error(line,col,"character '\\000' is illegal in this context.");
 		return "";
 	}
 	if(c < 32){
