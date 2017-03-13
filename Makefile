@@ -24,7 +24,7 @@ clean:
 # Remember to use `sudo` if you need administrator privileges.
 # Obviously, `make` is already installed. It is also the case of `llvm-dev`.
 install-tools:
-	sudo DEBIAN_FRONTEND=noninteractive apt-get -qq install clang flex
+	sudo DEBIAN_FRONTEND=noninteractive apt-get -qq install flex bison
 
 # This target will build a new archive of this cleaned folder in its parent
 # directory. You can use it to generate an archive to be submitted for
