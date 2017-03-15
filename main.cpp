@@ -60,8 +60,6 @@ int main(int argc, char** argv)
 		filename = argv[2];
 		yyin = file;
 
-		yylex();
-			
 		if (err_lex)
 			return -1;
 		yyparse();
