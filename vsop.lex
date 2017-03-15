@@ -39,21 +39,21 @@ STR_BSNL	"\\"{EOL}{whitespace}*
 
 "\""				{opening_col = yylloc.first_column; opening_line = yylloc.first_line; str = "\""; BEGIN(STR_LIT);}
 <STR_LIT>"\\\""		{str += "\\\"";}
-<STR_LIT>"\""		{str += "\""; yylval.strval = new string(str); print("string-literal");return STRING_LIT; BEGIN(INITIAL);}
+<STR_LIT>"\""		{str += "\""; yylval.strval = new string(str); print("string-literal"); BEGIN(INITIAL);return STRING_LIT;}
 <STR_LIT>{XHH}		{str +=  yytext;}
 <STR_LIT>"\\b"		{str +=  "\\x08";}
 <STR_LIT>"\\t"		{str +=  "\\x09";}
 <STR_LIT>"\\n"		{str +=  "\\x0a";}
 <STR_LIT>"\\r"		{str +=  "\\x0d";}
 <STR_LIT>"\\\\"		{str += "\\\\";}
-<STR_LIT>{EOL}		{lexical_error(yylloc.first_line,yylloc.first_column,"character '\\n' is illegal in this context."); yylloc.last_line++;}
+<STR_LIT>{EOL}		{lexical_error(yylloc.first_line,yylloc.first_column,"character '\\n' is illegal in this context."); yylloc.last_line++;yylloc.last_column=1;}
 <STR_LIT>{STR_BSNL}	{yylloc.last_line++;}
 <STR_LIT>"\\"		{lexical_error(yylloc.first_line, yylloc.last_column);}
 <STR_LIT><<EOF>>	{lexical_error(opening_line, opening_col, "string was opened but never closed"); BEGIN(INITIAL);}
 <STR_LIT>.			{str +=  char2printable(yytext);}
 
 "//"				{BEGIN(LINE_COM);}
-<LINE_COM>{EOL}		{yylloc.last_line++; BEGIN(INITIAL);}
+<LINE_COM>{EOL}		{yylloc.last_line++;yylloc.last_column=1; BEGIN(INITIAL);}
 <LINE_COM>.			{}
 
 
@@ -62,12 +62,12 @@ STR_BSNL	"\\"{EOL}{whitespace}*
 <NEST_COM>"*)"		{com_open.pop_back();
 					 if (comment_depth) --comment_depth; 
 				   	 else BEGIN(INITIAL);}
-<NEST_COM>{EOL}		{yylloc.last_line++;}
+<NEST_COM>{EOL}		{yylloc.last_line++;yylloc.last_column=1;}
 <NEST_COM><<EOF>>	{lexical_error(com_open.back().first, com_open.back().second, "comments opened but never closed"); BEGIN(INITIAL);}
 <NEST_COM>.      	{}
 
 
-{EOL} 				{}
+{EOL} 				{yylloc.last_line++;yylloc.last_column=1;}
 
 {DIGIT}+			{yylval.intval = atoi(yytext); print("integer-literal");return INT_LIT;}
 0x{HEXDIGIT}+		{yylval.intval = strtol(yytext, NULL, 16); print("integer-literal");return INT_LIT;}
@@ -139,8 +139,8 @@ std::string char2printable(char* x){
 	return ss.str();
 }
 void update_index(){
-	yylloc.first_line = yylineno;
-	yylloc.last_line = yylineno;
+	yylloc.first_line = yylloc.last_line;
+	yylloc.last_line = yylloc.last_line;
 	yylloc.first_column = yylloc.last_column;
 	yylloc.last_column = yylloc.last_column + yyleng;
 	

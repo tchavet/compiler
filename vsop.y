@@ -86,8 +86,8 @@ classopt:
 		}
 |		%empty
 		{
-			std::vector<AstNode*> classes;
-			$$ = &classes;
+			std::vector<AstNode*> *classes = new std::vector<AstNode*>();
+			$$ = classes;
 		}
 
 class:
@@ -125,10 +125,10 @@ class_body:
 field_method:
 			%empty
 			{
-			  std::vector<AstNode*> fields_methods(2);
-			  fields_methods[0] = new AstNode(NULL);
-			  fields_methods[1] = new AstNode(NULL);
-			  $$ = &fields_methods;
+			  std::vector<AstNode*> *fields_methods = new std::vector<AstNode*>(2);
+			  (*fields_methods)[0] = new AstNode(NULL);
+			  (*fields_methods)[1] = new AstNode(NULL);
+			  $$ = fields_methods;
 			}
 |			field_method field
 			{
@@ -164,15 +164,14 @@ field:
 	}
 
 method:
-	 OBJECT_ID LPAR formals RPAR COLON TYPE_ID block
+	 OBJECT_ID LPAR formals RPAR COLON type block
 	 {
 		Token *token = new Token(@1.first_line, @1.first_column, Token::Method);
 		AstNode *node = new AstNode(token);
 		token = new Token(@1.first_line, @1.first_column, Token::Object_id, *$1);
 		node->addNode(new AstNode(token));
 		node->addNode($3);
-		token = new Token(@6.first_line, @6.first_column, Token::Type_id, *$6);
-		node->addNode(new AstNode(token));
+		node->addNode($6);
 		node->addNode($7);
 		$$ = node;
 	 }
@@ -206,6 +205,10 @@ formals:
 		$1->addNode($2);
 		$$ = $1;
 	}
+|	%empty
+	{
+		$$ = new AstNode(NULL);
+	}
 
 formalopt:
 	formalopt COMMA formal
@@ -228,17 +231,18 @@ formal:
 	}
 
 block:
-	LBRACE expr expropt RBRACE
+	LBRACE expropt expr RBRACE
 	{
 		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::Block));
-		node->addNode($2);
-		node->addNodes($3);
+		node->addNode($3);
+		node->addNodes($2);
+		$$ = node;
 	}
 
 expropt:
-	expropt SEMICOLON expr
+	expropt expr SEMICOLON
 	{
-		$1->push_back($3);
+		$1->push_back($2);
 		$$ = $1;
 	}
 |	%empty
@@ -247,7 +251,11 @@ expropt:
 	}
 
 expr:
-	IF expr THEN expr
+	block
+	{
+		$$ = $1;
+	}
+|	IF expr THEN expr
 	{
 		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::If));
 		node->addNode($2);
@@ -425,12 +433,9 @@ argopt:
 		$$ = new AstNode(NULL);
 	}
 arg:
-   literal COLON TYPE_ID
+   expr
 	{
-		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::Arg));
-		node->addNode($1);
-		node->addNode(new AstNode(new Token(@3.first_line, @3.first_column, Token::Type_id, *$3)));
-		$$ = node;
+		$$ = $1;
 	}
 
 literal:
