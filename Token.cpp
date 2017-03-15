@@ -14,7 +14,7 @@ Token::Token(int tokenLine, int tokenCol, int tokenValue)
 	line = tokenLine;
 	col = tokenCol;
 	intValue = tokenValue;
-	type = Int;
+	type = Int_lit;
 }
 
 void Token::print()
