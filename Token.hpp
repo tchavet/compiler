@@ -1,5 +1,6 @@
 #include <string>
-
+#ifndef TOKEN_H
+#define TOKEN_H
 class Token
 {
 public:
@@ -17,3 +18,4 @@ protected:
 	int intValue;
 	enum Type type;
 };
+#endif

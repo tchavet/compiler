@@ -5,6 +5,9 @@
 #include <iostream>
 #include <cstdio>
 #include <list>
+#include "AstNode.hpp"
+#include <vector>
+#include "vsop.tab.h"
 
 extern "C"  int yylex();
 
@@ -16,7 +19,7 @@ using namespace std;
 
 list<Token> tokens;
 string filename;
-bool lex= false;
+extern bool lex= false;
 bool parse =false;
 bool check =false;
 bool err_lex =false;
@@ -58,21 +61,10 @@ int main(int argc, char** argv)
 		yyin = file;
 
 		yylex();
-		if(strcmp(argv[1], "-lex") == 0)
-		{
-			for(list<Token>::iterator listIterator = tokens.begin(); listIterator != tokens.end(); listIterator++)
-			{
-				listIterator->print();
-			}
-		}
+			
 		if (err_lex)
 			return -1;
-
-		if(strcmp(argv[1], "-parse") == 0 || strcmp(argv[1], "-check") == 0)
-			std::cerr << "Not yet available" << std::endl;
-		if(strcmp(argv[1], "-check") == 0)
-			std::cerr << "Not yet available" << std::endl;
-		std::cerr << "Error with input arguments" << std::endl;
+		yyparse();
 	}//end try
 	catch(std::runtime_error& e)
 	{

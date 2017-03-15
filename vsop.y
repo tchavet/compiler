@@ -1,19 +1,25 @@
 %{
+#include <iostream>
 #include <string>
 #include "AstNode.hpp"
+#include "vsop.tab.h"
+
+extern "C" int yylex();
 
 static AstNode *root;
 
 struct YYLTYPE;
+static void yyerror(const char*);
 
 %}
+
 
 %union
 {
 	int intval;
-	std::string strval;
+	std::string* strval;
 	AstNode* node;
-	std::vector<AstNode*> nodeList;
+	std::vector<AstNode*>* nodeList;
 }
 
 %token <intval> INT_LIT
@@ -75,13 +81,13 @@ program:
 classopt:
 		classopt class
 		{
-			$1.push_back($2);
+			$1->push_back($2);
 			$$ = $1;
 		}
 |		%empty
 		{
 			std::vector<AstNode*> classes;
-			$$ = classes;
+			$$ = &classes;
 		}
 
 class:
@@ -89,24 +95,24 @@ class:
 	 {
 		Token *token = new Token(@1.first_line, @1.first_column, Token::Class);
 		AstNode *node = new AstNode(token);
-		token = new Token(@2.first_line, @2.first_column, Token::Type, $2);
+		token = new Token(@2.first_line, @2.first_column, Token::Type, *$2);
 		node->addNode(new AstNode(token)); // name
 		token = new Token(-1,-1,Token::Type,"Object");
 		node->addNode(new AstNode(token)); // parent
-		node->addNode($3[0]); // fields
-		node->addNode($3[1]); // methods
+		node->addNode((*$3)[0]); // fields
+		node->addNode((*$3)[1]); // methods
 		$$ = node;
 	 }
 |	 CLASS TYPE_ID EXTENDS TYPE_ID class_body
 	 {
 		Token *token = new Token(@1.first_line, @1.first_column, Token::Class);
 		AstNode *node = new AstNode(token);
-		token = new Token(@2.first_line, @2.first_column, Token::Type, $2);
+		token = new Token(@2.first_line, @2.first_column, Token::Type, *$2);
 		node->addNode(new AstNode(token)); // name
-		token = new Token(@4.first_line, @4.first_column, Token::Type, $4);
+		token = new Token(@4.first_line, @4.first_column, Token::Type, *$4);
 		node->addNode(new AstNode(token)); // parent
-		node->addNode($5[0]); // fields
-		node->addNode($5[1]); // methods
+		node->addNode((*$5)[0]); // fields
+		node->addNode((*$5)[1]); // methods
 		$$ = node;
 	 }
 
@@ -122,16 +128,16 @@ field_method:
 			  std::vector<AstNode*> fields_methods(2);
 			  fields_methods[0] = new AstNode(NULL);
 			  fields_methods[1] = new AstNode(NULL);
-			  $$ = fields_methods;
+			  $$ = &fields_methods;
 			}
 |			field_method field
 			{
-			  $1[0]->addNode($2);
+			  (*$1)[0]->addNode($2);
 			  $$ = $1;
 			}
 |			field_method method
 			{
-			  $1[1]->addNode($2);
+			  (*$1)[1]->addNode($2);
 			  $$ = $1;
 			}
 
@@ -140,7 +146,7 @@ field:
 	{
 		Token *token = new Token(@1.first_line, @1.first_column, Token::Field);
 		AstNode *node = new AstNode(token);
-		token = new Token(@1.first_line, @1.first_column, Token::Object_id, $1);
+		token = new Token(@1.first_line, @1.first_column, Token::Object_id, *$1);
 		node->addNode(new AstNode(token));
 		node->addNode($3);
 		$$ = node;
@@ -150,7 +156,7 @@ field:
 	{
 		Token *token = new Token(@1.first_line, @1.first_column, Token::Field);
 		AstNode *node = new AstNode(token);
-		token = new Token(@1.first_line, @1.first_column, Token::Object_id, $1);
+		token = new Token(@1.first_line, @1.first_column, Token::Object_id, *$1);
 		node->addNode(new AstNode(token));
 		node->addNode($3);
 		node->addNode($5);
@@ -162,10 +168,10 @@ method:
 	 {
 		Token *token = new Token(@1.first_line, @1.first_column, Token::Method);
 		AstNode *node = new AstNode(token);
-		token = new Token(@1.first_line, @1.first_column, Token::Object_id, $1);
+		token = new Token(@1.first_line, @1.first_column, Token::Object_id, *$1);
 		node->addNode(new AstNode(token));
 		node->addNode($3);
-		token = new Token(@6.first_line, @6.first_column, Token::Type_id, $6);
+		token = new Token(@6.first_line, @6.first_column, Token::Type_id, *$6);
 		node->addNode(new AstNode(token));
 		node->addNode($7);
 		$$ = node;
@@ -174,7 +180,7 @@ method:
 type:
 	TYPE_ID
 	{
-		$$ = new AstNode(new Token(@1.first_line, @1.first_column, Token::Type_id, $1));
+		$$ = new AstNode(new Token(@1.first_line, @1.first_column, Token::Type_id, *$1));
 	}
 |	INT32
 	{
@@ -216,7 +222,7 @@ formal:
 	OBJECT_ID COLON type
 	{
 		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::Formal));
-		node->addNode(new AstNode(new Token(@1.first_line, @1.first_column, Token::Object_id, $1)));
+		node->addNode(new AstNode(new Token(@1.first_line, @1.first_column, Token::Object_id, *$1)));
 		node->addNode($3);
 		$$ = node;
 	}
@@ -232,12 +238,12 @@ block:
 expropt:
 	expropt SEMICOLON expr
 	{
-		$1.push_back($3);
+		$1->push_back($3);
 		$$ = $1;
 	}
 |	%empty
 	{
-		$$ = std::vector<AstNode*>();
+		$$ = new std::vector<AstNode*>();
 	}
 
 expr:
@@ -266,7 +272,7 @@ expr:
 |	LET OBJECT_ID COLON type IN expr
 	{
 		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::Let));
-		node->addNode(new AstNode(new Token(@2.first_line, @2.first_column, Token::Object_id, $2)));
+		node->addNode(new AstNode(new Token(@2.first_line, @2.first_column, Token::Object_id, *$2)));
 		node->addNode($4);
 		node->addNode($6);
 		$$ = node;
@@ -274,7 +280,7 @@ expr:
 |	LET OBJECT_ID COLON type ASSIGN expr IN expr
 	{
 		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::Let));
-		node->addNode(new AstNode(new Token(@2.first_line, @2.first_column, Token::Object_id, $2)));
+		node->addNode(new AstNode(new Token(@2.first_line, @2.first_column, Token::Object_id, *$2)));
 		node->addNode($4);
 		node->addNode($6);
 		node->addNode($8);
@@ -283,7 +289,7 @@ expr:
 |	OBJECT_ID ASSIGN expr
 	{
 		AstNode* node = new AstNode(new Token(@2.first_line, @2.first_column, Token::Assign));
-		node->addNode(new AstNode(new Token(@1.first_line, @1.first_column, Token::Object_id, $1)));
+		node->addNode(new AstNode(new Token(@1.first_line, @1.first_column, Token::Object_id, *$1)));
 		node->addNode($3);
 		$$ = node;
 	}
@@ -365,7 +371,7 @@ expr:
 	{
 		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::Call));
 		node->addNode(new AstNode(new Token(@1.first_line, @1.first_column, Token::Expr, "self")));
-		node->addNode(new AstNode(new Token(@1.first_line, @1.first_column, Token::Object_id, $1)));
+		node->addNode(new AstNode(new Token(@1.first_line, @1.first_column, Token::Object_id, *$1)));
 		node->addNode($3);
 		$$ = node;
 	}
@@ -373,19 +379,19 @@ expr:
 	{
 		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::Call));
 		node->addNode(new AstNode(new Token(@1.first_line, @1.first_column, Token::Expr)));
-		node->addNode(new AstNode(new Token(@3.first_line, @3.first_column, Token::Object_id, $3)));
+		node->addNode(new AstNode(new Token(@3.first_line, @3.first_column, Token::Object_id, *$3)));
 		node->addNode($5);
 		$$ = node;
 	}
 |	NEW TYPE_ID
 	{
 		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::New));
-		node->addNode(new AstNode(new Token(@2.first_line, @2.first_column, Token::Type_id, $2)));
+		node->addNode(new AstNode(new Token(@2.first_line, @2.first_column, Token::Type_id, *$2)));
 		$$ = node;
 	}
 |	OBJECT_ID
 	{
-		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::Object_id, $1));
+		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::Object_id, *$1));
 		$$ = node;
 	}
 |	literal
@@ -423,14 +429,14 @@ arg:
 	{
 		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::Arg));
 		node->addNode($1);
-		node->addNode(new AstNode(new Token(@3.first_line, @3.first_column, Token::Type_id, $3)));
+		node->addNode(new AstNode(new Token(@3.first_line, @3.first_column, Token::Type_id, *$3)));
 		$$ = node;
 	}
 
 literal:
 	STRING_LIT
 	{
-		$$ = new AstNode(new Token(@1.first_line, @1.first_column, Token::String_lit, $1));
+		$$ = new AstNode(new Token(@1.first_line, @1.first_column, Token::String_lit, *$1));
 	}
 |	INT_LIT
 	{
@@ -450,4 +456,10 @@ boolean_literal:
 	{
 		$$ = new AstNode(new Token(@1.first_line, @1.first_column, Token::Bool_lit, "true"));
 	}
+%%
+
+static void yyerror(const char *s)
+{
+	std::cerr << "an error occured at line" << yylloc.first_line << " column " <<  yylloc.first_column << " : " << s << std::endl;
+}
 

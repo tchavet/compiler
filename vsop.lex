@@ -8,13 +8,16 @@ BINDIGIT	[0-1]
 XHH			"\\x"{HEXDIGIT}{HEXDIGIT}
 STR_BSNL	"\\"{EOL}{whitespace}*
 
-	#include "vsop.tab.h"
-    #include <string>
+	#include <string>
 	#include <list>
 	#include <iostream>
 	#include <cstdlib>
 	#include <sstream>
 	#include <utility>
+	#include <vector>
+	#include "AstNode.hpp"
+	#include "vsop.tab.h"
+
 	#define YY_DECL extern "C" int yylex() // Use flex with c++
 
 	#define YY_USER_ACTION update_index();
@@ -24,23 +27,27 @@ STR_BSNL	"\\"{EOL}{whitespace}*
 	void lexical_error(int line, int col, string message="");
 	
 	std::string char2printable(char* x);
-
+	void update_index();
+	void print(std::string toPrint);
+	
 	int comment_depth = 0, opening_col, opening_line;
 	string str = ""; 
 	list<pair<int,int> > com_open(0);
+	extern bool lex;
+
 %%
 
 "\""				{opening_col = yylloc.first_column; opening_line = yylloc.first_line; str = "\""; BEGIN(STR_LIT);}
 <STR_LIT>"\\\""		{str += "\\\"";}
-<STR_LIT>"\""		{str += "\""; yylval.strval = str; return STRING_LIT; BEGIN(INITIAL);}
+<STR_LIT>"\""		{str += "\""; yylval.strval = new string(str); print("string-literal");return STRING_LIT; BEGIN(INITIAL);}
 <STR_LIT>{XHH}		{str +=  yytext;}
 <STR_LIT>"\\b"		{str +=  "\\x08";}
 <STR_LIT>"\\t"		{str +=  "\\x09";}
 <STR_LIT>"\\n"		{str +=  "\\x0a";}
 <STR_LIT>"\\r"		{str +=  "\\x0d";}
 <STR_LIT>"\\\\"		{str += "\\\\";}
-<STR_LIT>{EOL}		{lexical_error(yylloc.first_line,yyloc.first_column,"character '\\n' is illegal in this context."); yylloc.last_line++;}
-<STR_LIT>{STR_BSNL}	{yyloc.last_line++;}
+<STR_LIT>{EOL}		{lexical_error(yylloc.first_line,yylloc.first_column,"character '\\n' is illegal in this context."); yylloc.last_line++;}
+<STR_LIT>{STR_BSNL}	{yylloc.last_line++;}
 <STR_LIT>"\\"		{lexical_error(yylloc.first_line, yylloc.last_column);}
 <STR_LIT><<EOF>>	{lexical_error(opening_line, opening_col, "string was opened but never closed"); BEGIN(INITIAL);}
 <STR_LIT>.			{str +=  char2printable(yytext);}
@@ -62,51 +69,51 @@ STR_BSNL	"\\"{EOL}{whitespace}*
 
 {EOL} 				{}
 
-{DIGIT}+			{yylval.intval = atoi(yytext); return INT_LIT;}
-0x{HEXDIGIT}+		{yylval.intval = strtol(yytext, NULL, 16); return INT_LIT;}
-0b{BINDIGIT}+		{yylval.intval = strtol(yytext+2, NULL, 2); return INT_LIT;}
-0[xb][a-zA-Z0-9]*	{lexical_error(yylloc.first_line, yylloc.fist_column, yytext + string(" is not a valid integer literal."));}
+{DIGIT}+			{yylval.intval = atoi(yytext); print("integer-literal");return INT_LIT;}
+0x{HEXDIGIT}+		{yylval.intval = strtol(yytext, NULL, 16); print("integer-literal");return INT_LIT;}
+0b{BINDIGIT}+		{yylval.intval = strtol(yytext+2, NULL, 2); print("integer-litteral");return INT_LIT;}
+0[xb][a-zA-Z0-9]*	{lexical_error(yylloc.first_line, yylloc.first_column, yytext + string(" is not a valid integer literal."));}
 
-and 	{return AND;}
-bool 	{return BOOL;}
-class 	{return CLASS;}
-do 		{return DO;}
-else 	{return ELSE;}
-extends {return EXTENDS;}
-false 	{return FALSE;}
-if  	{return IF;}
-in  	{return IN;}
-int32 	{return INT32;}
-isnull 	{return ISNULL;}
-let 	{return LET;}
-new 	{return NEW;}
-not 	{return NOT;}
-string 	{return STRING;}
-then 	{return THEN;}
-true 	{return TRUE;}
-unit 	{return UNIT;}
-while 	{return WHILE;}
+and 	{print("and");return AND;}
+bool 	{print("bool");return BOOL;}
+class 	{print("class");return CLASS;}
+do 		{print("do");return DO;}
+else 	{print("else");return ELSE;}
+extends {print("extends");return EXTENDS;}
+false 	{print("false");return FALSE;}
+if  	{print("if");return IF;}
+in  	{print("in");return IN;}
+int32 	{print("int32");return INT32;}
+isnull 	{print("isnull");return ISNULL;}
+let 	{print("let");return LET;}
+new 	{print("new");return NEW;}
+not 	{print("not");return NOT;}
+string 	{print("string");return STRING;}
+then 	{print("then");return THEN;}
+true 	{print("true");return TRUE;}
+unit 	{print("unit");return UNIT;}
+while 	{print("while");return WHILE;}
 
-[A-Z][a-zA-Z0-9_]*	{yylval.strval = string(yytext); return TYPE_ID;}
-[a-z][a-zA-Z0-9_]*	{yylval.strval = string(yytext); return OBJ_ID;}
+[A-Z][a-zA-Z0-9_]*	{yylval.strval = new string(yytext);print("type-identifier"); return TYPE_ID;}
+[a-z][a-zA-Z0-9_]*	{yylval.strval = new string(yytext); print("object-identifier");return OBJECT_ID;}
 
-\{	{return LBRACE;}
-\}	{return RBRACE;}
-\(	{return LPAR;}
-\)	{return RPAR;}
-:	{return COLON;}
-;	{return SEMICOLON;}
-,	{return COMMA;}
-\+	{return PLUS;}
-\-	{return MINUS;}
-\*	{return TIMES;}
-\/	{return DIV;}
-\^	{return POW;}
-\.	{return DOT;}
-=	{return EQUAL;}
-\<	{return LOWER;}
-\<=	{return LOWER_EQ;}
-\<\-	{return ASSIGN;}
+\{	{print("lbrace");return LBRACE;}
+\}	{print("rbrace");return RBRACE;}
+\(	{print("lpar");return LPAR;}
+\)	{print("rpar");return RPAR;}
+:	{print("colon");return COLON;}
+;	{print("semicolon");return SEMICOLON;}
+,	{print("comma");return COMMA;}
+\+	{print("plus");return PLUS;}
+\-	{print("minus");return MINUS;}
+\*	{print("times");return TIMES;}
+\/	{print("div");return DIV;}
+\^	{print("pow");return POW;}
+\.	{print("dot");return DOT;}
+=	{print("equal");return EQUAL;}
+\<	{print("lower");return LOWER;}
+\<=	{print("lower-equal");return LOWER_EQ;}
+\<\-	{print("assign");return ASSIGN;}
 
 {whitespace}			{}
 .						{lexical_error(yylloc.first_line, yylloc.first_column,"illegal character: "+string(yytext));}
@@ -135,6 +142,12 @@ void update_index(){
 	yylloc.first_line = yylineno;
 	yylloc.last_line = yylineno;
 	yylloc.first_column = yylloc.last_column;
-	yylloc.last_column = yyloc.last_column + yyleng;
+	yylloc.last_column = yylloc.last_column + yyleng;
 	
 }
+void print(std::string toPrint)
+{
+	if(lex)
+		std::cout << yylloc.first_line<< "," << yylloc.first_column << ","<< toPrint << std::endl;
+}
+

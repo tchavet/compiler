@@ -13,10 +13,10 @@ void AstNode::addNode(AstNode *child)
 	childrenNb++;
 }
 
-void AstNode::addNodes(std::vector<AstNode*> nodes)
+void AstNode::addNodes(std::vector<AstNode*>* nodes)
 {
-	nodes.insert(nodes.end(), children.begin(), children.end());
-	children = nodes;
+	nodes->insert(nodes->end(), children.begin(), children.end());
+	children = *nodes;
 }
 
 std::vector<AstNode*> AstNode::getChildren()
