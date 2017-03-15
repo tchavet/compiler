@@ -8,6 +8,7 @@ BINDIGIT	[0-1]
 XHH			"\\x"{HEXDIGIT}{HEXDIGIT}
 STR_BSNL	"\\"{EOL}{whitespace}*
 
+	#include "vsop.tab.h"
     #include <string>
 	#include <list>
 	#include <iostream>

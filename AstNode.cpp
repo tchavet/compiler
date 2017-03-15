@@ -12,7 +12,13 @@ void AstNode::addNode(AstNode *child)
 	childrenNb++;
 }
 
-std::vector<Token*> AstNode::children()
+void AstNode::addNodes(std::vector<AstNode*> nodes)
+{
+	nodes.insert(nodes.end(), children.begin(), children.end());
+	children = nodes;
+}
+
+std::vector<AstNode*> AstNode::getChildren()
 {
 	return children;
 }

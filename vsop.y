@@ -1,16 +1,20 @@
 %{
 #include <string>
+#include "AstNode.hpp"
 
 static AstNode *root;
 
 struct YYLTYPE;
 
+%}
+
 %union
 {
 	int intval;
 	std::string strval;
+	AstNode* node;
+	std::vector<AstNode*> nodeList;
 }
-%}
 
 %token INT_LIT
 %token AND
@@ -32,8 +36,8 @@ struct YYLTYPE;
 %token TRUE
 %token UNIT
 %token WHILE
-%token TYPE_ID
-%token OBJECT_ID
+%token <strval> TYPE_ID
+%token <strval> OBJECT_ID
 %token STRING_LIT
 %token LBRACE
 %token RBRACE
@@ -53,6 +57,9 @@ struct YYLTYPE;
 %token LOWER_EQ
 %token ASSIGN
 
+%type <node> class field method type formal block expr
+%type <nodeList> classopt field_method class_body formals formalopt expropt
+
 %start program
 
 %%
@@ -60,37 +67,50 @@ struct YYLTYPE;
 program:
 	   class classopt
 	   {
-		 Token* token = new Token(@1.first_line, @1.first_column, Token::Class);
-		 root = new AstNode(token);
-		 root->addNode($2);
+		 root = new AstNode(NULL);
+		 root->addNode($1);
+		 root->addNodes($2);
 	   }
 
 classopt:
-		class | class classopt | %empty
+		classopt class
+		{
+			$1.push_back($2);
+			$$ = $1;
+		}
+|		%empty
+		{
+			std::vector<AstNode*> classes;
+			$$ = classes;
+		}
 
 class:
-	 CLASS TYPE_ID class-body
+	 CLASS TYPE_ID class_body
 	 {
 		Token *token = new Token(@1.first_line, @1.first_column, Token::Class);
 		AstNode *node = new AstNode(token);
-		token = new Token(@2.first_line, @2.first_column, Token::Type, $2.strval);
-		node->addNode(new AstNode(token));
-		node->addNode($3);
+		token = new Token(@2.first_line, @2.first_column, Token::Type, $2);
+		node->addNode(new AstNode(token)); // name
+		token = new Token(-1,-1,Token::Type,"Object");
+		node->addNode(new AstNode(token)); // parent
+		node->addNode($3[0]); // fields
+		node->addNode($3[1]); // methods
 		$$ = node;
 	 }
-|	 CLASS TYPE_ID EXTENDS TYPE_ID class-body
+|	 CLASS TYPE_ID EXTENDS TYPE_ID class_body
 	 {
 		Token *token = new Token(@1.first_line, @1.first_column, Token::Class);
 		AstNode *node = new AstNode(token);
-		token = new Token(@2.first_line, @2.first_column, Token::Type, $2.strval);
-		node->addNode(new AstNode(token));
-		token = new Token(@4.first_line, @4.first_column, Token::Type, $4.strval);
-		node->addNode(new AstNode(token));
-		node->addNodes($5);
+		token = new Token(@2.first_line, @2.first_column, Token::Type, $2);
+		node->addNode(new AstNode(token)); // name
+		token = new Token(@4.first_line, @4.first_column, Token::Type, $4);
+		node->addNode(new AstNode(token)); // parent
+		node->addNode($5[0]); // fields
+		node->addNode($5[1]); // methods
 		$$ = node;
 	 }
 
-class-body:
+class_body:
 		  LBRACE field_method RBRACE
 		  {
 			$$ = $2;
@@ -100,73 +120,125 @@ field_method:
 			%empty
 			{
 			  std::vector<AstNode*> fields_methods(2);
+			  fields_methods[0] = new AstNode(NULL);
+			  fields_methods[1] = new AstNode(NULL);
 			  $$ = fields_methods;
 			}
-|			field field_method
+|			field_method field
 			{
-			  AstNode *node = new AstNode($1);
-			  $2.push_back(node);
-			  $$ = $2;
+			  $1[0]->addNode($2);
+			  $$ = $1;
 			}
-|			method field_method
+|			field_method method
 			{
-			  AstNode *node = new AstNode($1);
-			  $2.push_back(node);
-			  $$ = $2;
+			  $1[1]->addNode($2);
+			  $$ = $1;
 			}
 
 field:
-	OBJ_ID COLON type SEMICOLON
+	OBJECT_ID COLON type SEMICOLON
 	{
+		Token *token = new Token(@1.first_line, @1.first_column, Token::Field);
+		AstNode *node = new AstNode(token);
+		token = new Token(@1.first_line, @1.first_column, Token::Object_id, $1);
+		node->addNode(new AstNode(token));
+		node->addNode($3);
+		$$ = node;
 	}
 
-|	OBJ_ID COLON type ASSIGN expr SEMICOLON
+|	OBJECT_ID COLON type ASSIGN expr SEMICOLON
 	{
+		Token *token = new Token(@1.first_line, @1.first_column, Token::Field);
+		AstNode *node = new AstNode(token);
+		token = new Token(@1.first_line, @1.first_column, Token::Object_id, $1);
+		node->addNode(new AstNode(token));
+		node->addNode($3);
+		node->addNode($5);
+		$$ = node;
 	}
 
 method:
-	 OBJ_ID LPAR formals RPAR COLON TYPE_ID block
+	 OBJECT_ID LPAR formals RPAR COLON TYPE_ID block
 	 {
-		Token *token = new Token(@1.first_line, @1.first_column, Token::Field);
+		Token *token = new Token(@1.first_line, @1.first_column, Token::Method);
+		AstNode *node = new AstNode(token);
+		token = new Token(@1.first_line, @1.first_column, Token::Object_id, $1);
+		node->addNode(new AstNode(token));
+		node->addNodes($3);
+		token = new Token(@6.first_line, @6.first_column, Token::Type_id, $6);
+		node->addNode(new AstNode(token));
+		node->addNode($7);
+		$$ = node;
 	 }
 
 type:
-	TYPE_ID SEMICOLON
+	TYPE_ID
 	{
+		$$ = new AstNode(new Token(@1.first_line, @1.first_column, Token::Type_id, $1));
 	}
-|	INT32 SEMICOLON
+|	INT32
 	{
+		$$ = new AstNode(new Token(@1.first_line, @1.first_column, Token::Type_id, "int32"));
 	}
-|	BOOL SEMICOLON
+|	BOOL
 	{
+		$$ = new AstNode(new Token(@1.first_line, @1.first_column, Token::Type_id, "bool"));
 	}
-|	STRING SEMICOLON
+|	STRING
 	{
+		$$ = new AstNode(new Token(@1.first_line, @1.first_column, Token::Type_id, "string"));
 	}
-|	UNIT SEMICOLON
+|	UNIT
 	{
+		$$ = new AstNode(new Token(@1.first_line, @1.first_column, Token::Type_id, "unit"));
 	}
 
 
 formals:
-	formal formalopt
+	formalopt formal
 	{
-	}
-|	%empty
-	{
+		$1.push_back($2);
+		$$ = $1;
 	}
 
 formalopt:
-	COMMA formal formalopt | %empty
+	formalopt COMMA formal
+	{
+		$1.push_back($3);
+		$$ = $1;
+	}
+|	%empty
+	{
+		$$ = std::vector<AstNode*>();
+	}
 
 formal:
-	OBJ_ID COLON type
+	OBJECT_ID COLON type
+	{
+		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::Formal));
+		node->addNode(new AstNode(new Token(@1.first_line, @1.first_column, Token::Object_id, $1)));
+		node->addNode($3);
+		$$ = node;
+	}
 
 block:
 	LBRACE expr expropt RBRACE
+	{
+		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::Block));
+		node->addNode($2);
+		node->addNodes($3);
+	}
 
 expropt:
-	SEMICOLON expr expropt | %empty
+	expropt SEMICOLON expr
+	{
+		$1.push_back($3);
+		$$ = $1;
+	}
+|	%empty
+	{
+		$$ = std::vector<AstNode*>();
+	}
 
 expr:
 	IF expr THEN expr
@@ -178,13 +250,13 @@ expr:
 |	WHILE expr DO expr
 	{
 	}
-|	LET OBJ_ID COLON type IN expr
+|	LET OBJECT_ID COLON type IN expr
 	{
 	}
-|	LET OBJ_ID COLON type ASSIGN expr IN expr
+|	LET OBJECT_ID COLON type ASSIGN expr IN expr
 	{
 	}
-|	OBJ_ID ASSIGN expr
+|	OBJECT_ID ASSIGN expr
 	{
 	}
 |	NOT expr
@@ -220,16 +292,16 @@ expr:
 |	expr POW expr
 	{
 	}
-|	OBJ_ID LPAR args RPAR
+|	OBJECT_ID LPAR args RPAR
 	{
 	}
-|	expr DOT OBJ_ID LPAR args RPAR
+|	expr DOT OBJECT_ID LPAR args RPAR
 	{
 	}
 |	NEW TYPE_ID
 	{
 	}
-|	OBJ_ID
+|	OBJECT_ID
 	{
 	}
 |	literal
@@ -238,6 +310,23 @@ expr:
 |	LBRACE expr RBRACE
 	{
 	}
+
+args:
+	arg argopt
+	{
+	}
+| %empty
+
+argopt:
+	  COMMA arg argopt
+	  {
+	  }
+| %empty
+arg:
+   literal COLON TYPE_ID
+   {
+   }
+| %empty
 
 literal:
 	STRING_LIT

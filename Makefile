@@ -9,7 +9,7 @@ all:    vsopc
 # Your compiler
 vsopc:clean
 	flex -o vsop.yy.cpp vsop.lex
-	bison -d vsop_parser.y -b vsop
+	bison -d vsop.y -b vsop
 	$(CC)  *.c* -o vsopc  $(CCFLAGS)
 
 
