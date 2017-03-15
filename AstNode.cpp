@@ -26,13 +26,12 @@ std::vector<AstNode*> AstNode::getChildren()
 
 std::string AstNode::printTree()
 {
-	enum Token::Type type = token->getType();
 	std::vector<AstNode*> children = getChildren();
 	int nbChildren = children.size();
 	
 	std::string print = "";
 	
-	if(token == NULL | (type == Token::Block && nbChildren > 1))
+	if(token == NULL)
 	{
 		print = "[";
 		for(int i=0; i<nbChildren; ++i)
@@ -42,7 +41,25 @@ std::string AstNode::printTree()
 				print += ", ";
 			}
 	
-			print + children[i]->printTree();
+			print += children[i]->printTree();
+		}
+		print += "]";
+		return print;
+	}
+
+	enum Token::Type type = token->getType();
+	
+	if(type == Token::Block && nbChildren > 1)
+	{
+		print = "[";
+		for(int i=0; i<nbChildren; ++i)
+		{
+			if(i != 0)
+			{
+				print += ", ";
+			}
+	
+			print += children[i]->printTree();
 		}
 		print += "]";
 	}
@@ -58,7 +75,7 @@ std::string AstNode::printTree()
 				print += ", ";
 			}
 	
-			print + children[i]->printTree();
+			print += children[i]->printTree();
 		}
 		print += ")";
 			

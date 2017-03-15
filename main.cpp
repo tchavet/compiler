@@ -19,6 +19,7 @@ using namespace std;
 
 list<Token> tokens;
 string filename;
+extern AstNode* root;
 extern bool lex= false;
 extern bool parse =false;
 bool check =false;
@@ -42,12 +43,12 @@ int main(int argc, char** argv)
 		}
 		
 		
-		for(int i=1; i < argc-2;i++){
+		for(int i=1; i <= argc-2;i++){
 			if(strcmp(argv[i], "-lex") == 0)
 				lex = true;
-			if(strcmp(argv[1], "-parse") == 0)
+			if(strcmp(argv[i], "-parse") == 0)
 				parse=true;
-			if(strcmp(argv[1], "-check") == 0)
+			if(strcmp(argv[i], "-check") == 0)
 				check =true;
 		}
 
@@ -60,9 +61,12 @@ int main(int argc, char** argv)
 		filename = argv[2];
 		yyin = file;
 
-		if (err_lex)
-			return -1;
 		yyparse();
+		
+		if (parse)
+		{
+			cout<<root->printTree()<<endl;
+		}
 	}//end try
 	catch(std::runtime_error& e)
 	{

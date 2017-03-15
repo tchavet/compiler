@@ -6,7 +6,7 @@
 
 extern "C" int yylex();
 
-static AstNode *root;
+extern AstNode *root = new AstNode(NULL);
 
 struct YYLTYPE;
 static void yyerror(const char*);
@@ -73,7 +73,6 @@ static void yyerror(const char*);
 program:
 	   class classopt
 	   {
-		 root = new AstNode(NULL);
 		 root->addNode($1);
 		 root->addNodes($2);
 	   }
