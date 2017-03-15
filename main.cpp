@@ -19,9 +19,9 @@ using namespace std;
 
 list<Token> tokens;
 string filename;
-extern AstNode* root;
-extern bool lex= false;
-extern bool parse =false;
+AstNode* root= new AstNode(NULL);
+bool lex= false;
+bool parse =false;
 bool check =false;
 bool err_lex =false;
 
@@ -73,14 +73,10 @@ int main(int argc, char** argv)
 		std::cerr << "runtime_error:"  <<e.what() << std::endl;
 		return -3;
 	}
-	catch(std::ios_base::failure& e)
-	{
-		std::cerr << "ios_based failure:"  << e.what() << std::endl;
-		return -4;
-	}
 	catch(std::exception& e)
 	{
 		std::cerr << "Other Exception error:" << e.what() << std::endl;
+		return -4;
 	}
 
 	return 0;

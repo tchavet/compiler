@@ -6,7 +6,7 @@
 
 extern "C" int yylex();
 
-extern AstNode *root = new AstNode(NULL);
+extern AstNode *root;
 
 struct YYLTYPE;
 static void yyerror(const char*);
@@ -62,6 +62,18 @@ static void yyerror(const char*);
 %token LOWER
 %token LOWER_EQ
 %token ASSIGN
+
+/*Precedence options*/
+%left DOT
+%right POW
+%right ISNULL 
+%left TIMES DIV
+%left PLUS MINUS
+%right 	LOWER LOWER_EQ EQUAL 
+/*TO CHECK NON ASSOCIATIVE*/
+%right NOT
+%left AND
+%right ASSIGN
 
 %type <node> class field method type formal block expr args arg literal boolean_literal formals formalopt argopt
 %type <nodeList> classopt field_method class_body expropt
@@ -232,6 +244,7 @@ formal:
 block:
 	LBRACE expropt expr RBRACE
 	{
+		std::cout << "entring block" <<std::endl;
 		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::Block));
 		node->addNode($3);
 		node->addNodes($2);
