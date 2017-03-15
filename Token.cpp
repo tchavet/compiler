@@ -26,3 +26,19 @@ void Token::print()
 		std::cout<<","<<value;
 	std::cout<<std::endl;*/
 }
+
+int Token::getIntValue()
+{
+	return intValue;
+}
+
+std::string Token::getStringValue()
+{
+	return value;
+}
+
+enum Token::Type Token::getType()
+{
+	return type;
+}
+
