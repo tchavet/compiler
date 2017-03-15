@@ -116,7 +116,145 @@ field_method:
 			}
 
 field:
-	 object-identifier LPAR formals RPAR COLON TYPE_ID block
+	OBJ_ID COLON type SEMICOLON
+	{
+	}
+
+|	OBJ_ID COLON type ASSIGN expr SEMICOLON
+	{
+	}
+
+method:
+	 OBJ_ID LPAR formals RPAR COLON TYPE_ID block
 	 {
 		Token *token = new Token(@1.first_line, @1.first_column, Token::Field);
 	 }
+
+type:
+	TYPE_ID SEMICOLON
+	{
+	}
+|	INT32 SEMICOLON
+	{
+	}
+|	BOOL SEMICOLON
+	{
+	}
+|	STRING SEMICOLON
+	{
+	}
+|	UNIT SEMICOLON
+	{
+	}
+
+
+formals:
+	formal formalopt
+	{
+	}
+|	%empty
+	{
+	}
+
+formalopt:
+	COMMA formal formalopt | %empty
+
+formal:
+	OBJ_ID COLON type
+
+block:
+	LBRACE expr expropt RBRACE
+
+expropt:
+	SEMICOLON expr expropt | %empty
+
+expr:
+	IF expr THEN expr
+	{
+	}
+|	IF expr THEN expr ELSE expr
+	{
+	}
+|	WHILE expr DO expr
+	{
+	}
+|	LET OBJ_ID COLON type IN expr
+	{
+	}
+|	LET OBJ_ID COLON type ASSIGN expr IN expr
+	{
+	}
+|	OBJ_ID ASSIGN expr
+	{
+	}
+|	NOT expr
+	{
+	}
+|	MINUS expr
+	{
+	}
+|	ISNULL expr
+	{
+	}
+|	expr EQUAL expr 
+	{
+	}
+|	expr LOWER expr
+	{
+	}
+|   expr LOWER_EQ expr 
+    {
+	}
+|	expr PLUS expr
+	{
+	}
+|	expr MINUS expr
+	{
+	}
+|	expr TIMES expr
+	{
+	}
+|	expr DIV expr
+	{
+	}
+|	expr POW expr
+	{
+	}
+|	OBJ_ID LPAR args RPAR
+	{
+	}
+|	expr DOT OBJ_ID LPAR args RPAR
+	{
+	}
+|	NEW TYPE_ID
+	{
+	}
+|	OBJ_ID
+	{
+	}
+|	literal
+	{
+	}
+|	LBRACE expr RBRACE
+	{
+	}
+
+literal:
+	STRING_LIT
+	{
+	}
+|	INT_LIT
+	{
+	}
+|	boolean_literal
+	{
+	}
+
+boolean_literal:
+	FALSE
+	{
+	}
+|	TRUE
+	{
+	}
+
