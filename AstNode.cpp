@@ -1,5 +1,6 @@
 #include "AstNode.hpp"
 #include <string>
+#include <sstream>
 
 AstNode::AstNode(Token *tokenVal)
 {
@@ -232,7 +233,9 @@ std::string AstNode::printTree()
 
 	else if(type == Token::Int_lit)
 	{
-		print += token->getIntValue(); 
+		std::stringstream ss;
+		ss << token->getIntValue();
+		print += ss.str();
 	}
 	
 	else if(type == Token::Bool_lit)
