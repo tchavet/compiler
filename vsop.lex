@@ -16,6 +16,8 @@ STR_BSNL	"\\"{EOL}{whitespace}*
 	#include <utility>
 	#define YY_DECL extern "C" int yylex() // Use flex with c++
 
+	#define YY_USER_ACTION update_index();
+
 	using namespace std;
 
 	void lexical_error(int line, int col, string message="");
@@ -27,34 +29,34 @@ STR_BSNL	"\\"{EOL}{whitespace}*
 	list<pair<int,int> > com_open(0);
 %%
 
-"\""				{opening_col = col; opening_line = line; col += yyleng; str = "\""; BEGIN(STR_LIT);}
-<STR_LIT>"\\\""		{col += yyleng; str += "\\\"";}
-<STR_LIT>"\""		{col += yyleng; str += "\""; yylval.strval = str; return STRING_LIT; BEGIN(INITIAL);}
-<STR_LIT>{XHH}		{col += yyleng; str +=  yytext;}
-<STR_LIT>"\\b"		{col += yyleng; str +=  "\\x08";}
-<STR_LIT>"\\t"		{col += yyleng; str +=  "\\x09";}
-<STR_LIT>"\\n"		{col += yyleng; str +=  "\\x0a";}
-<STR_LIT>"\\r"		{col += yyleng; str +=  "\\x0d";}
-<STR_LIT>"\\\\"		{col += yyleng; str += "\\\\";}
-<STR_LIT>{EOL}		{lexical_error(line,col,"character '\\n' is illegal in this context.");col = 1; line++;}
-<STR_LIT>{STR_BSNL}	{col = yyleng-1; ++line;}
-<STR_LIT>"\\"		{lexical_error(line, col);}
+"\""				{opening_col = yylloc.first_column; opening_line = yylloc.first_line; str = "\""; BEGIN(STR_LIT);}
+<STR_LIT>"\\\""		{str += "\\\"";}
+<STR_LIT>"\""		{str += "\""; yylval.strval = str; return STRING_LIT; BEGIN(INITIAL);}
+<STR_LIT>{XHH}		{str +=  yytext;}
+<STR_LIT>"\\b"		{str +=  "\\x08";}
+<STR_LIT>"\\t"		{str +=  "\\x09";}
+<STR_LIT>"\\n"		{str +=  "\\x0a";}
+<STR_LIT>"\\r"		{str +=  "\\x0d";}
+<STR_LIT>"\\\\"		{str += "\\\\";}
+<STR_LIT>{EOL}		{lexical_error(yylloc.first_line,yyloc.first_column,"character '\\n' is illegal in this context."); yylloc.last_line++;}
+<STR_LIT>{STR_BSNL}	{yyloc.last_line++;}
+<STR_LIT>"\\"		{lexical_error(yylloc.first_line, yylloc.last_column);}
 <STR_LIT><<EOF>>	{lexical_error(opening_line, opening_col, "string was opened but never closed"); BEGIN(INITIAL);}
-<STR_LIT>.			{str +=  char2printable(yytext);col += yyleng;}
+<STR_LIT>.			{str +=  char2printable(yytext);}
 
 "//"				{BEGIN(LINE_COM);}
-<LINE_COM>{EOL}		{++line; col = 1; BEGIN(INITIAL);}
+<LINE_COM>{EOL}		{yylloc.last_line++; BEGIN(INITIAL);}
 <LINE_COM>.			{}
 
 
-"(*"				{com_open.clear();com_open.push_back(pair<int,int>(line,col)); BEGIN(NEST_COM);col+= yyleng;}
-<NEST_COM>"(*"		{++comment_depth; com_open.push_back(pair<int,int>(line,col));col+= yyleng;}
-<NEST_COM>"*)"		{com_open.pop_back();col+= yyleng;
+"(*"				{com_open.clear();com_open.push_back(pair<int,int>(yylloc.first_line, yylloc.first_column)); BEGIN(NEST_COM);}
+<NEST_COM>"(*"		{++comment_depth; com_open.push_back(pair<int,int>(yylloc.first_line, yylloc.first_column));}
+<NEST_COM>"*)"		{com_open.pop_back();
 					 if (comment_depth) --comment_depth; 
 				   	 else BEGIN(INITIAL);}
-<NEST_COM>{EOL}		{++line; col = 1;}
+<NEST_COM>{EOL}		{yylloc.last_line++;}
 <NEST_COM><<EOF>>	{lexical_error(com_open.back().first, com_open.back().second, "comments opened but never closed"); BEGIN(INITIAL);}
-<NEST_COM>.      	{col+= yyleng;}
+<NEST_COM>.      	{}
 
 
 {EOL} 				{}
@@ -62,7 +64,7 @@ STR_BSNL	"\\"{EOL}{whitespace}*
 {DIGIT}+			{yylval.intval = atoi(yytext); return INT_LIT;}
 0x{HEXDIGIT}+		{yylval.intval = strtol(yytext, NULL, 16); return INT_LIT;}
 0b{BINDIGIT}+		{yylval.intval = strtol(yytext+2, NULL, 2); return INT_LIT;}
-0[xb][a-zA-Z0-9]*	{error(line,col,yytext + string(" is not a valid integer literal."));}
+0[xb][a-zA-Z0-9]*	{lexical_error(yylloc.first_line, yylloc.fist_column, yytext + string(" is not a valid integer literal."));}
 
 and 	{return AND;}
 bool 	{return BOOL;}
@@ -106,7 +108,7 @@ while 	{return WHILE;}
 \<\-	{return ASSIGN;}
 
 {whitespace}			{}
-.						{error(line,col,"illegal character: "+string(yytext)); col++;}
+.						{lexical_error(yylloc.first_line, yylloc.first_column,"illegal character: "+string(yytext));}
 
 %%
 std::string char2printable(char* x){
@@ -114,7 +116,7 @@ std::string char2printable(char* x){
 	stringstream ss;
 	if(c == 0)
 	{
-		lexical_error(line,col,"character '\\000' is illegal in this context.");
+		lexical_error(yylloc.first_line, yylloc.first_column,"character '\\000' is illegal in this context.");
 		return "";
 	}
 	if(c < 32){
@@ -127,4 +129,11 @@ std::string char2printable(char* x){
 	}
 	ss << c;
 	return ss.str();
+}
+void update_index(){
+	yylloc.first_line = yylineno;
+	yylloc.last_line = yylineno;
+	yylloc.first_column = yylloc.last_column;
+	yylloc.last_column = yyloc.last_column + yyleng;
+	
 }
