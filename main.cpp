@@ -20,7 +20,7 @@ using namespace std;
 list<Token> tokens;
 string filename;
 extern bool lex= false;
-bool parse =false;
+extern bool parse =false;
 bool check =false;
 bool err_lex =false;
 
@@ -31,7 +31,7 @@ int main(int argc, char** argv)
 {
 	try
 	{
-		if(argc < 2)
+		if(argc < 2 | argc > 5)
 		{
 			std::cout <<"Usage: \
 			./vsopc -lex <SOURCE-FILE>    # For lexical analysis\n\
@@ -42,7 +42,7 @@ int main(int argc, char** argv)
 		}
 		
 		
-		for(int i=1; i < argc-1;i++){
+		for(int i=1; i < argc-2;i++){
 			if(strcmp(argv[i], "-lex") == 0)
 				lex = true;
 			if(strcmp(argv[1], "-parse") == 0)
@@ -51,10 +51,10 @@ int main(int argc, char** argv)
 				check =true;
 		}
 
-		FILE* file = fopen(argv[2],"r");
+		FILE* file = fopen(argv[argc-1],"r");
 		if(!file)
 		{
-			std::cerr << "File Opening failed :" << argv[2]  << std::endl;
+			std::cerr << "File Opening failed :" << argv[argc-1]  << std::endl;
 			return -5;
 		}
 		filename = argv[2];
