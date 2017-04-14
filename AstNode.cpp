@@ -4,6 +4,7 @@
 
 AstNode::AstNode(Token *tokenVal)
 {
+	children = std::vector<AstNode*>();
 	token = tokenVal;
 	childrenNb = 0;
 }
@@ -17,6 +18,7 @@ void AstNode::addNode(AstNode *child)
 void AstNode::addNodes(std::vector<AstNode*>* nodes)
 {
 	children.insert(children.end(), nodes->begin(), nodes->end());
+	childrenNb += nodes->size();
 }
 
 std::vector<AstNode*> AstNode::getChildren()
@@ -26,15 +28,12 @@ std::vector<AstNode*> AstNode::getChildren()
 
 std::string AstNode::printTree()
 {
-	std::vector<AstNode*> children = getChildren();
-	int nbChildren = children.size();
-	
 	std::string print = "";
 	
 	if(token == NULL)
 	{
 		print = "[";
-		for(int i=0; i<nbChildren; ++i)
+		for(int i=0; i<childrenNb; ++i)
 		{
 			if(i != 0)
 			{
@@ -49,10 +48,10 @@ std::string AstNode::printTree()
 
 	enum Token::Type type = token->getType();
 	
-	if(type == Token::Block && nbChildren > 1)
+	if(type == Token::Block && childrenNb > 1)
 	{
 		print = "[";
-		for(int i=0; i<nbChildren; ++i)
+		for(int i=0; i<childrenNb; ++i)
 		{
 			if(i != 0)
 			{
@@ -68,7 +67,7 @@ std::string AstNode::printTree()
 	{
 		print += "Class(";
 		
-		for(int i=0; i<nbChildren; ++i)
+		for(int i=0; i<childrenNb; ++i)
 		{
 			if(i != 0)
 			{
@@ -93,7 +92,7 @@ std::string AstNode::printTree()
 			+ ", "
 			+ children[1]->printTree();
 
-		if(nbChildren == 3)
+		if(childrenNb == 3)
 		{
 			print += ", " + children[2]->printTree(); 
 		} 
@@ -105,7 +104,7 @@ std::string AstNode::printTree()
 	{
 		print += "Method(";
 		
-		for(int i=0; i<nbChildren; ++i)
+		for(int i=0; i<childrenNb; ++i)
 		{
 			if(i != 0)
 			{
@@ -159,7 +158,7 @@ std::string AstNode::printTree()
 			+ ", "
 			+ children[1]->printTree();
 
-		if(nbChildren == 3)
+		if(childrenNb == 3)
 		{
 			print += ", " + children[2]->printTree(); 
 		} 
@@ -181,7 +180,7 @@ std::string AstNode::printTree()
 			+ ", "
 			+ children[2]->printTree();
 
-		if(nbChildren == 4)
+		if(childrenNb == 4)
 		{
 			print += ", " + children[3]->printTree(); 
 		} 
@@ -202,9 +201,9 @@ std::string AstNode::printTree()
 	else if(type == Token::BinOp)
 	{
 		print += "BinOp(" 
-			+ children[0]->printTree() + ", " 
-			+ children[1]->printTree() + ", "
-			+ children[2]->printTree() + ")";
+			+ token->getStringValue() + ", " 
+			+ children[0]->printTree() + ", "
+			+ children[1]->printTree() + ")";
 	}
 	
 	else if(type == Token::Call)

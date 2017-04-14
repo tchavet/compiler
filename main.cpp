@@ -17,14 +17,13 @@ extern "C" FILE* yyin;
 
 using namespace std;
 
-list<Token> tokens;
 string filename;
 AstNode* root= new AstNode(NULL);
 bool lex= false;
 bool parse =false;
 bool check =false;
 bool err_lex =false;
-
+bool err_parse = false;
 
 
 
@@ -79,6 +78,9 @@ int main(int argc, char** argv)
 		return -4;
 	}
 
+	if (err_parse)
+		return -6;
+
 	return 0;
 }
 
@@ -89,4 +91,13 @@ void lexical_error(int line, int col, string message="")
 		cerr << ": " << message;
 	cerr << endl;
 	err_lex=true;
+}
+
+void syntax_error(int line, int col, string message="")
+{
+	cerr << filename << ":" << line << ":" << col << ": syntax error";
+	if(message != "")
+		cerr << ": " << message;
+	cerr << endl;
+	err_parse=true;
 }

@@ -10,6 +10,7 @@ extern AstNode *root;
 
 struct YYLTYPE;
 static void yyerror(const char*);
+void syntax_error(int line, int col, std::string message="");
 
 %}
 
@@ -64,16 +65,15 @@ static void yyerror(const char*);
 %token ASSIGN
 
 /*Precedence options*/
-%left DOT
-%right POW
-%right ISNULL 
-%left TIMES DIV
-%left PLUS MINUS
-%right 	LOWER LOWER_EQ EQUAL 
-/*TO CHECK NON ASSOCIATIVE*/
-%right NOT
-%left AND
 %right ASSIGN
+%left AND
+%right NOT
+%nonassoc LOWER LOWER_EQ EQUAL 
+%left PLUS MINUS
+%left TIMES DIV
+%right ISNULL 
+%right POW
+%left DOT
 
 %type <node> class field method type formal block expr args arg literal boolean_literal formals formalopt argopt
 %type <nodeList> classopt field_method class_body expropt
@@ -222,9 +222,9 @@ formals:
 	}
 
 formalopt:
-	formalopt COMMA formal
+	formalopt formal COMMA
 	{
-		$1->addNode($3);
+		$1->addNode($2);
 		$$ = $1;
 	}
 |	%empty
@@ -244,10 +244,9 @@ formal:
 block:
 	LBRACE expropt expr RBRACE
 	{
-		std::cout << "entring block" <<std::endl;
 		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::Block));
-		node->addNode($3);
 		node->addNodes($2);
+		node->addNode($3);
 		$$ = node;
 	}
 
@@ -263,11 +262,7 @@ expropt:
 	}
 
 expr:
-	block
-	{
-		$$ = $1;
-	}
-|	IF expr THEN expr
+	IF expr THEN expr
 	{
 		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::If));
 		node->addNode($2);
@@ -321,7 +316,7 @@ expr:
 	}
 |	MINUS expr
 	{
-		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::UnOp, "minus"));
+		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::UnOp, "-"));
 		node->addNode($2);
 		$$ = node;
 	}
@@ -329,6 +324,13 @@ expr:
 	{
 		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::UnOp, "isnull"));
 		node->addNode($2);
+		$$ = node;
+	}
+|	expr AND expr 
+	{
+		AstNode* node = new AstNode(new Token(@2.first_line, @2.first_column, Token::BinOp, "and"));
+		node->addNode($1);
+		node->addNode($3);
 		$$ = node;
 	}
 |	expr EQUAL expr 
@@ -390,7 +392,7 @@ expr:
 |	OBJECT_ID LPAR args RPAR
 	{
 		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::Call));
-		node->addNode(new AstNode(new Token(@1.first_line, @1.first_column, Token::Expr, "self")));
+		node->addNode(new AstNode(new Token(@1.first_line, @1.first_column, Token::Object_id, "self")));
 		node->addNode(new AstNode(new Token(@1.first_line, @1.first_column, Token::Object_id, *$1)));
 		node->addNode($3);
 		$$ = node;
@@ -398,7 +400,7 @@ expr:
 |	expr DOT OBJECT_ID LPAR args RPAR
 	{
 		AstNode* node = new AstNode(new Token(@1.first_line, @1.first_column, Token::Call));
-		node->addNode(new AstNode(new Token(@1.first_line, @1.first_column, Token::Expr)));
+		node->addNode($1);
 		node->addNode(new AstNode(new Token(@3.first_line, @3.first_column, Token::Object_id, *$3)));
 		node->addNode($5);
 		$$ = node;
@@ -418,9 +420,13 @@ expr:
 	{
 		$$ = $1;
 	}
-|	LBRACE expr RBRACE
+|	LPAR expr RPAR
 	{
 		$$ = $2;
+	}
+|	block
+	{
+		$$ = $1;
 	}
 
 args:
@@ -435,9 +441,9 @@ args:
 	}
 
 argopt:
-	  argopt COMMA arg
+	  argopt arg COMMA
 	  {
-		$1->addNode($3);
+		$1->addNode($2);
 		$$ = $1;
 	  }
 | %empty
@@ -477,6 +483,6 @@ boolean_literal:
 
 static void yyerror(const char *s)
 {
-	std::cerr << "an error occured at line" << yylloc.first_line << " column " <<  yylloc.first_column << " : " << s << std::endl;
+	syntax_error(yylloc.first_line, yylloc.first_column);
 }
 
