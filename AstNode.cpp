@@ -2,6 +2,8 @@
 #include <string>
 #include <sstream>
 
+#include <iostream>
+
 AstNode::AstNode(Token *tokenVal)
 {
 	children = std::vector<AstNode*>();
@@ -26,23 +28,23 @@ std::vector<AstNode*> AstNode::getChildren()
 	return children;
 }
 
-std::string AstNode::printTree()
+std::string AstNode::printTree(int tabs)
 {
 	std::string print = "";
+	std::string tabsStr(tabs*2, ' ');
+	std::string tab = "  ";
 	
 	if(token == NULL)
 	{
-		print = "[";
+		print += "[\n";
 		for(int i=0; i<childrenNb; ++i)
 		{
-			if(i != 0)
-			{
-				print += ", ";
-			}
-	
-			print += children[i]->printTree();
+			print += tabsStr + tab + children[i]->printTree(tabs+1);
+			if(i != childrenNb-1)
+				print += ",";
+			print += "\n";
 		}
-		print += "]";
+		print += tabsStr + "]";
 		return print;
 	}
 
@@ -50,34 +52,23 @@ std::string AstNode::printTree()
 	
 	if(type == Token::Block && childrenNb > 1)
 	{
-		print = "[";
+		print += "[\n";
 		for(int i=0; i<childrenNb; ++i)
 		{
-			if(i != 0)
-			{
-				print += ", ";
-			}
-	
-			print += children[i]->printTree();
+			print += tabsStr + tab + children[i]->printTree(tabs+1);
+			if(i != childrenNb-1)
+				print += ",";
+			print += "\n";
 		}
-		print += "]";
+		print += tabsStr + "]";
 	}
 	
 	else if(type == Token::Class)
 	{
-		print += "Class(";
-		
-		for(int i=0; i<childrenNb; ++i)
-		{
-			if(i != 0)
-			{
-				print += ", ";
-			}
-	
-			print += children[i]->printTree();
-		}
-		print += ")";
-			
+		print += "Class(" + children[0]->printTree() + "," + children[1]->printTree() + ",\n"
+			+ tabsStr + tab + children[2]->printTree(tabs+1) + ",\n"
+			+ tabsStr + tab + children[3]->printTree(tabs+1) + "\n"
+			+ tabsStr + ")";
 	}
 
 	else if(type == Token::Type)
@@ -87,33 +78,25 @@ std::string AstNode::printTree()
 
 	else if(type == Token::Field)
 	{
-		print += "Field("
-			+ children[0]->printTree() 
-			+ ", "
-			+ children[1]->printTree();
+		print += "Field(" + children[0]->printTree() + "," + children[1]->printTree();
 
 		if(childrenNb == 3)
 		{
-			print += ", " + children[2]->printTree(); 
+			print += ",\n"
+				+ tabsStr + tab + children[2]->printTree(tabs+1); 
 		} 
 
-		print += ")";
+		print += "\n"
+			+ tabsStr + ")";
 	}
 
 	else if(type == Token::Method)
 	{
-		print += "Method(";
-		
-		for(int i=0; i<childrenNb; ++i)
-		{
-			if(i != 0)
-			{
-				print += ", ";
-			}
-	
-			print += children[i]->printTree();
-		}
-		print += ")"; 
+		print += "Method(" + children[0]->printTree() + ",\n"
+			+ tabsStr + tab + children[1]->printTree(tabs+1) + ",\n"
+			+ tabsStr + tab + children[2]->printTree() + ",\n"
+			+ tabsStr + tab + children[3]->printTree(tabs+1) + "\n"
+			+ tabsStr + ")";
 	}
 	else if(type == Token::Object)
 	{
@@ -136,11 +119,6 @@ std::string AstNode::printTree()
 		print += token->getStringValue();
 	}	
 
-	else if(type == Token::Expr)
-	{
-		
-	}
-	
 	else if(type == Token::Formal)
 	{
 		print += children[0]->printTree() + " : " + children[1]->printTree();
@@ -148,76 +126,82 @@ std::string AstNode::printTree()
 
 	else if(type == Token::Block)
 	{
-		print += children[0]->printTree();
+		print += children[0]->printTree(tabs);
 	}
 	
 	else if(type == Token::If)
 	{
-		print += "If("
-			+ children[0]->printTree()
-			+ ", "
-			+ children[1]->printTree();
+		print += "If(\n"
+			+ tabsStr + tab + children[0]->printTree(tabs+1) + ",\n"
+			+ tabsStr + tab + children[1]->printTree(tabs+1);
 
 		if(childrenNb == 3)
 		{
-			print += ", " + children[2]->printTree(); 
+			print += ",\n"
+				+ tabsStr + tab + children[2]->printTree(tabs+1); 
 		} 
 
-		print += ")";
+		print += "\n"
+			+ tabsStr + ")";
 	}
 	
 	else if(type == Token::While)
 	{
-		print += "While(" + children[0]->printTree() + ", " + children[1]->printTree() + ")";
+		print += "While(\n"
+			+ tabsStr + tab + children[0]->printTree(tabs+1) + ",\n"
+			+ tabsStr + tab + children[1]->printTree(tabs+1) + "\n"
+			+ tabsStr + ")";
 	}	
 
 	else if(type == Token::Let)
 	{
-		print += "Let("
-			+ children[0]->printTree()
-			+ ", "
-			+ children[1]->printTree()
-			+ ", "
-			+ children[2]->printTree();
+		print += "Let(" + children[0]->printTree() + children[1]->printTree() + ",\n"
+			+ tabsStr + tab + children[2]->printTree(tabs+1);
 
 		if(childrenNb == 4)
 		{
-			print += ", " + children[3]->printTree(); 
+			print += ",\n"
+				+ tabsStr + tab + children[3]->printTree(tabs+1); 
 		} 
 
-		print += ")";
+		print += "\n"
+			+ tabsStr + ")";
 	}
 	
 	else if(type == Token::Assign)
 	{
-		print += "Assign(" + children[0]->printTree() + ", " + children[1]->printTree() + ")";
+		print += "Assign(" + children[0]->printTree() + ",\n"
+			+ tabsStr + tab + children[1]->printTree(tabs+1) + "\n"
+			+ tabsStr + ")";
 	}	
 
 	else if(type == Token::UnOp)
 	{
-		print += "UnOp(" + token->getStringValue() + ", " + children[0]->printTree() + ")"; 
+		print += "UnOp(" + token->getStringValue() + ",\n"
+			+ tabsStr + tab + children[0]->printTree(tabs+1) + "\n"
+			+ tabsStr + ")"; 
 	}
 	
 	else if(type == Token::BinOp)
 	{
-		print += "BinOp(" 
-			+ token->getStringValue() + ", " 
-			+ children[0]->printTree() + ", "
-			+ children[1]->printTree() + ")";
+		print += "BinOp(" + token->getStringValue() + ",\n" 
+			+ tabsStr + tab + children[0]->printTree(tabs+1) + ",\n"
+			+ tabsStr + tab + children[1]->printTree(tabs+1) + "\n"
+			+ tabsStr + ")";
 	}
 	
 	else if(type == Token::Call)
 	{
-		print += "Call(" 
-			+ children[0]->printTree() + ", " 
-			+ children[1]->printTree() + ", " 
-			+ children[2]->printTree() + ")";
+		print += "Call(\n" 
+			+ tabsStr + tab + children[0]->printTree(tabs+1) + ",\n" 
+			+ tabsStr + tab + children[1]->printTree(tabs+1) + ",\n" 
+			+ tabsStr + tab + children[2]->printTree(tabs+1) + "\n"
+			+ tabsStr + ")";
 	}
 	
 	else if(type == Token::New)
 	{
-		print += "New("
-			+ children[0]->printTree() + ")";
+		print += "New(" + children[0]->printTree() + ")";
 	}
 	
 	else if(type == Token::Arg)
