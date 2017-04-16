@@ -10,7 +10,7 @@ all:    vsopc
 vsopc:clean
 	flex -o vsop.yy.cpp vsop.lex 
 	bison  -d vsop.y -b vsop
-	$(CC)  *.c* -o vsopc  $(CCFLAGS)
+	$(CC)  *.c* nodes/*.cpp -o vsopc  $(CCFLAGS)
 
 
 
@@ -40,5 +40,6 @@ make_archive: clean
 	cp *.hpp vsopcompiler/
 	cp *.lex vsopcompiler/
 	cp *.y vsopcompiler/
+	cp -r /nodes vsopcompiler/
 	tar -cJf vsopcompiler.tar.xz vsopcompiler
 	rm -r vsopcompiler

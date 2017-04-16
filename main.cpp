@@ -5,27 +5,44 @@
 #include <iostream>
 #include <cstdio>
 #include <list>
-#include "AstNode.hpp"
 #include <vector>
+#include <utility>
+
+#include "nodes/AstNode.hpp"
+#include "nodes/AssignNode.hpp"
+#include "nodes/BinOpNode.hpp"
+#include "nodes/BlockNode.hpp"
+#include "nodes/BoolLitNode.hpp"
+#include "nodes/CallNode.hpp"
+#include "nodes/ClassNode.hpp"
+#include "nodes/FieldNode.hpp"
+#include "nodes/FormalNode.hpp"
+#include "nodes/IfNode.hpp"
+#include "nodes/IntLitNode.hpp"
+#include "nodes/LetNode.hpp"
+#include "nodes/MethodNode.hpp"
+#include "nodes/NewNode.hpp"
+#include "nodes/ObjectIdNode.hpp"
+#include "nodes/ProgramNode.hpp"
+#include "nodes/StringLitNode.hpp"
+#include "nodes/UnOpNode.hpp"
+#include "nodes/WhileNode.hpp"
+
 #include "vsop.tab.h"
 
 extern "C"  int yylex();
-
-#include "Token.hpp"
 
 extern "C" FILE* yyin;
 
 using namespace std;
 
 string filename;
-AstNode* root= new AstNode(NULL);
+ProgramNode* root= new ProgramNode();
 bool lex= false;
 bool parse =false;
 bool check =false;
 bool err_lex =false;
 bool err_parse = false;
-
-
 
 int main(int argc, char** argv)
 {

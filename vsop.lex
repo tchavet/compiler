@@ -15,7 +15,28 @@ STR_BSNL	"\\"{EOL}{whitespace}*
 	#include <sstream>
 	#include <utility>
 	#include <vector>
-	#include "AstNode.hpp"
+	#include <utility>
+
+	#include "nodes/AstNode.hpp"
+	#include "nodes/AssignNode.hpp"
+	#include "nodes/BinOpNode.hpp"
+	#include "nodes/BlockNode.hpp"
+	#include "nodes/BoolLitNode.hpp"
+	#include "nodes/CallNode.hpp"
+	#include "nodes/ClassNode.hpp"
+	#include "nodes/FieldNode.hpp"
+	#include "nodes/FormalNode.hpp"
+	#include "nodes/IfNode.hpp"
+	#include "nodes/IntLitNode.hpp"
+	#include "nodes/LetNode.hpp"
+	#include "nodes/MethodNode.hpp"
+	#include "nodes/NewNode.hpp"
+	#include "nodes/ObjectIdNode.hpp"
+	#include "nodes/ProgramNode.hpp"
+	#include "nodes/StringLitNode.hpp"
+	#include "nodes/UnOpNode.hpp"
+	#include "nodes/WhileNode.hpp"
+
 	#include "vsop.tab.h"
 
 	#define YY_DECL extern "C" int yylex() // Use flex with c++
@@ -37,9 +58,9 @@ STR_BSNL	"\\"{EOL}{whitespace}*
 
 %%
 
-"\""				{opening_col = yylloc.first_column; opening_line = yylloc.first_line; str = "\""; BEGIN(STR_LIT);}
+"\""				{opening_col = yylloc.first_column; opening_line = yylloc.first_line; str = ""; BEGIN(STR_LIT);}
 <STR_LIT>"\\\""		{str += "\\\"";}
-<STR_LIT>"\""		{str += "\""; yylval.strval = new string(str); print("string-literal"); BEGIN(INITIAL);return STRING_LIT;}
+<STR_LIT>"\""		{yylval.strval = new string(str); print("string-literal"); BEGIN(INITIAL);return STRING_LIT;}
 <STR_LIT>{XHH}		{str +=  yytext;}
 <STR_LIT>"\\b"		{str +=  "\\x08";}
 <STR_LIT>"\\t"		{str +=  "\\x09";}
