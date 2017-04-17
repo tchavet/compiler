@@ -1,8 +1,7 @@
 #include "MethodNode.hpp"
 
-MethodNode::MethodNode(int line, int column, std::string name, std::vector<FormalNode*> params, std::string returnType, BlockNode* body)
+MethodNode::MethodNode(int line, int column, std::string name, std::vector<FormalNode*> params, std::string returnType, BlockNode* body) : AstNode(line, column)
 {
-	AstNode(line, column);
 	this->name = name;
 	this->params = params;
 	this->returnType = returnType;

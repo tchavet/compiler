@@ -11,6 +11,7 @@ public:
 	std::string printTree(int tabsNb=0);
 	void addClass(ClassNode* classNode);
 	void addClasses(std::vector<ClassNode*>* classNodes);
+	std::vector<ClassNode*> getClasses();
 
 protected:
 	std::vector<ClassNode*> classes;

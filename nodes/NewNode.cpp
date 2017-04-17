@@ -1,8 +1,7 @@
 #include "NewNode.hpp"
 
-NewNode::NewNode(int line, int column, std::string type)
+NewNode::NewNode(int line, int column, std::string type) : AstNode(line, column)
 {
-	AstNode(line, column);
 	this->type = type;
 }
 

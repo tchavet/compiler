@@ -1,8 +1,7 @@
 #include "BoolLitNode.hpp"
 
-BoolLitNode::BoolLitNode(int line, int column, std::string value)
+BoolLitNode::BoolLitNode(int line, int column, std::string value) : AstNode(line, column)
 {
-	AstNode(line, column);
 	this->value = value;
 }
 

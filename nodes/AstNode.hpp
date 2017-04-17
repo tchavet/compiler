@@ -9,6 +9,8 @@ class AstNode
 public:
 	AstNode(int line=0, int column=0);
 	virtual std::string printTree(int tabsNb=0) {};
+	int getLine();
+	int getColumn();
 
 protected:
 	std::string tabs(int tabsNb);

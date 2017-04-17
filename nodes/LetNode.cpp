@@ -1,8 +1,7 @@
 #include "LetNode.hpp"
 
-LetNode::LetNode(int line, int column, std::string name, std::string type, AstNode* scope, AstNode* init)
+LetNode::LetNode(int line, int column, std::string name, std::string type, AstNode* scope, AstNode* init) : AstNode(line, column)
 {
-	AstNode(line, column);
 	this->name = name;
 	this->type = type;
 	this->scope = scope;

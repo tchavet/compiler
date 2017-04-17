@@ -1,9 +1,8 @@
 #include "IntLitNode.hpp"
 #include <sstream>
 
-IntLitNode::IntLitNode(int line, int column, int value)
+IntLitNode::IntLitNode(int line, int column, int value) : AstNode(line, column)
 {
-	AstNode(line, column);
 	this->value = value;
 }
 

@@ -1,8 +1,7 @@
 #include "AssignNode.hpp"
 
-AssignNode::AssignNode(int line, int column, std::string name, AstNode* expr)
+AssignNode::AssignNode(int line, int column, std::string name, AstNode* expr) : AstNode(line, column)
 {
-	AstNode(line, column);
 	this->name = name;
 	this->expr = expr;
 }

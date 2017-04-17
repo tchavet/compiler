@@ -19,3 +19,8 @@ std::string ProgramNode::printTree(int tabsNb)
 {
 	return printList<ClassNode>(tabsNb, classes);
 }
+
+std::vector<ClassNode*> ProgramNode::getClasses()
+{
+	return classes;
+}

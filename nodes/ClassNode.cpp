@@ -1,8 +1,7 @@
 #include "ClassNode.hpp"
 
-ClassNode::ClassNode(int line, int column, std::string name, std::string parent)
+ClassNode::ClassNode(int line, int column, std::string name, std::string parent) : AstNode(line, column)
 {
-	AstNode(line, column);
 	this->name = name;
 	this->parent = parent;
 	fields = std::vector<FieldNode*>();
@@ -27,6 +26,16 @@ void ClassNode::addMethod(MethodNode* method)
 void ClassNode::addMethods(std::vector<MethodNode*>* methods)
 {
 	this->methods.insert(this->methods.end(), methods->begin(), methods->end());
+}
+
+std::string ClassNode::getName()
+{
+	return name;
+}
+
+std::string ClassNode::getParent()
+{
+	return parent;
 }
 
 std::string ClassNode::printTree(int tabsNb)

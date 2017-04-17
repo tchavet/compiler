@@ -2,8 +2,6 @@
 #include <string>
 #include <sstream>
 
-#include <iostream>
-
 AstNode::AstNode(int line, int column)
 {
 	this->line = line;
@@ -17,4 +15,14 @@ std::string AstNode::tabs(int tabsNb)
 	for (int i=0; i<tabsNb; i++)
 		tabsStr += tab;
 	return tabsStr;
+}
+
+int AstNode::getLine()
+{
+	return line;
+}
+
+int AstNode::getColumn()
+{
+	return column;
 }

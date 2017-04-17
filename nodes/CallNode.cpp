@@ -1,8 +1,7 @@
 #include "CallNode.hpp"
 
-CallNode::CallNode(int line, int column, AstNode* objExpr, std::string name, std::vector<AstNode*> args)
+CallNode::CallNode(int line, int column, AstNode* objExpr, std::string name, std::vector<AstNode*> args) : AstNode(line, column)
 {
-	AstNode(line, column);
 	this->objExpr = objExpr;
 	this->name = name;
 	this->args = args;

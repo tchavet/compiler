@@ -1,8 +1,7 @@
 #include "FieldNode.hpp"
 
-FieldNode::FieldNode(int line, int column, std::string name, std::string type, AstNode* init)
+FieldNode::FieldNode(int line, int column, std::string name, std::string type, AstNode* init) : AstNode(line, column)
 {
-	AstNode(line, column);
 	this->name = name;
 	this->type = type;
 	this->init = init;

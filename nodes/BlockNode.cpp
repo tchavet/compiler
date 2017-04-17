@@ -1,8 +1,7 @@
 #include "BlockNode.hpp"
 
-BlockNode::BlockNode(int line, int column)
+BlockNode::BlockNode(int line, int column) : AstNode(line, column)
 {
-	AstNode(line, column);
 	expressions = std::vector<AstNode*>();
 }
 

@@ -10,7 +10,7 @@ all:    vsopc
 vsopc:clean
 	flex -o vsop.yy.cpp vsop.lex 
 	bison  -d vsop.y -b vsop
-	$(CC)  *.c* nodes/*.cpp -o vsopc  $(CCFLAGS)
+	$(CC)  *.c* nodes/*.cpp semantic/*.cpp -o vsopc  $(CCFLAGS)
 
 
 

@@ -28,6 +28,8 @@
 #include "nodes/UnOpNode.hpp"
 #include "nodes/WhileNode.hpp"
 
+#include "semantic/Semantic.hpp"
+
 #include "vsop.tab.h"
 
 extern "C"  int yylex();
@@ -46,6 +48,7 @@ bool err_parse = false;
 
 int main(int argc, char** argv)
 {
+	bool err_sem = false;
 	try
 	{
 		if(argc < 2 | argc > 5)
@@ -68,16 +71,19 @@ int main(int argc, char** argv)
 				check =true;
 		}
 
-		FILE* file = fopen(argv[argc-1],"r");
+		filename = argv[argc-1];
+		FILE* file = fopen(filename.c_str(),"r");
 		if(!file)
 		{
 			std::cerr << "File Opening failed :" << argv[argc-1]  << std::endl;
 			return -5;
 		}
-		filename = argv[2];
 		yyin = file;
 
 		yyparse();
+
+		Semantic semantic(filename, root);
+		err_sem = semantic.classesCheck();
 		
 		if (parse)
 		{
@@ -97,6 +103,9 @@ int main(int argc, char** argv)
 
 	if (err_parse)
 		return -6;
+
+	if (err_sem)
+		return -7;
 
 	return 0;
 }

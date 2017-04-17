@@ -1,8 +1,7 @@
 #include "BinOpNode.hpp"
 
-BinOpNode::BinOpNode(int line, int column, std::string op, AstNode* leftExpr, AstNode* rightExpr)
+BinOpNode::BinOpNode(int line, int column, std::string op, AstNode* leftExpr, AstNode* rightExpr) : AstNode(line, column)
 {
-	AstNode(line, column);
 	this->op = op;
 	this->leftExpr = leftExpr;
 	this->rightExpr = rightExpr;

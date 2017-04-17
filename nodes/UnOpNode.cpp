@@ -1,8 +1,7 @@
 #include "UnOpNode.hpp"
 
-UnOpNode::UnOpNode(int line, int column, std::string op, AstNode* expr)
+UnOpNode::UnOpNode(int line, int column, std::string op, AstNode* expr) : AstNode(line, column)
 {
-	AstNode(line, column);
 	this->op = op;
 	this->expr = expr;
 }

@@ -1,8 +1,7 @@
 #include "IfNode.hpp"
 
-IfNode::IfNode(int line, int column, AstNode* cond, AstNode* then, AstNode* els)
+IfNode::IfNode(int line, int column, AstNode* cond, AstNode* then, AstNode* els) : AstNode(line, column)
 {
-	AstNode(line, column);
 	this->cond = cond;
 	this->then = then;
 	this->els = els;

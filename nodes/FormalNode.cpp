@@ -1,8 +1,7 @@
 #include "FormalNode.hpp"
 
-FormalNode::FormalNode(int line, int column, std::string name, std::string type)
+FormalNode::FormalNode(int line, int column, std::string name, std::string type) : AstNode(line, column)
 {
-	AstNode(line, column);
 	this->name = name;
 	this->type = type;
 }

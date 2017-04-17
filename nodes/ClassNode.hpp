@@ -13,6 +13,8 @@ public:
 	void addFields(std::vector<FieldNode*>* fields);
 	void addMethod(MethodNode* method);
 	void addMethods(std::vector<MethodNode*>* methods);
+	std::string getName();
+	std::string getParent();
 
 protected:
 	std::string name;

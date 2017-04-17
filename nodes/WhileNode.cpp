@@ -1,8 +1,7 @@
 #include "WhileNode.hpp"
 
-WhileNode::WhileNode(int line, int column, AstNode* cond, AstNode* body)
+WhileNode::WhileNode(int line, int column, AstNode* cond, AstNode* body) : AstNode(line, column)
 {
-	AstNode(line, column);
 	this->cond = cond;
 	this->body = body;
 }
