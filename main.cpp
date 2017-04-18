@@ -54,10 +54,10 @@ int main(int argc, char** argv)
 		if(argc < 2 | argc > 5)
 		{
 			std::cout <<"Usage: \
-			./vsopc -lex <SOURCE-FILE>    # For lexical analysis\n\
-			./vsopc -parse <SOURCE-FILE>  # For syntactic analysis\n\
-			./vsopc -check <SOURCE-FILE>  # For semantic analysis\n\
-			./vsopc <SOURCE-FILE>         # To compile to a native executable\n";
+			./vsopc [-lex] [-parse] [-check] <SOURCE-FILE> \n\
+			# For lexical analysis use -lex\n\
+			# For syntactic analysis -parse\n\
+			# For semantic analysis -check\n\
 			return -1;
 		}
 		
