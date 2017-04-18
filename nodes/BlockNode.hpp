@@ -1,17 +1,18 @@
 #ifndef BLOCKNODE_H
 #define BLOCKNODE_H
 
-#include "AstNode.hpp"
+#include "ExprNode.hpp"
 
-class BlockNode : public AstNode
+class BlockNode : public ExprNode
 {
 public:
 	BlockNode(int line, int column);
 	std::string printTree(int tabsNb=0);
-	void addExpression(AstNode* expression);
-	void addExpressions(std::vector<AstNode*>* expressions);
+	void addExpression(ExprNode* expression);
+	void addExpressions(std::vector<ExprNode*>* expressions);
+	ExprType* getType();
 
 protected:
-	std::vector<AstNode*> expressions;
+	std::vector<ExprNode*> expressions;
 };
 #endif

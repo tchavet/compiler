@@ -30,20 +30,18 @@ bool Semantic::classesCheck()
 			error = true;
 		}
 
-		if (types.defined(classes[i]->getName()))
+		if (!types.add(classes[i]->getName(), classes[i]))
 		{
 			semanticError(classes[i]->getLine(), classes[i]->getColumn(), "class " + classes[i]->getName() + " already exists");
 			error = true;
 		}
-		else
-			types.add(classes[i]->getName(), classes[i]);
 	}
 	return error;
 }
 
 bool Semantic::scopeCheck()
 {
-
+	
 }
 
 bool Semantic::typeCheck()

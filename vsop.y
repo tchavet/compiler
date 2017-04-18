@@ -5,6 +5,7 @@
 #include <utility>
 
 #include "nodes/AstNode.hpp"
+#include "nodes/ExprNode.hpp"
 #include "nodes/AssignNode.hpp"
 #include "nodes/BinOpNode.hpp"
 #include "nodes/BlockNode.hpp"
@@ -43,6 +44,8 @@ void syntax_error(int line, int col, std::string message="");
 	std::string* strval;
 	AstNode* node;
 	std::vector<AstNode*>* nodeVector;
+	ExprNode* exprNode;
+	std::vector<ExprNode*>* exprNodeVector;
 	ClassNode* classNode;
 	std::vector<ClassNode*>* classVect;
 	std::pair<std::vector<FieldNode*>*, std::vector<MethodNode*>*>* fieldMethod;
@@ -113,9 +116,8 @@ void syntax_error(int line, int col, std::string message="");
 %type <formalNode> formal
 %type <formalVect> formals formalopt
 %type <blockNode> block
-
-%type <node> expr arg literal boolean_literal
-%type <nodeVector> expropt args argopt
+%type <exprNode> expr arg literal boolean_literal
+%type <exprNodeVector> expropt args argopt
 %type <fieldMethod> field_method class_body
 
 %start program
@@ -266,7 +268,7 @@ expropt:
 	}
 |	%empty
 	{
-		$$ = new std::vector<AstNode*>();
+		$$ = new std::vector<ExprNode*>();
 	}
 
 expr:
@@ -379,7 +381,7 @@ args:
 	}
 | %empty
 	{
-		$$ = new std::vector<AstNode*>();
+		$$ = new std::vector<ExprNode*>();
 	}
 
 argopt:
@@ -390,7 +392,7 @@ argopt:
 	  }
 | %empty
 	{
-		$$ = new std::vector<AstNode*>();
+		$$ = new std::vector<ExprNode*>();
 	}
 arg:
    expr

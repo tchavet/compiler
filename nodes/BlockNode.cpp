@@ -1,21 +1,25 @@
 #include "BlockNode.hpp"
 
-BlockNode::BlockNode(int line, int column) : AstNode(line, column)
+BlockNode::BlockNode(int line, int column) : ExprNode(line, column)
 {
-	expressions = std::vector<AstNode*>();
+	expressions = std::vector<ExprNode*>();
 }
 
-void BlockNode::addExpression(AstNode* expression)
+void BlockNode::addExpression(ExprNode* expression)
 {
 	expressions.push_back(expression);
 }
 
-void BlockNode::addExpressions(std::vector<AstNode*>* expressions)
+void BlockNode::addExpressions(std::vector<ExprNode*>* expressions)
 {
 	this->expressions.insert(this->expressions.end(), expressions->begin(), expressions->end());
 }
 
 std::string BlockNode::printTree(int tabsNb)
 {
-	return printList<AstNode>(tabsNb, expressions);
+	return printList<ExprNode>(tabsNb, expressions);
+}
+
+ExprType* BlockNode::getType()
+{
 }

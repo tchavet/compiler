@@ -1,16 +1,17 @@
 #ifndef WHILENODE_H
 #define WHILENODE_H
 
-#include "AstNode.hpp"
+#include "ExprNode.hpp"
 
-class WhileNode : public AstNode
+class WhileNode : public ExprNode
 {
 public:
-	WhileNode(int line, int column, AstNode* cond, AstNode* body);
+	WhileNode(int line, int column, ExprNode* cond, ExprNode* body);
 	std::string printTree(int tabsNb=0);
+	ExprType* getType();
 
 protected:
-	AstNode* cond;
-	AstNode* body;
+	ExprNode* cond;
+	ExprNode* body;
 };
 #endif

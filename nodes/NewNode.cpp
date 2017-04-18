@@ -1,6 +1,6 @@
 #include "NewNode.hpp"
 
-NewNode::NewNode(int line, int column, std::string type) : AstNode(line, column)
+NewNode::NewNode(int line, int column, std::string type) : ExprNode(line, column)
 {
 	this->type = type;
 }
@@ -8,4 +8,8 @@ NewNode::NewNode(int line, int column, std::string type) : AstNode(line, column)
 std::string NewNode::printTree(int tabsNb)
 {
 	return "New(" + type + ")";
+}
+
+ExprType* NewNode::getType()
+{
 }

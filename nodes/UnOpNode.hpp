@@ -1,16 +1,17 @@
 #ifndef UNOPNODE_H
 #define UNOPNODE_H
 
-#include "AstNode.hpp"
+#include "ExprNode.hpp"
 
-class UnOpNode : public AstNode
+class UnOpNode : public ExprNode
 {
 public:
-	UnOpNode(int line, int column, std::string op, AstNode* expr);
+	UnOpNode(int line, int column, std::string op, ExprNode* expr);
 	std::string printTree(int tabsNb=0);
+	ExprType* getType();
 
 protected:
 	std::string op;
-	AstNode* expr;
+	ExprNode* expr;
 };
 #endif

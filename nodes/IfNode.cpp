@@ -1,6 +1,6 @@
 #include "IfNode.hpp"
 
-IfNode::IfNode(int line, int column, AstNode* cond, AstNode* then, AstNode* els) : AstNode(line, column)
+IfNode::IfNode(int line, int column, ExprNode* cond, ExprNode* then, ExprNode* els) : ExprNode(line, column)
 {
 	this->cond = cond;
 	this->then = then;
@@ -20,4 +20,8 @@ std::string IfNode::printTree(int tabsNb)
 	print += "\n"
 		+ tabs(tabsNb) + ")";
 	return print;
+}
+
+ExprType* IfNode::getType()
+{
 }

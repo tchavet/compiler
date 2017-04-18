@@ -9,7 +9,7 @@ Scope::Scope(Scope* parent)
 
 bool Scope::add(std::string id, AstNode* node)
 {
-	if (table.count(id))
+	if (defined(id))
 		return false;
 	table.insert({{id, node}});
 }

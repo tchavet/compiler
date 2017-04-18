@@ -1,6 +1,6 @@
 #include "ObjectIdNode.hpp"
 
-ObjectIdNode::ObjectIdNode(int line, int column, std::string name) : AstNode(line, column)
+ObjectIdNode::ObjectIdNode(int line, int column, std::string name) : ExprNode(line, column)
 {
 	this->name = name;
 }
@@ -8,4 +8,8 @@ ObjectIdNode::ObjectIdNode(int line, int column, std::string name) : AstNode(lin
 std::string ObjectIdNode::printTree(int tabsNb)
 {
 	return name;
+}
+
+ExprType* ObjectIdNode::getType()
+{
 }

@@ -1,6 +1,6 @@
 #include "LetNode.hpp"
 
-LetNode::LetNode(int line, int column, std::string name, std::string type, AstNode* scope, AstNode* init) : AstNode(line, column)
+LetNode::LetNode(int line, int column, std::string name, std::string type, ExprNode* scope, ExprNode* init) : ExprNode(line, column)
 {
 	this->name = name;
 	this->type = type;
@@ -18,4 +18,8 @@ std::string LetNode::printTree(int tabsNb)
 	print += tabs(tabsNb+1) + scope->printTree(tabsNb+1) + "\n"
 		+ tabs(tabsNb) + ")";
 	return print;
+}
+
+ExprType* LetNode::getType()
+{
 }

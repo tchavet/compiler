@@ -1,17 +1,18 @@
 #ifndef IFNODE_H
 #define IFNODE_H
 
-#include "AstNode.hpp"
+#include "ExprNode.hpp"
 
-class IfNode : public AstNode
+class IfNode : public ExprNode
 {
 public:
-	IfNode(int line, int column, AstNode* cond, AstNode* then, AstNode* els = NULL);
+	IfNode(int line, int column, ExprNode* cond, ExprNode* then, ExprNode* els = NULL);
 	std::string printTree(int tabsNb=0);
+	ExprType* getType();
 
 protected:
-	AstNode* cond;
-	AstNode* then;
-	AstNode* els;
+	ExprNode* cond;
+	ExprNode* then;
+	ExprNode* els;
 };
 #endif
