@@ -57,7 +57,8 @@ int main(int argc, char** argv)
 			./vsopc [-lex] [-parse] [-check] <SOURCE-FILE> \n\
 			# For lexical analysis use -lex\n\
 			# For syntactic analysis -parse\n\
-			# For semantic analysis -check\n\
+			# For semantic analysis -check\n";
+
 			return -1;
 		}
 		
