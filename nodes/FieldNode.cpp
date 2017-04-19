@@ -5,7 +5,8 @@ FieldNode::FieldNode(int line, int column, std::string name, std::string type, A
 	this->name = name;
 	this->type = type;
 	this->init = init;
-	init->setParent(this);
+	if (init)
+		init->setParent(this);
 }
 
 std::string FieldNode::printTree(int tabsNb)

@@ -20,6 +20,8 @@ void BlockNode::addExpressions(std::vector<ExprNode*>* expressions)
 
 std::string BlockNode::printTree(int tabsNb)
 {
+	if (expressions.size() == 1)
+		return expressions[0]->printTree();
 	return printList<ExprNode>(tabsNb, expressions);
 }
 
