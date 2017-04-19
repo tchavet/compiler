@@ -7,7 +7,7 @@ class UnOpNode : public ExprNode
 {
 public:
 	UnOpNode(int line, int column, std::string op, ExprNode* expr);
-	std::string printTree(int tabsNb=0);
+	std::string printTree(int tabsNb=0, bool types=false);
 	ExprType* getType();
 
 protected:

@@ -7,7 +7,7 @@ class NewNode : public ExprNode
 {
 public:
 	NewNode(int line, int column, std::string type);
-	std::string printTree(int tabsNb=0);
+	std::string printTree(int tabsNb=0, bool types=false);
 	ExprType* getType();
 
 protected:

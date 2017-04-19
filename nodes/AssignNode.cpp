@@ -7,11 +7,11 @@ AssignNode::AssignNode(int line, int column, std::string name, ExprNode* expr) :
 	expr->setParent(this);
 }
 
-std::string AssignNode::printTree(int tabsNb)
+std::string AssignNode::printTree(int tabsNb, bool types)
 {
 	return "Assign(" + name + ",\n"
-		+ tabs(tabsNb+1) + expr->printTree(tabsNb+1) + "\n"
-		+ tabs(tabsNb) + ")";
+		+ tabs(tabsNb+1) + expr->printTree(tabsNb+1, types) + "\n"
+		+ tabs(tabsNb) + ")" + (types ? " : " + type : "");
 }
 
 ExprType* AssignNode::getType()

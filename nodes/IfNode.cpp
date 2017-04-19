@@ -11,18 +11,18 @@ IfNode::IfNode(int line, int column, ExprNode* cond, ExprNode* then, ExprNode* e
 		els->setParent(this);
 }
 
-std::string IfNode::printTree(int tabsNb)
+std::string IfNode::printTree(int tabsNb, bool types)
 {
 	std::string print = "If(\n"
-		+ tabs(tabsNb+1) + cond->printTree(tabsNb+1) + ",\n"
-		+ tabs(tabsNb+1) + then->printTree(tabsNb+1);
+		+ tabs(tabsNb+1) + cond->printTree(tabsNb+1,types) + ",\n"
+		+ tabs(tabsNb+1) + then->printTree(tabsNb+1,types);
 	if (els)
 	{
 		print += ",\n"
-			+ tabs(tabsNb+1) + els->printTree(tabsNb+1);
+			+ tabs(tabsNb+1) + els->printTree(tabsNb+1,types);
 	}
 	print += "\n"
-		+ tabs(tabsNb) + ")";
+		+ tabs(tabsNb) + ")" + (types ? " : " + type : "");
 	return print;
 }
 

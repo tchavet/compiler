@@ -7,11 +7,11 @@ UnOpNode::UnOpNode(int line, int column, std::string op, ExprNode* expr) : ExprN
 	expr->setParent(this);
 }
 
-std::string UnOpNode::printTree(int tabsNb)
+std::string UnOpNode::printTree(int tabsNb, bool types)
 {
 	return "UnOp(" + op + ",\n"
-		+ tabs(tabsNb+1) + expr->printTree(tabsNb+1) + "\n"
-		+ tabs(tabsNb) + ")";
+		+ tabs(tabsNb+1) + expr->printTree(tabsNb+1,types) + "\n"
+		+ tabs(tabsNb) + ")" + (types ? " : " + type : "");
 }
 
 ExprType* UnOpNode::getType()

@@ -15,9 +15,9 @@ void ProgramNode::addClasses(std::vector<ClassNode*>* classNodes)
 	classes.insert(classes.end(), classNodes->begin(), classNodes->end());
 }
 
-std::string ProgramNode::printTree(int tabsNb)
+std::string ProgramNode::printTree(int tabsNb, bool types)
 {
-	return printList<ClassNode>(tabsNb, classes);
+	return printList<ClassNode>(tabsNb,types,classes);
 }
 
 std::vector<ClassNode*> ProgramNode::getClasses()

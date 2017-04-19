@@ -97,6 +97,9 @@ int main(int argc, char** argv)
 				err_sem = semantic.scopeCheck();
 			}
 		}
+
+		if (check)
+			cout<<root->printTree(0,true)<<endl;
 	}//end try
 	catch(std::runtime_error& e)
 	{

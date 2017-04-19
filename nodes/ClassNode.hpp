@@ -8,7 +8,7 @@ class ClassNode : public AstNode
 {
 public:
 	ClassNode(int line, int column, std::string name, std::string parent = "Object");
-	std::string printTree(int tabsNb=0);
+	std::string printTree(int tabsNb=0, bool types=false);
 	std::string getTypeInScope(std::string id);
 	void addField(FieldNode* field);
 	void addFields(std::vector<FieldNode*>* fields);

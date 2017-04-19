@@ -7,7 +7,7 @@ class AssignNode: public ExprNode
 {
 public:
 	AssignNode(int line, int column, std::string name, ExprNode* expr);
-	std::string printTree(int tabsNb=0);
+	std::string printTree(int tabsNb=0, bool types=false);
 	ExprType* getType();
 
 protected:

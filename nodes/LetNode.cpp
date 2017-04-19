@@ -12,15 +12,15 @@ LetNode::LetNode(int line, int column, std::string name, std::string type, ExprN
 		init->setParent(this);
 }
 
-std::string LetNode::printTree(int tabsNb)
+std::string LetNode::printTree(int tabsNb, bool types)
 {
 	std::string print = "Let(" + name + ", " + type + ",\n";
 	if (init)
 	{
-		print += tabs(tabsNb+1) + init->printTree(tabsNb+1) + ",\n";
+		print += tabs(tabsNb+1) + init->printTree(tabsNb+1,types) + ",\n";
 	}
-	print += tabs(tabsNb+1) + scope->printTree(tabsNb+1) + "\n"
-		+ tabs(tabsNb) + ")";
+	print += tabs(tabsNb+1) + scope->printTree(tabsNb+1,types) + "\n"
+		+ tabs(tabsNb) + ")" + (types ? " : " + type : "");
 	return print;
 }
 

@@ -82,13 +82,13 @@ std::string ClassNode::commonAncestor(ClassNode* class2)
 	return "";
 }
 
-std::string ClassNode::printTree(int tabsNb)
+std::string ClassNode::printTree(int tabsNb, bool types)
 {
 	std::string print = "";
 	
 	print += "Class(" + name + ", " + parentName + ",\n"
-		+ tabs(tabsNb+1) + printList<FieldNode>(tabsNb+1, fields) + ",\n"
-		+ tabs(tabsNb+1) + printList<MethodNode>(tabsNb+1, methods) + "\n"
+		+ tabs(tabsNb+1) + printList<FieldNode>(tabsNb+1,types, fields) + ",\n"
+		+ tabs(tabsNb+1) + printList<MethodNode>(tabsNb+1,types, methods) + "\n"
 		+ tabs(tabsNb) + ")";
 	return print;
 }

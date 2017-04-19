@@ -7,7 +7,7 @@ class WhileNode : public ExprNode
 {
 public:
 	WhileNode(int line, int column, ExprNode* cond, ExprNode* body);
-	std::string printTree(int tabsNb=0);
+	std::string printTree(int tabsNb=0, bool types=false);
 	ExprType* getType();
 
 protected:

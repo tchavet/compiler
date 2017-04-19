@@ -8,7 +8,7 @@ class ProgramNode : public AstNode
 {
 public:
 	ProgramNode();
-	std::string printTree(int tabsNb=0);
+	std::string printTree(int tabsNb=0, bool types=false);
 	void addClass(ClassNode* classNode);
 	void addClasses(std::vector<ClassNode*>* classNodes);
 	std::vector<ClassNode*> getClasses();

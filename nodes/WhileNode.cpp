@@ -8,12 +8,12 @@ WhileNode::WhileNode(int line, int column, ExprNode* cond, ExprNode* body) : Exp
 	body->setParent(this);
 }
 
-std::string WhileNode::printTree(int tabsNb)
+std::string WhileNode::printTree(int tabsNb, bool types)
 {
 	return "While(\n"
-		+ tabs(tabsNb+1) + cond->printTree(tabsNb+1) + ",\n"
-		+ tabs(tabsNb+1) + body->printTree(tabsNb+1) + "\n"
-		+ tabs(tabsNb) + ")";
+		+ tabs(tabsNb+1) + cond->printTree(tabsNb+1,types) + ",\n"
+		+ tabs(tabsNb+1) + body->printTree(tabsNb+1,types) + "\n"
+		+ tabs(tabsNb) + ")" + (types ? " : " + type : "");
 }
 
 ExprType* WhileNode::getType()

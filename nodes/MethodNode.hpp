@@ -10,7 +10,7 @@ class MethodNode : public AstNode
 {
 public:
 	MethodNode(int line, int column, std::string name, std::vector<FormalNode*> params, std::string returnType, BlockNode* body);
-	std::string printTree(int tabsNb=0);
+	std::string printTree(int tabsNb=0, bool types=false);
 	std::string getTypeInScope(std::string id);
 	std::string getName();
 	std::vector<FormalNode*> getParams();

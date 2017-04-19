@@ -18,11 +18,11 @@ void BlockNode::addExpressions(std::vector<ExprNode*>* expressions)
 		(*expressions)[i]->setParent(this);
 }
 
-std::string BlockNode::printTree(int tabsNb)
+std::string BlockNode::printTree(int tabsNb, bool types)
 {
 	if (expressions.size() == 1)
-		return expressions[0]->printTree();
-	return printList<ExprNode>(tabsNb, expressions);
+		return expressions[0]->printTree() + " : " + type;
+	return printList<ExprNode>(tabsNb,types, expressions) + (types ? " : " + type : "");
 }
 
 ExprType* BlockNode::getType()
