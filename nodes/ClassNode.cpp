@@ -127,6 +127,10 @@ std::vector<SemErr*> ClassNode::semCheck()
 		std::vector<SemErr*> methodErrors = methods[i]->semCheck();
 		errors.insert(errors.end(), methodErrors.begin(), methodErrors.end());
 	}
-
+	for (int i=0; i<fields.size(); i++)
+	{
+		std::vector<SemErr*> fieldErrors = fields[i]->semCheck();
+		errors.insert(errors.end(), fieldErrors.begin(), fieldErrors.end());
+	}
 	return errors;
 }
