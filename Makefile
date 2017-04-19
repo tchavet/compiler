@@ -38,7 +38,7 @@ make_archive: clean
 	mkdir vsopcompiler/nodes
 	mkdir vsopcompiler/semantic	
 	mkdir vsopcompiler/vsopl
-	cd ..
+	cp report/report.pdf vsopcompiler/
 	cp *.cpp  vsopcompiler/
 	cp Makefile vsopcompiler/
 	cp *.lex vsopcompiler/
