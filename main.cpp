@@ -88,11 +88,14 @@ int main(int argc, char** argv)
 			cout<<root->printTree()<<endl;
 		}
 
-		Semantic semantic(filename, root);
-		err_sem = semantic.classesCheck();
-		if (!err_sem)
+		if (check || !lex && !parse && !check)
 		{
-			err_sem = semantic.scopeCheck();
+			Semantic semantic(filename, root);
+			err_sem = semantic.classesCheck();
+			if (!err_sem)
+			{
+				err_sem = semantic.scopeCheck();
+			}
 		}
 	}//end try
 	catch(std::runtime_error& e)
