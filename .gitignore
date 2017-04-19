@@ -2,3 +2,6 @@ vsopc
 vsop.yy.cpp
 *.swp
 test*
+*.tab.c
+*.tab.h
+*.tar.xz

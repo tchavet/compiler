@@ -1,7 +1,7 @@
 # This Makefile will be used to build your compiler.
 
 CC = g++
-CCFLAGS = -lfl 
+CCFLAGS = -lfl -std=c++11
 all:    vsopc
 
 .PHONY: all archive clean install-tools
@@ -35,11 +35,14 @@ archive:    clean
 	cd ..; tar cvJf vsopcompiler.tar.xz --exclude=.git --exclude=.svn --exclude=.svn-base vsopcompiler
 make_archive: clean
 	mkdir vsopcompiler
+	mkdir vsopcompiler/nodes
+	mkdir vsopcompiler/semantic	
+	cd ..
 	cp *.cpp  vsopcompiler/
 	cp Makefile vsopcompiler/
-	cp *.hpp vsopcompiler/
 	cp *.lex vsopcompiler/
 	cp *.y vsopcompiler/
-	cp -r /nodes vsopcompiler/
+	cp nodes/* vsopcompiler/nodes/
+	cp semantic/* vsopcompiler/semantic/
 	tar -cJf vsopcompiler.tar.xz vsopcompiler
 	rm -r vsopcompiler
