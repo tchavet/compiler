@@ -1,0 +1,5 @@
+*.log
+*.backup
+*.out
+*.aux
+*.swp
