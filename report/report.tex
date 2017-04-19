@@ -1,0 +1,104 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage[english]{babel}
+\usepackage{natbib}
+\usepackage{url}
+\usepackage[utf8x]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\graphicspath{{img/}}
+\usepackage{parskip}
+\usepackage{subfig}
+\usepackage{float}
+\usepackage{tabularx}
+\usepackage{fancyhdr}
+\usepackage{parskip}
+\usepackage{indentfirst}
+\usepackage{color}
+\usepackage[dvipsnames]{xcolor}
+\setlength{\parindent}{15pt}
+\usepackage{vmargin}
+\usepackage{framed}
+%\setmarginsrb{3 cm}{2.5 cm}{3 cm}{2.5 cm}{1 cm}{1.5 cm}{1 cm}{1.5 cm}%
+
+\usepackage{hyperref}
+
+\title{INFO085 - Compiler \\ Semantic Analysis }
+
+
+\date{\today}
+
+\author{Thibaut \textsc{Chavet} \and Maxim \textsc{Henry} \and Maxime \textsc{Massart}}
+
+
+
+\begin{document}
+
+\begin{figure}
+\begin{center}
+\includegraphics[scale = 1.2]{logoulg}
+\end{center}
+\end{figure}
+
+\maketitle
+\thispagestyle{empty}
+\setcounter{page}{0}
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% \begin{abstract} 
+% 
+% \end{abstract}
+% 
+% 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 
+% \tableofcontents
+% \pagebreak
+% 
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+This project is done for the compiler course given by Prof. Geurts during the academic year 2016-2017. 
+We are asked to implement a vsop compiler. The vsop is defined on the course website.
+
+\section{Our compiler}
+We made improvments during the holidays to keep on improving on good basis. We will present the improvments
+by the previous impacted parts already done for this project.
+
+\subsection{Lexical Analysis}
+We had an issue with this lexical part. As the input of this part is not correct in the vsop formalism,
+our C++ bison yyparse() calls itself yylex. We could have a first parsing phase that would be done twice
+but for performances, it is not a good option. If you ask for it, we can do it but it is not optimal.
+
+\subsection{Syntax Analysis}
+We checked this part because we tried not to break the previous step so we were not up to date. 
+Now we succeeded in all automated tests. We also refactored the classes and expressions to get Nodes in the nodes/ directory.
+
+\subsection{Semantic parsing}
+For this part, we implemented this step in three phases. First we implemented the Classes checking, 
+then the types checking while retrieving them. After that, we determined the non-redefinition of methods or variables.
+
+\subsubsection{Classes checking}
+In this first part, we used a 2D array that contains the Class ID (string) and the ClassNode 
+associated to it. 
+It is useful to know if this type has been declared in the following part. It also allows to 
+know if all classes extending others are all declared.
+  
+\subsubsection{Types retrieving and checking}
+We needed mechanisms to know the closest common parent that we use to determine the output 
+of a dynamic instanciation. 
+This step has the purpose of checking that all types are correctly implemented.
+
+\subsubsection{Redefinition}
+We have to determine if the  fields are not redefined if they are not of the same type. 
+The methods can be overwritten if they agree to certain conditions. We implemented by going through the nodes
+and asking the parent classes (if needed) for knowing if it is a redefinition.
+We also check the arguments of the methods during this step.
+
+\section{Conclusion}
+We had fun doing this project even though we found very difficult to collaborate as the two steps were
+to be done and as it depends on the previous test that has also been improved. We also changed our implementation
+structure quite a lot giving the fact that we could improve the given solution.
+
+
+\end{document}
