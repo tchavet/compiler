@@ -59,15 +59,14 @@
 
 \section{Introduction}
 This project is done for the compiler course given by Prof. Geurts during the academic year 2016-2017. 
-We are asked to implement a vsop compiler. The vsop is defined on the course website.
+We are asked to implement a vsop compiler. The vsop language is defined on the course website.
 
 \section{Our compiler}
 We made improvments during the holidays to keep on improving on good basis. We will present the improvments
 by the previous impacted parts already done for this project.
 
 \subsection{Lexical Analysis}
-We had an issue with this lexical part. As the input of this part is not correct in the vsop formalism,
-our C++ bison yyparse() calls itself yylex. We could have a first parsing phase that would be done twice
+We had an issue with this lexical part. As our C++ bison yyparse() calls yylex itself, when the input of this part is not correct in the vsop formalism, all the tokens are not read until the end, but only until the syntax error. We could have a first parsing phase that would be done twice
 but for performances, it is not a good option. If you ask for it, we can do it but it is not optimal.
 
 \subsection{Syntax Analysis}
@@ -87,12 +86,12 @@ know if all classes extending others are all declared.
 \subsubsection{Types retrieving and checking}
 We needed mechanisms to know the closest common parent that we use to determine the output 
 of a dynamic instanciation. 
-This step has the purpose of checking that all types are correctly implemented.
+This step has the purpose of checking that all types are correctly implemented, and that all expressions have the correct type. This is done using the existing tree of nodes, instead of building a separate scope tree.
 
 \subsubsection{Redefinition}
-We have to determine if the  fields are not redefined if they are not of the same type. 
-The methods can be overwritten if they agree to certain conditions. We implemented by going through the nodes
-and asking the parent classes (if needed) for knowing if it is a redefinition.
+We have to determine if the  fields are not redefined. 
+The methods can be overwritten if they agree to certain conditions. We implemented this by going through the nodes
+and asking the parent classes (if needed) to find out if it is a redefinition.
 We also check the arguments of the methods during this step.
 
 \section{Conclusion}
