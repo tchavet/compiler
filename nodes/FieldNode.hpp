@@ -13,6 +13,7 @@ public:
 	std::string getName();
 	std::string getType();
 	std::vector<SemErr*> semCheck();
+	std::string getTypeInScope(std::string id);
 
 protected:
 	std::string name;

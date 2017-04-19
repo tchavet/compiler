@@ -22,6 +22,8 @@ public:
 	std::string commonAncestor(ClassNode* class2);
 	MethodNode* getMethod(std::string methodName);
 	std::vector<SemErr*> semCheck();
+	bool redefinedField(FieldNode* field);
+	bool redefinedMethod(MethodNode* method);
 
 protected:
 	std::string name;

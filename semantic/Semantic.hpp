@@ -11,7 +11,6 @@ public:
 	Semantic(std::string filename, ProgramNode* tree);
 	bool classesCheck();
 	bool scopeCheck();
-	bool typeCheck();
 
 protected:
 	void semanticError(int line, int column, std::string message="");

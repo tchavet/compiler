@@ -1,4 +1,6 @@
 #include "UnOpNode.hpp"
+#include "../semantic/Types.hpp"
+#include "ClassNode.hpp"
 
 UnOpNode::UnOpNode(int line, int column, std::string op, ExprNode* expr) : ExprNode(line, column)
 {
@@ -37,6 +39,16 @@ ExprType* UnOpNode::getType()
 	}
 	else if (op == "isnull")
 	{
+		if (exprType->type != "" && exprType->type != "Object")
+		{
+			ClassNode* classNode = Types::getNode(exprType->type);
+			if (!classNode || !classNode->isA("Object"))
+			{
+				SemErr* semErr = new SemErr(line, column, "cannot do opperation " + op + " on expression of type " + exprType->type);
+				exprType->addError(semErr);
+				exprType->type = "";
+			}
+		}
 		exprType->type = "bool";
 	}
 	type = exprType->type;

@@ -66,7 +66,7 @@ ExprType* CallNode::getType()
 						if (argType->type != "")
 						{
 							ClassNode* argClass = Types::getNode(argType->type);
-							if (argClass && !argClass->isA(params[i]->getType()))
+							if (!argClass && argType->type != params[i]->getType() || argClass && !argClass->isA(params[i]->getType()))
 							{
 								std::stringstream ss;
 								ss << i+1;

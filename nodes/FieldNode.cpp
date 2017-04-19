@@ -36,10 +36,16 @@ std::string FieldNode::getType()
 std::vector<SemErr*> FieldNode::semCheck()
 {
 	std::vector<SemErr*> semErr;
-	std::string typeInScope = getTypeInScope(name);
+	std::string typeInScope;
+    if (parent)
+		typeInScope = parent->getTypeInScope(name);
 	if (typeInScope != type)
 	{
 		semErr.push_back(new SemErr(line, column, "field " + name + " has already been defined as a " + typeInScope));
+	}
+	else if (((ClassNode*)parent)->redefinedField(this))
+	{
+		semErr.push_back(new SemErr(line, column, "multiple definitions of field " + name));
 	}
 	if (!Types::defined(type))
 	{
@@ -63,4 +69,9 @@ std::vector<SemErr*> FieldNode::semCheck()
 		}
 	}
 	return semErr;
+}
+
+std::string FieldNode::getTypeInScope(std::string id)
+{
+	return "";
 }

@@ -58,6 +58,36 @@ bool Semantic::classesCheck()
 		}
 	}
 
+	/* Check main class */
+	if (!Types::defined("Main"))
+	{
+			semanticError(0,0, "program contains no Main class");
+			error = true;
+	}
+	else
+	{
+		ClassNode* mainNode = Types::getNode("Main");
+		MethodNode* mainMethod = mainNode->getMethod("main");
+		if (!mainMethod)
+		{
+			semanticError(mainNode->getLine(), mainNode->getColumn(), "class Main has no main method");
+			error = true;
+		}
+		else
+		{
+			if (mainMethod->getReturnType() != "int32")
+			{
+				semanticError(mainNode->getLine(), mainNode->getColumn(), "method main has return type " + mainMethod->getReturnType() + " but should return int32");
+				error = true;
+			}
+			if (mainMethod->getParams().size() != 0)
+			{
+				semanticError(mainNode->getLine(), mainNode->getColumn(), "main method should have no arguments");
+				error = true;
+			}
+		}
+	}
+
 	return error;
 }
 
@@ -70,10 +100,7 @@ bool Semantic::scopeCheck()
 	{
 		semanticError(errors[i]->line, errors[i]->column, errors[i]->errStr);
 	}
-}
-
-bool Semantic::typeCheck()
-{
+	return true;
 }
 
 void Semantic::semanticError(int line, int column, std::string message)

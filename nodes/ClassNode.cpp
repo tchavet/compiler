@@ -134,3 +134,43 @@ std::vector<SemErr*> ClassNode::semCheck()
 	}
 	return errors;
 }
+
+bool ClassNode::redefinedField(FieldNode* field)
+{
+	if (parentNode && parentNode->getTypeInScope(field->getName()) != "")
+		return true;
+	for (int i=0; i<fields.size(); i++)
+	{
+		if (fields[i] != field && fields[i]->getName() == field->getName())
+			return true;
+	}
+	return false;
+}
+
+bool ClassNode::redefinedMethod(MethodNode* method)
+{
+	for (int i=0; i<methods.size(); i++)
+	{
+		if (methods[i] != method && methods[i]->getName() == method->getName())
+			return true;
+	}
+	if (parentNode)
+	{
+		MethodNode* redefMethod = parentNode->getMethod(method->getName());
+		if (redefMethod)
+		{
+			if (redefMethod->getReturnType() != method->getReturnType())
+				return true;
+			std::vector<FormalNode*> methodParams = method->getParams();
+			std::vector<FormalNode*> redefParams = redefMethod->getParams();
+			if (redefParams.size() != methodParams.size())
+				return true;
+			for (int i=0; i<methodParams.size(); i++)
+			{
+				if (methodParams[i]->getType() != redefParams[i]->getType() || methodParams[i]->getName() != redefParams[i]->getName())
+					return true;
+			}
+		}
+	}
+	return false;
+}
