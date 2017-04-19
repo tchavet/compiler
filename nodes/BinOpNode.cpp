@@ -9,12 +9,12 @@ BinOpNode::BinOpNode(int line, int column, std::string op, ExprNode* leftExpr, E
 	rightExpr->setParent(this);
 }
 
-std::string BinOpNode::printTree(int tabsNb)
+std::string BinOpNode::printTree(int tabsNb, bool types)
 {
 	return "BinOp(" + op + ",\n"
-		+ tabs(tabsNb+1) + leftExpr->printTree(tabsNb+1) + ",\n"
-		+ tabs(tabsNb+1) + rightExpr->printTree(tabsNb+1) + "\n"
-		+ tabs(tabsNb) + ")";
+		+ tabs(tabsNb+1) + leftExpr->printTree(tabsNb+1,types) + ",\n"
+		+ tabs(tabsNb+1) + rightExpr->printTree(tabsNb+1,types) + "\n"
+		+ tabs(tabsNb) + ")" + (types ? " : " + type : "");
 }
 
 ExprType* BinOpNode::getType()
@@ -52,5 +52,6 @@ ExprType* BinOpNode::getType()
 				exprType->type = "int32";
 		}
 	}
+	type = exprType->type;
 	return exprType;
 }

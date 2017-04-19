@@ -15,13 +15,13 @@ CallNode::CallNode(int line, int column, ExprNode* objExpr, std::string name, st
 		args[i]->setParent(this);
 }
 
-std::string CallNode::printTree(int tabsNb)
+std::string CallNode::printTree(int tabsNb, bool types)
 {
 	return "Call(\n"
-		+ tabs(tabsNb+1) + objExpr->printTree(tabsNb+1) + ",\n"
+		+ tabs(tabsNb+1) + objExpr->printTree(tabsNb+1,types) + ",\n"
 		+ tabs(tabsNb+1) + name + ",\n"
-		+ tabs(tabsNb+1) + printList<ExprNode>(tabsNb+1,args) + "\n"
-		+ tabs(tabsNb) + ")";
+		+ tabs(tabsNb+1) + printList<ExprNode>(tabsNb+1,types,args) + "\n"
+		+ tabs(tabsNb) + ")" + (types ? " : " + type : "");
 }
 
 ExprType* CallNode::getType()
@@ -88,5 +88,6 @@ ExprType* CallNode::getType()
 			exprType->addError(semErr);
 		}
 	}
+	type = exprType->type;
 	return exprType;
 }

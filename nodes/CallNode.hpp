@@ -7,7 +7,7 @@ class CallNode : public ExprNode
 {
 public:
 	CallNode(int line, int column, ExprNode* objExpr, std::string name, std::vector<ExprNode*> args);
-	std::string printTree(int tabsNb=0);
+	std::string printTree(int tabsNb=0, bool types=false);
 	ExprType* getType();
 
 protected:

@@ -7,7 +7,7 @@ class BinOpNode : public ExprNode
 {
 public:
 	BinOpNode(int line, int column, std::string op, ExprNode* leftExpr, ExprNode* rightExpr);
-	std::string printTree(int tabsNb=0);
+	std::string printTree(int tabsNb=0, bool types=false);
 	ExprType* getType();
 
 protected:

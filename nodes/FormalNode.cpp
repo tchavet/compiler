@@ -6,7 +6,7 @@ FormalNode::FormalNode(int line, int column, std::string name, std::string type)
 	this->type = type;
 }
 
-std::string FormalNode::printTree(int tabsNb)
+std::string FormalNode::printTree(int tabsNb, bool types)
 {
 	return name + " : " + type;
 }

@@ -7,7 +7,7 @@ class ObjectIdNode : public ExprNode
 {
 public:
 	ObjectIdNode(int line, int column, std::string name);
-	std::string printTree(int tabsNb=0);
+	std::string printTree(int tabsNb=0, bool types=false);
 	ExprType* getType();
 
 protected:

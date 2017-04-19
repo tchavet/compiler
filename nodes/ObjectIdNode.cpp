@@ -5,9 +5,9 @@ ObjectIdNode::ObjectIdNode(int line, int column, std::string name) : ExprNode(li
 	this->name = name;
 }
 
-std::string ObjectIdNode::printTree(int tabsNb)
+std::string ObjectIdNode::printTree(int tabsNb, bool types)
 {
-	return name;
+	return name + (types ? " : " + type : "");
 }
 
 ExprType* ObjectIdNode::getType()

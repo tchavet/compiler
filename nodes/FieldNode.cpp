@@ -10,13 +10,13 @@ FieldNode::FieldNode(int line, int column, std::string name, std::string type, E
 		init->setParent(this);
 }
 
-std::string FieldNode::printTree(int tabsNb)
+std::string FieldNode::printTree(int tabsNb, bool types)
 {
 	std::string print = "Field(" + name + "," + type;
 	if (init)
 	{
 		print += ",\n"
-			+ tabs(tabsNb+1) + init->printTree(tabsNb+1) + "\n"
+			+ tabs(tabsNb+1) + init->printTree(tabsNb+1,types) + "\n"
 			+ tabs(tabsNb);
 	}
 	print += ")";

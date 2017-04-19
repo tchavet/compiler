@@ -11,12 +11,12 @@ MethodNode::MethodNode(int line, int column, std::string name, std::vector<Forma
 		params[i]->setParent(this);
 }
 
-std::string MethodNode::printTree(int tabsNb)
+std::string MethodNode::printTree(int tabsNb, bool types)
 {
 	return "Method(" + name + ",\n"
-		+ tabs(tabsNb+1) + printList<FormalNode>(tabsNb+1, params) + ",\n"
+		+ tabs(tabsNb+1) + printList<FormalNode>(tabsNb+1,types, params) + ",\n"
 		+ tabs(tabsNb+1) + returnType + ",\n"
-		+ tabs(tabsNb+1) + body->printTree(tabsNb+1) + "\n"
+		+ tabs(tabsNb+1) + body->printTree(tabsNb+1,types) + "\n"
 		+ tabs(tabsNb) + ")";
 }
 

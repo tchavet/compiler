@@ -7,7 +7,7 @@ class IfNode : public ExprNode
 {
 public:
 	IfNode(int line, int column, ExprNode* cond, ExprNode* then, ExprNode* els = NULL);
-	std::string printTree(int tabsNb=0);
+	std::string printTree(int tabsNb=0, bool types=false);
 	ExprType* getType();
 
 protected:

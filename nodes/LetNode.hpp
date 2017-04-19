@@ -7,7 +7,7 @@ class LetNode : public ExprNode
 {
 public:
 	LetNode(int line, int column, std::string name, std::string type, ExprNode* scope, ExprNode* init=NULL);
-	std::string printTree(int tabsNb=0);
+	std::string printTree(int tabsNb=0, bool types=false);
 	ExprType* getType();
 	std::string getTypeInScope(std::string id);
 

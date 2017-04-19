@@ -5,9 +5,9 @@ BoolLitNode::BoolLitNode(int line, int column, std::string value) : ExprNode(lin
 	this->value = value;
 }
 
-std::string BoolLitNode::printTree(int tabsNb)
+std::string BoolLitNode::printTree(int tabsNb, bool types)
 {
-	return value;
+	return value + (types ? " : " + type : "");
 }
 
 ExprType* BoolLitNode::getType()

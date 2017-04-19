@@ -9,7 +9,7 @@ class FieldNode : public AstNode
 {
 public:
 	FieldNode(int line, int column, std::string name, std::string type, ExprNode* init=NULL);
-	std::string printTree(int tabsNb=0);
+	std::string printTree(int tabsNb=0, bool types=false);
 	std::string getName();
 	std::string getType();
 	std::vector<SemErr*> semCheck();

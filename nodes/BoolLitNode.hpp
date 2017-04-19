@@ -7,7 +7,7 @@ class BoolLitNode : public ExprNode
 {
 public:
 	BoolLitNode(int line, int column, std::string value);
-	std::string printTree(int tabsNb=0);
+	std::string printTree(int tabsNb=0, bool types=false);
 	ExprType* getType();
 
 protected:

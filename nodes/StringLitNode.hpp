@@ -7,7 +7,7 @@ class StringLitNode : public ExprNode
 {
 public:
 	StringLitNode(int line, int column, std::string str);
-	std::string printTree(int tabsNb=0);
+	std::string printTree(int tabsNb=0, bool types=false);
 	ExprType* getType();
 
 protected:
