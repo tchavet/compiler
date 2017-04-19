@@ -1,4 +1,6 @@
 #include "AssignNode.hpp"
+#include "ClassNode.hpp"
+#include "../semantic/Types.hpp"
 
 AssignNode::AssignNode(int line, int column, std::string name, ExprNode* expr) : ExprNode(line, column)
 {
@@ -40,8 +42,14 @@ ExprType* AssignNode::getType()
 			}
 			else if (nameType != exprType->type)
 			{
-				SemErr* semErr = new SemErr(line, column, "types do not match: type of " + name + " is " + nameType + " but type of the expression to assign is " + exprType->type);
-				exprType->addError(semErr);
+				ClassNode* exprClass = Types::getNode(exprType->type);
+
+				if(!(exprClass && exprClass->isA(nameType)))
+				{
+					SemErr* semErr = new SemErr(line, column, "types do not match: type of " + name + " is " + nameType + " but type of the expression to assign is " + exprType->type);
+					exprType->addError(semErr);
+				}
+				
 				exprType->type = nameType;
 			}
 		}

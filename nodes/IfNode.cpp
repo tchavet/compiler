@@ -1,4 +1,6 @@
 #include "IfNode.hpp"
+#include "ClassNode.hpp"
+#include "../semantic/Types.hpp"
 
 IfNode::IfNode(int line, int column, ExprNode* cond, ExprNode* then, ExprNode* els) : ExprNode(line, column)
 {
@@ -67,16 +69,33 @@ ExprType* IfNode::getType()
 	{
 		exprType->type = "unit";
 	}
-	/* If both types are the same, the type of the if-expression is that type */
-	else if (thenType->type == elsType->type)
-	{
-		exprType->type = thenType->type;
-	}
-	/* Otherwise the types are different, it is an error */
 	else
 	{
-		SemErr* semErr = new SemErr(line, column, "return types for then and else are not the same: then type is " + thenType->type + " and else type is " + elsType->type);
-		exprType->addError(semErr);
+		ClassNode* thenClass = Types::getNode(thenType->type);
+		ClassNode* elsClass = Types::getNode(elsType->type);
+		std::string comAncest = "";
+
+		if(thenClass && elsClass)
+		{
+			comAncest = thenClass->commonAncestor(elsClass);
+		}
+
+		/*If both types are the same, the type of the if-expression is that type */
+		if (comAncest != "")
+		{
+			exprType->type = comAncest;
+		}
+		else if(thenType->type == elsType->type)
+		{
+			exprType->type = thenType->type;
+		}
+
+		/* Otherwise the types are different, it is an error */
+		else
+		{
+			SemErr* semErr = new SemErr(line, column, "return types for then and else are not the same: then type is " + thenType->type + " and else type is " + elsType->type);
+			exprType->addError(semErr);
+		}
 	}
 
 	type = exprType->type;

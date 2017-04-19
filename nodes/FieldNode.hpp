@@ -3,11 +3,12 @@
 
 #include "AstNode.hpp"
 #include "../semantic/structures.hpp"
+#include "ExprNode.hpp"
 
 class FieldNode : public AstNode
 {
 public:
-	FieldNode(int line, int column, std::string name, std::string type, AstNode* init=NULL);
+	FieldNode(int line, int column, std::string name, std::string type, ExprNode* init=NULL);
 	std::string printTree(int tabsNb=0);
 	std::string getName();
 	std::string getType();
@@ -16,6 +17,6 @@ public:
 protected:
 	std::string name;
 	std::string type;
-	AstNode* init;
+	ExprNode* init;
 };
 #endif

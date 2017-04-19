@@ -48,10 +48,17 @@ ExprType* LetNode::getType()
 		ExprType* initType = init->getType();
 		if (initType->error)
 			exprType->addErrors(initType->errors);
+
+
 		if (initType->type != "" && initType->type != type)
 		{
-			SemErr* semErr = new SemErr(line, column, name + " defined as type " + type + ", but assignement expression is of type " + initType->type);
-			exprType->addError(semErr);
+			ClassNode* initClass = Types::getNode(initType->type);
+ 
+			if(!(initClass && initClass->isA(type)))
+			{
+				SemErr* semErr = new SemErr(line, column, name + " defined as type " + type + ", but assignement expression is of type " + initType->type);
+				exprType->addError(semErr);
+			}
 		}
 	}
 

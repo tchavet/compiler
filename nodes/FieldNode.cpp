@@ -1,6 +1,7 @@
 #include "FieldNode.hpp"
+#include "../semantic/Types.hpp"
 
-FieldNode::FieldNode(int line, int column, std::string name, std::string type, AstNode* init) : AstNode(line, column)
+FieldNode::FieldNode(int line, int column, std::string name, std::string type, ExprNode* init) : AstNode(line, column)
 {
 	this->name = name;
 	this->type = type;
@@ -39,6 +40,23 @@ std::vector<SemErr*> FieldNode::semCheck()
 	if (typeInScope != type)
 	{
 		semErr.push_back(new SemErr(line, column, "field " + name + " has already been defined as a " + typeInScope));
+	}
+	
+	if (init)
+	{
+		ExprType* initType = init->getType();
+		if (initType->error)
+			semErr.insert(semErr.end(),initType->errors.begin(),initType->errors.end());
+
+		if (initType->type != "" && initType->type != type)
+		{
+			ClassNode* initClass = Types::getNode(initType->type);
+ 
+			if(!(initClass && initClass->isA(type)))
+			{
+				semErr.push_back(new SemErr(line, column, name + " defined as type " + type + ", but assignement expression is of type " + initType->type));
+			}
+		}
 	}
 	return semErr;
 }
