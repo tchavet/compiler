@@ -41,6 +41,10 @@ std::vector<SemErr*> FieldNode::semCheck()
 	{
 		semErr.push_back(new SemErr(line, column, "field " + name + " has already been defined as a " + typeInScope));
 	}
+	if (!Types::defined(type))
+	{
+		semErr.push_back(new SemErr(line, column, "undefined type " + type));
+	}
 	
 	if (init)
 	{

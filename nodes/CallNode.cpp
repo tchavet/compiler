@@ -63,13 +63,17 @@ ExprType* CallNode::getType()
 						ExprType* argType = args[i]->getType();
 						if (argType->error)
 							exprType->addErrors(argType->errors);
-						if (argType->type != "" && argType->type != params[i]->getType())
+						if (argType->type != "")
 						{
-							std::stringstream ss;
-							ss << i;
-							SemErr* semErr = new SemErr(line, column, "parameter " + ss.str() + " of method " + name + " in " + callingClass->getName() + " is of type " + params[i]->getType() + " but the given argument is of type " + argType->type);
-							exprType->addError(semErr);
-							argErr = true;
+							ClassNode* argClass = Types::getNode(argType->type);
+							if (argClass && !argClass->isA(params[i]->getType()))
+							{
+								std::stringstream ss;
+								ss << i+1;
+								SemErr* semErr = new SemErr(line, column, "parameter " + ss.str() + " of method " + name + " in " + callingClass->getName() + " is of type " + params[i]->getType() + " but the given argument is of type " + argType->type);
+								exprType->addError(semErr);
+								argErr = true;
+							}
 						}
 					}
 					if (!argErr)

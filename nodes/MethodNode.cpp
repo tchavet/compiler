@@ -1,4 +1,5 @@
 #include "MethodNode.hpp"
+#include "../semantic/Types.hpp"
 
 MethodNode::MethodNode(int line, int column, std::string name, std::vector<FormalNode*> params, std::string returnType, BlockNode* body) : AstNode(line, column)
 {
@@ -45,7 +46,24 @@ std::vector<FormalNode*> MethodNode::getParams()
 
 std::vector<SemErr*> MethodNode::semCheck()
 {
-	return body->getType()->errors;
+	std::vector<SemErr*> errors;
+	for (int i=0; i<params.size(); i++)
+	{
+		if (!Types::defined(params[i]->getType()))
+		{
+			errors.push_back(new SemErr(line, column, "undefined type " + params[i]->getType()));
+		}
+		for (int j=0; j<i; j++)
+		{
+			if (params[i]->getName() == params[j]->getName())
+			{
+			errors.push_back(new SemErr(line, column, "multiple definitions of parameter " + params[i]->getName()));
+			}
+		}
+	}
+	std::vector<SemErr*> bodyErrors = body->getType()->errors;
+	errors.insert(errors.begin(), bodyErrors.begin(), bodyErrors.end());
+	return errors;
 }
 
 std::string MethodNode::getReturnType()

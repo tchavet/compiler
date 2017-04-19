@@ -364,6 +364,10 @@ expr:
 	{
 		$$ = $1;
 	}
+|	LPAR RPAR
+	{
+		$$ = new ExprNode(@1.first_line, @1.first_column);
+	}
 |	LPAR expr RPAR
 	{
 		$$ = $2;

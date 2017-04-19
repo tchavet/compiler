@@ -10,7 +10,7 @@ all:    vsopc
 vsopc:clean
 	flex -o vsop.yy.cpp vsop.lex 
 	bison  -d vsop.y -b vsop
-	$(CC)  *.c* nodes/*.cpp semantic/*.cpp -o vsopc  $(CCFLAGS)
+	$(CC)  *.c* nodes/*.cpp semantic/*.cpp vsopl/*.cpp -o vsopc  $(CCFLAGS)
 
 
 
@@ -37,6 +37,7 @@ make_archive: clean
 	mkdir vsopcompiler
 	mkdir vsopcompiler/nodes
 	mkdir vsopcompiler/semantic	
+	mkdir vsopcompiler/vsopl
 	cd ..
 	cp *.cpp  vsopcompiler/
 	cp Makefile vsopcompiler/
@@ -44,5 +45,6 @@ make_archive: clean
 	cp *.y vsopcompiler/
 	cp nodes/* vsopcompiler/nodes/
 	cp semantic/* vsopcompiler/semantic/
+	cp vsopl/* vsopcompiler/vsopl/
 	tar -cJf vsopcompiler.tar.xz vsopcompiler
 	rm -r vsopcompiler

@@ -21,7 +21,7 @@ void BlockNode::addExpressions(std::vector<ExprNode*>* expressions)
 std::string BlockNode::printTree(int tabsNb, bool types)
 {
 	if (expressions.size() == 1)
-		return expressions[0]->printTree() + (types ? " : " + type : "");
+		return expressions[0]->printTree(tabsNb, types);
 	return printList<ExprNode>(tabsNb,types, expressions) + (types ? " : " + type : "");
 }
 

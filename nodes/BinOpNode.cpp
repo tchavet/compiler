@@ -34,6 +34,8 @@ ExprType* BinOpNode::getType()
 		std::string opType = "int32";
 		if (op == "and")
 			opType = "bool";
+		else if (op == "=")
+			opType = leftType->type;
 		if (leftType->type != opType)
 		{
 			SemErr* semErr = new SemErr(line, column, "cannot do opperation " + op + " on left operand object of type " + leftType->type);

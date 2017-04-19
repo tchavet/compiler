@@ -30,6 +30,7 @@ ExprType* WhileNode::getType()
 		exprType->addError(semErr);
 	}
 
+	exprType->type = "unit";
 	type = exprType->type;
 	return exprType;
 }

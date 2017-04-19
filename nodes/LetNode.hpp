@@ -13,7 +13,7 @@ public:
 
 protected:
 	std::string name;
-	std::string type;
+	std::string letType;
 	ExprNode* init;
 	ExprNode* scope;
 };

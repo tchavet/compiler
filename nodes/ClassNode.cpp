@@ -57,9 +57,9 @@ ClassNode* ClassNode::getParentNode()
 
 bool ClassNode::isA(std::string className)
 {
-	if (className == name)
+	if (className == name || className == "Object")
 		return true;
-	else if (parentName == "Object" || !parentNode)
+	else if (!parentNode)
 		return false;
 	else
 		return parentNode->isA(className);

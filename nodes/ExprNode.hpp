@@ -8,8 +8,8 @@ class ExprNode : public AstNode
 {
 public:
 	ExprNode(int line=0, int column=0);
-	virtual ExprType* getType() {return new ExprType;};
-	virtual std::string printTree(int tabsNb=0, bool types=false) {};
+	virtual ExprType* getType();
+	virtual std::string printTree(int tabsNb=0, bool types=false);
 
 protected:
 	std::string type;
