@@ -15,4 +15,5 @@ std::string IntLitNode::printTree(int tabsNb)
 
 ExprType* IntLitNode::getType()
 {
+	return new ExprType("int32");
 }

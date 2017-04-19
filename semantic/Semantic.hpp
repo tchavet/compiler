@@ -19,6 +19,5 @@ protected:
 	Scope* rootScope;
 	Scope* currentScope;
 	ProgramNode* astTree;
-	Types types;
 };
 #endif

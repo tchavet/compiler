@@ -6,6 +6,7 @@ AstNode::AstNode(int line, int column)
 {
 	this->line = line;
 	this->column = column;
+	parent = NULL;
 }
 
 std::string AstNode::tabs(int tabsNb)
@@ -25,4 +26,16 @@ int AstNode::getLine()
 int AstNode::getColumn()
 {
 	return column;
+}
+
+std::string AstNode::getTypeInScope(std::string id)
+{
+	if (parent)
+		return parent->getTypeInScope(id);
+	return "";
+}
+
+void AstNode::setParent(AstNode* parent)
+{
+	this->parent = parent;
 }

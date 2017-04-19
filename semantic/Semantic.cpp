@@ -15,33 +15,58 @@ Semantic::Semantic(std::string filename, ProgramNode* tree)
 	builtIns.push_back("string");
 	builtIns.push_back("unit");
 	builtIns.push_back("Object");
-	types = Types(builtIns);
+	Types::init(builtIns);
 }
 
 bool Semantic::classesCheck()
 {
 	bool error = false;
 	std::vector<ClassNode*> classes = astTree->getClasses();
+
+	/* Check if each class hasn't already been defined */
 	for (int i=0; i<classes.size(); i++)
 	{
-		if (!types.defined(classes[i]->getParent()))
-		{
-			semanticError(classes[i]->getLine(), classes[i]->getColumn(), "parent class " + classes[i]->getParent() + " undefined");
-			error = true;
-		}
-
-		if (!types.add(classes[i]->getName(), classes[i]))
+		if (!Types::add(classes[i]->getName(), classes[i]))
 		{
 			semanticError(classes[i]->getLine(), classes[i]->getColumn(), "class " + classes[i]->getName() + " already exists");
 			error = true;
 		}
 	}
+
+	/* Check if each parent is defined */
+	for (int i=0; i<classes.size(); i++)
+	{
+		if (!Types::defined(classes[i]->getParentName()))
+		{
+			semanticError(classes[i]->getLine(), classes[i]->getColumn(), "parent class " + classes[i]->getParentName() + " undefined");
+			error = true;
+		}
+		else
+			classes[i]->setParentNode(Types::getNode(classes[i]->getParentName()));
+	}
+
+	/* Check inheritance cycles */
+	for (int i=0; i<classes.size(); i++)
+	{
+		if (classes[i]->getParentNode() && classes[i]->getParentNode()->isA(classes[i]->getName()))
+		{
+			semanticError(classes[i]->getLine(), classes[i]->getColumn(), "class " + classes[i]->getName() + " cannot extend " + classes[i]->getParentName() + ": inheritance cycle");
+			error = true;
+		}
+	}
+
 	return error;
 }
 
 bool Semantic::scopeCheck()
 {
-	
+	std::vector<SemErr*> errors = astTree->semCheck();
+	if (errors.size() == 0)
+		return false;
+	for (int i=0; i<errors.size(); i++)
+	{
+		semanticError(errors[i]->line, errors[i]->column, errors[i]->errStr);
+	}
 }
 
 bool Semantic::typeCheck()

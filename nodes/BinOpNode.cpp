@@ -5,6 +5,8 @@ BinOpNode::BinOpNode(int line, int column, std::string op, ExprNode* leftExpr, E
 	this->op = op;
 	this->leftExpr = leftExpr;
 	this->rightExpr = rightExpr;
+	leftExpr->setParent(this);
+	rightExpr->setParent(this);
 }
 
 std::string BinOpNode::printTree(int tabsNb)
@@ -17,4 +19,38 @@ std::string BinOpNode::printTree(int tabsNb)
 
 ExprType* BinOpNode::getType()
 {
+	ExprType* exprType = new ExprType;
+	ExprType* leftType = leftExpr->getType();
+	ExprType* rightType = rightExpr->getType();
+
+	if (leftType->error)
+		exprType->addErrors(leftType->errors);
+	if (rightType->error)
+		exprType->addErrors(rightType->errors);
+
+	/* Check that the type of both operands is good */
+	if (leftType->type != "" && rightType->type != "")
+	{
+		std::string opType = "int32";
+		if (op == "and")
+			opType = "bool";
+		if (leftType->type != opType)
+		{
+			SemErr* semErr = new SemErr(line, column, "cannot do opperation " + op + " on left operand object of type " + leftType->type);
+			exprType->addError(semErr);
+		}
+		if (rightType->type != opType)
+		{
+			SemErr* semErr = new SemErr(line, column, "cannot do opperation " + op + " on right operand object of type " + rightType->type);
+			exprType->addError(semErr);
+		}
+		if (leftType->type == opType && rightType->type == opType)
+		{
+			if (op == "and" || op == "=" || op == "<" || op == "<=")
+				exprType->type = "bool";
+			else if (op == "+" || op == "-" || op == "*" || op == "/" || op == "^")
+				exprType->type = "int32";
+		}
+	}
+	return exprType;
 }

@@ -11,11 +11,15 @@ public:
 	virtual std::string printTree(int tabsNb=0) {};
 	int getLine();
 	int getColumn();
+	void setParent(AstNode* parent);
+	virtual std::string getTypeInScope(std::string id);
 
 protected:
-	std::string tabs(int tabsNb);
 	int line;
 	int column;
+	AstNode* parent;
+
+	std::string tabs(int tabsNb);
 
 	template <class T>
 	std::string printList(int tabsNb, std::vector<T*> nodes)

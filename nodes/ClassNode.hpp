@@ -7,18 +7,26 @@
 class ClassNode : public AstNode
 {
 public:
-	ClassNode(int line, int column, std::string name, std::string parent);
+	ClassNode(int line, int column, std::string name, std::string parent = "Object");
 	std::string printTree(int tabsNb=0);
+	std::string getTypeInScope(std::string id);
 	void addField(FieldNode* field);
 	void addFields(std::vector<FieldNode*>* fields);
 	void addMethod(MethodNode* method);
 	void addMethods(std::vector<MethodNode*>* methods);
+	void setParentNode(ClassNode* parent);
 	std::string getName();
-	std::string getParent();
+	std::string getParentName();
+	ClassNode* getParentNode();
+	bool isA(std::string className);
+	std::string commonAncestor(ClassNode* class2);
+	MethodNode* getMethod(std::string methodName);
+	std::vector<SemErr*> semCheck();
 
 protected:
 	std::string name;
-	std::string parent;
+	std::string parentName;
+	ClassNode* parentNode;
 	std::vector<FieldNode*> fields;
 	std::vector<MethodNode*> methods;
 };

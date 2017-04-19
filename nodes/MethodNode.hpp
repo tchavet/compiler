@@ -4,12 +4,18 @@
 #include "AstNode.hpp"
 #include "FormalNode.hpp"
 #include "BlockNode.hpp"
+#include "../semantic/structures.hpp"
 
 class MethodNode : public AstNode
 {
 public:
 	MethodNode(int line, int column, std::string name, std::vector<FormalNode*> params, std::string returnType, BlockNode* body);
 	std::string printTree(int tabsNb=0);
+	std::string getTypeInScope(std::string id);
+	std::string getName();
+	std::vector<FormalNode*> getParams();
+	std::vector<SemErr*> semCheck();
+	std::string getReturnType();
 
 protected:
 	std::string name;

@@ -12,4 +12,5 @@ std::string StringLitNode::printTree(int tabsNb)
 
 ExprType* StringLitNode::getType()
 {
+	return new ExprType("string");
 }

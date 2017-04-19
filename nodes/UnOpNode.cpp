@@ -4,6 +4,7 @@ UnOpNode::UnOpNode(int line, int column, std::string op, ExprNode* expr) : ExprN
 {
 	this->op = op;
 	this->expr = expr;
+	expr->setParent(this);
 }
 
 std::string UnOpNode::printTree(int tabsNb)
@@ -15,4 +16,29 @@ std::string UnOpNode::printTree(int tabsNb)
 
 ExprType* UnOpNode::getType()
 {
+	ExprType* exprType = expr->getType();
+	if (op == "not")
+	{
+		if (exprType->type != "" && exprType->type != "bool")
+		{
+			SemErr* semErr = new SemErr(line, column, "cannot do opperation " + op + " on expression of type " + exprType->type);
+			exprType->addError(semErr);
+			exprType->type = "";
+		}
+	}
+	else if (op == "-")
+	{
+		if (exprType->type != "" && exprType->type != "int32")
+		{
+			SemErr* semErr = new SemErr(line, column, "cannot do opperation " + op + " on expression of type " + exprType->type);
+			exprType->addError(semErr);
+			exprType->type = "";
+		}
+	}
+	else if (op == "isnull")
+	{
+		exprType->type = "bool";
+	}
+	type = exprType->type;
+	return exprType;
 }

@@ -10,3 +10,13 @@ std::string FormalNode::printTree(int tabsNb)
 {
 	return name + " : " + type;
 }
+
+std::string FormalNode::getName()
+{
+	return name;
+}
+
+std::string FormalNode::getType()
+{
+	return type;
+}

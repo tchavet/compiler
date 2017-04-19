@@ -12,4 +12,13 @@ std::string ObjectIdNode::printTree(int tabsNb)
 
 ExprType* ObjectIdNode::getType()
 {
+	ExprType* exprType = new ExprType(getTypeInScope(name));
+	/* If type is "", it means the id is undifined in this scope */
+	if (exprType->type == "")
+	{
+		SemErr* semErr = new SemErr(line, column, "object id " + name + " is undefined in this scope");
+		exprType->addError(semErr);
+	}
+	type = exprType->type;
+	return exprType;
 }

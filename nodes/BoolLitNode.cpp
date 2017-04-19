@@ -12,4 +12,7 @@ std::string BoolLitNode::printTree(int tabsNb)
 
 ExprType* BoolLitNode::getType()
 {
+	ExprType* exprType = new ExprType("bool");
+	type = "bool";
+	return exprType;
 }

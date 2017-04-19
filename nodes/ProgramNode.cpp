@@ -24,3 +24,14 @@ std::vector<ClassNode*> ProgramNode::getClasses()
 {
 	return classes;
 }
+
+std::vector<SemErr*> ProgramNode::semCheck()
+{
+	std::vector<SemErr*> errors;
+	for (int i=0; i<classes.size(); i++)
+	{
+		std::vector<SemErr*> classErrors = classes[i]->semCheck();
+		errors.insert(errors.end(), classErrors.begin(), classErrors.end());
+	}
+	return errors;
+}

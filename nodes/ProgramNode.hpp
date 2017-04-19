@@ -12,6 +12,7 @@ public:
 	void addClass(ClassNode* classNode);
 	void addClasses(std::vector<ClassNode*>* classNodes);
 	std::vector<ClassNode*> getClasses();
+	std::vector<SemErr*> semCheck();
 
 protected:
 	std::vector<ClassNode*> classes;

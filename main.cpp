@@ -83,12 +83,16 @@ int main(int argc, char** argv)
 
 		yyparse();
 
-		Semantic semantic(filename, root);
-		err_sem = semantic.classesCheck();
-		
 		if (parse)
 		{
 			cout<<root->printTree()<<endl;
+		}
+
+		Semantic semantic(filename, root);
+		err_sem = semantic.classesCheck();
+		if (!err_sem)
+		{
+			err_sem = semantic.scopeCheck();
 		}
 	}//end try
 	catch(std::runtime_error& e)

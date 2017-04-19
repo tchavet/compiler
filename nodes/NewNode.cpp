@@ -12,4 +12,5 @@ std::string NewNode::printTree(int tabsNb)
 
 ExprType* NewNode::getType()
 {
+	return new ExprType(type);
 }
