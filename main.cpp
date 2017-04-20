@@ -88,6 +88,9 @@ int main(int argc, char** argv)
 			cout<<root->printTree()<<endl;
 		}
 
+		if (err_parse)
+			return -6;
+
 		if (check || !lex && !parse && !check)
 		{
 			Semantic semantic(filename, root);
@@ -100,6 +103,9 @@ int main(int argc, char** argv)
 
 		if (check)
 			cout<<root->printTree(0,true)<<endl;
+
+		if (err_sem)
+			return -7;
 	}//end try
 	catch(std::runtime_error& e)
 	{
@@ -111,12 +117,6 @@ int main(int argc, char** argv)
 		std::cerr << "Other Exception error:" << e.what() << std::endl;
 		return -4;
 	}
-
-	if (err_parse)
-		return -6;
-
-	if (err_sem)
-		return -7;
 
 	return 0;
 }
