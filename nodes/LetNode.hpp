@@ -10,11 +10,14 @@ public:
 	std::string printTree(int tabsNb=0, bool types=false);
 	ExprType* getType();
 	std::string getTypeInScope(std::string id);
+	void setLlvmNameInScope(std::string var, std::string llvmName);
+	std::string getLlvmNameInScope(std::string var);
 
 protected:
 	std::string name;
 	std::string letType;
 	ExprNode* init;
 	ExprNode* scope;
+	std::string llvmName;
 };
 #endif

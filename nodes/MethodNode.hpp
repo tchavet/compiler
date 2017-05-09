@@ -16,6 +16,8 @@ public:
 	std::vector<FormalNode*> getParams();
 	std::vector<SemErr*> semCheck();
 	std::string getReturnType();
+	void setLlvmNameInScope(std::string var, std::string llvmName);
+	std::string getLlvmNameInScope(std::string var);
 
 protected:
 	std::string name;

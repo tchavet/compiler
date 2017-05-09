@@ -8,6 +8,7 @@ LetNode::LetNode(int line, int column, std::string name, std::string type, ExprN
 	this->scope = scope;
 	this->init = init;
 	scope->setParent(this);
+	llvmName = name;
 	if (init)
 		init->setParent(this);
 }
@@ -74,4 +75,22 @@ std::string LetNode::getTypeInScope(std::string id)
 	if (name == id)
 		return letType;
 	return AstNode::getTypeInScope(id);
+}
+
+void LetNode::setLlvmNameInScope(std::string var, std::string llvmName)
+{
+	if (var == name)
+		this->llvmName = llvmName;
+	if (parent)
+		parent->setLlvmNameInScope(var, llvmName);
+}
+
+std::string LetNode::getLlvmNameInScope(std::string var)
+{
+	if (var == name)
+		return llvmName;
+	if (parent)
+		return parent->getLlvmNameInScope(var);
+	else
+		return "";
 }

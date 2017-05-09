@@ -14,10 +14,13 @@ public:
 	std::string getType();
 	std::vector<SemErr*> semCheck();
 	std::string getTypeInScope(std::string id);
+	void setLlvmNameInScope(std::string var, std::string llvmName);
+	std::string getLlvmNameInScope(std::string var);
 
 protected:
 	std::string name;
 	std::string type;
 	ExprNode* init;
+	std::string llvmName;
 };
 #endif

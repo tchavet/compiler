@@ -174,3 +174,29 @@ bool ClassNode::redefinedMethod(MethodNode* method)
 	}
 	return false;
 }
+
+void ClassNode::setLlvmNameInScope(std::string var, std::string llvmName)
+{
+	for (int i=0; i<fields.size(); i++)
+	{
+		if (fields[i]->getName())
+		{
+			fields[i]->setLlvmNameInScope(var, llvmName);
+		}
+	}
+}
+
+std::string ClassNode::getLlvmNameInScope(std::string var)
+{
+	for (int i=0; i<fields.size(); i++)
+	{
+		if (fields[i]->getName())
+		{
+			return fields[i]->getLlvmNameInScope(var);
+		}
+	}
+	if (parentNode)
+		return parentNode->getLlvmNameInScope(var);
+	else
+		return "";
+}

@@ -10,9 +10,12 @@ public:
 	std::string printTree(int tabsNb=0, bool types=false);
 	std::string getName();
 	std::string getType();
+	void setLlvmNameInScope(std::string var, std::string llvmName);
+	std::string getLlvmNameInScope(std::string var);
 
 protected:
 	std::string name;
 	std::string type;
+	std::string llvmName;
 };
 #endif

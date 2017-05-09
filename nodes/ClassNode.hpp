@@ -24,6 +24,8 @@ public:
 	std::vector<SemErr*> semCheck();
 	bool redefinedField(FieldNode* field);
 	bool redefinedMethod(MethodNode* method);
+	void setLlvmNameInScope(std::string var, std::string llvmName);
+	std::string getLlvmNameInScope(std::string var);
 
 protected:
 	std::string name;
