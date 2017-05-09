@@ -1,4 +1,5 @@
 #include "ClassNode.hpp"
+#include <sstream>
 
 ClassNode::ClassNode(int line, int column, std::string name, std::string parent) : AstNode(line, column)
 {
@@ -173,4 +174,52 @@ bool ClassNode::redefinedMethod(MethodNode* method)
 		}
 	}
 	return false;
+}
+
+stringmap* ClassNode::getFuncStruct()
+{
+	if(funcStruct == NULL)
+	{
+		if(parentNode != NULL)
+		{
+			funcStruct = parentNode->getFuncStruct();
+		}
+		else
+		{
+			funcStruct = new stringmap();
+		}
+
+		for(int j = funcStruct->size(); j < funcStruct->size() + methods.size(); ++j)
+		{
+			std::stringstream ss;
+			ss << j;
+			funcStruct->insert({{methods[j]->getName(), ss.str()}});
+		}
+	}
+
+	return funcStruct;
+}
+
+stringmap* ClassNode::getFieldsStruct()
+{
+	if(fieldsStruct == NULL)
+	{
+		if(parentNode != NULL)
+		{
+			fieldsStruct = parentNode->getFieldsStruct();
+		}
+		else
+		{
+			fieldsStruct = new stringmap();
+		}
+
+		for(int j = fieldsStruct->size(); j < fieldsStruct->size() + fields.size(); ++j)
+		{
+			std::stringstream ss;
+			ss << j;
+			fieldsStruct->insert({{fields[j]->getName(), ss.str()}});
+		}
+	}
+
+	return fieldsStruct;
 }

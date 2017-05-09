@@ -3,6 +3,9 @@
 
 #include "FieldNode.hpp"
 #include "MethodNode.hpp"
+#include "unordered_map"
+
+typedef std::unordered_map<std::string,std::string> stringmap;
 
 class ClassNode : public AstNode
 {
@@ -24,12 +27,15 @@ public:
 	std::vector<SemErr*> semCheck();
 	bool redefinedField(FieldNode* field);
 	bool redefinedMethod(MethodNode* method);
-
+	stringmap* getFuncStruct();
+	stringmap* getFieldsStruct();
 protected:
 	std::string name;
 	std::string parentName;
 	ClassNode* parentNode;
 	std::vector<FieldNode*> fields;
 	std::vector<MethodNode*> methods;
+	stringmap* funcStruct = NULL;
+	stringmap* fieldsStruct = NULL;
 };
 #endif
