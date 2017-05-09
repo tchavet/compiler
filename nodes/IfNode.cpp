@@ -102,12 +102,12 @@ ExprType* IfNode::getType()
 	return exprType;
 }
 
-string IfNode::llvm(LlvmManager* manager)
+std::string IfNode::llvm(LlvmManager* manager)
 {
-	string if_true = manager->getNewLabel("if_true");
-	string if_false = manager->getNewLabel("if_false");
-	string if_end = manager->getNewLabel("if_end");
-	string cond = this->cond->llvm(manager);
+	std::string if_true = manager->getNewLabel("if_true");
+	std::string if_false = manager->getNewLabel("if_false");
+	std::string if_end = manager->getNewLabel("if_end");
+	std::string cond = this->cond->llvm(manager);
 	manager->write("br i1 "+ cond  + ", label "+while_body +", label "+end_while);
 	manager->writeLabel(if_true);
 	this->then->llvm(manager);

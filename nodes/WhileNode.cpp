@@ -35,15 +35,15 @@ ExprType* WhileNode::getType()
 	return exprType;
 }
 
-string WhileNode::llvm(LlvmManager* manager){
-	string begin_label = manager->getNewLabel("while_cond");
-	string while_body = manager->getNewLabel("while_body");
-	string end_label = manager->getNewLabel("while_end");
+std::string WhileNode::llvm(LlvmManager* manager){
+	std::string begin_label = manager->getNewLabel("while_cond");
+	std::string while_body = manager->getNewLabel("while_body");
+	std::string end_label = manager->getNewLabel("while_end");
 	manager->writeLabel(begin_label);
-	this->cond->llvm(manager);
+	std::string cond = this->cond->llvm(manager);
 	manager->write("br i1 "+ cond  + ", label "+while_body +", label "+end_while);
 	manager->writeLabel(while_body);
 	this->body->llvm(manager);
 	manager->writeLabel(end_label);
-	return "";	
+	return "";
 }

@@ -44,3 +44,13 @@ ExprType* BlockNode::getType()
 	type = exprType->type;
 	return exprType;
 }
+std::string BlockNode::llvm(LlvmManager* manager)
+{
+	for(int i = 0; i< expressions.size();i++)
+	{
+		if(i == expressions.size()-1)
+			return expressions[i]->llvm(manager);
+		expressions[i]->llvm(manager);
+	}//end for
+	return "";
+}
