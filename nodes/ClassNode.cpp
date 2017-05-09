@@ -119,6 +119,16 @@ MethodNode* ClassNode::getMethod(std::string methodName)
 	return NULL;
 }
 
+std::vector<FieldNode*> getFields()
+{
+	return fields;
+}
+
+std::vector<MethodNode*> getMethods()
+{
+	return methods;
+}
+
 std::vector<SemErr*> ClassNode::semCheck()
 {
 	std::vector<SemErr*> errors;

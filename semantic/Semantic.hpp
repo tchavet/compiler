@@ -1,7 +1,6 @@
 #ifndef SEMANTIC_H
 #define SEMANTIC_H
 
-#include "Scope.hpp"
 #include "../nodes/ProgramNode.hpp"
 #include "Types.hpp"
 
