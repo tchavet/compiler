@@ -7,8 +7,6 @@ Semantic::Semantic(std::string filename, ProgramNode* tree)
 {
 	this->filename = filename;
 	astTree = tree;
-	rootScope = new Scope();
-	currentScope = rootScope;
 
 	std::vector<std::string> builtIns;
 	builtIns.push_back("int32");
