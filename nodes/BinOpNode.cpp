@@ -58,7 +58,7 @@ ExprType* BinOpNode::getType()
 	return exprType;
 }
 
-std::string llvm(LlvmManager* manager)
+std::string BinOpNode::llvm(LlvmManager* manager)
 {
 	std::string leftExprLlvm = leftExpr->llvm(manager);
 	std::string rightExprLlvm = rightExpr->llvm(manager);
@@ -80,4 +80,6 @@ std::string llvm(LlvmManager* manager)
 		return manager.write("prout "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "and")
 		return manager.write("and i1 "+leftExprLlvm+", "+rightExprLlvm, ".");
+	else
+		return "";
 }
