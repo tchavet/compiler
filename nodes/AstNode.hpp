@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <string>
-#include "../LlvmManager.h"
+#include "../LlvmManager.hpp"
 
 class AstNode
 {
