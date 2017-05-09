@@ -96,7 +96,7 @@ ExprType* CallNode::getType()
 	return exprType;
 }
 
-std::string llvm(LlvmManager* manager)
+std::string CallNode::llvm(LlvmManager* manager)
 {
 	std::string function = manager->getFunction(objExpr->getComputedType(), name, objExpr->llvm(manager));
 	MethodNode* methodNode = Types::getNode(objExpr->getComputedType())->getMethod(name);
