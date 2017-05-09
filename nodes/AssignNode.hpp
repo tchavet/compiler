@@ -9,6 +9,7 @@ public:
 	AssignNode(int line, int column, std::string name, ExprNode* expr);
 	std::string printTree(int tabsNb=0, bool types=false);
 	ExprType* getType();
+	std::string llvm(LlvmManager* manager);
 
 protected:
 	std::string name;

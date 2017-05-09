@@ -10,7 +10,7 @@ public:
 	ExprNode(int line=0, int column=0);
 	virtual ExprType* getType();
 	virtual std::string printTree(int tabsNb=0, bool types=false);
-	virtual void llvm(LlvmManager* manager);
+	virtual std::string llvm(LlvmManager* manager);
 	virtual void setLlvmNameInScope(std::string var, std::string llvmName);
 	virtual std::string getLlvmNameInScope(std::string var);
 
