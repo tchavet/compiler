@@ -39,3 +39,17 @@ void AstNode::setParent(AstNode* parent)
 {
 	this->parent = parent;
 }
+
+void AstNode::setLlvmNameInScope(std::string var, std::string llvmName)
+{
+	if (parent)
+		parent->setLlvmNameInScope(var, llvmName);
+}
+
+std::string AstNode::getLlvmNameInScope(std::string var)
+{
+	if (parent)
+		return parent->getLlvmNameInScope(var);
+	else
+		return "";
+}

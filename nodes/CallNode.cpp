@@ -95,3 +95,27 @@ ExprType* CallNode::getType()
 	type = exprType->type;
 	return exprType;
 }
+
+std::string CallNode::llvm(LlvmManager* manager)
+{
+	std::string function = manager->getFunction(objExpr->getComputedType(), name, objExpr->llvm(manager));
+	MethodNode* methodNode = Types::getNode(objExpr->getComputedType())->getMethod(name);
+	std::vector<FormalNode*> methodParams = methodNode->getParams();
+	std::string llvm = "call fastcc "+LlvmManager::llvmType(methodNode->getReturnType())+" (";
+	for (int i=0; i<methodParams.size(); i++)
+	{
+		llvm += methodParams[i]->getType();
+		if (i < methodParams.size()-1)
+			llvm += ", ";
+	}
+	llvm += ")* "+function+"(";
+	for (int i=0; i<args.size(); i++)
+	{
+		std::string argLlvm = args[i]->llvm(manager);
+		llvm += LlvmManager::llvmType(args[i]->getComputedType())+" "+argLlvm;
+		if (i < args.size()-1)
+			llvm += ", ";
+	}
+	llvm += ")";
+	return manager.write(llvm);
+}

@@ -9,6 +9,7 @@ public:
 	WhileNode(int line, int column, ExprNode* cond, ExprNode* body);
 	std::string printTree(int tabsNb=0, bool types=false);
 	ExprType* getType();
+	std::string llvm(LlvManager* manager);
 
 protected:
 	ExprNode* cond;

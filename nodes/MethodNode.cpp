@@ -88,7 +88,28 @@ std::vector<SemErr*> MethodNode::semCheck()
 	return errors;
 }
 
-std::string MethodNode::getReturnType()
+void MethodNode::setLlvmNameInScope(std::string var, std::string llvmName)
 {
-	return returnType;
+	for (int i=0; i<params.size(); i++)
+	{
+		if (params[i]->getName())
+		{
+			params[i]->setLlvmNameInScope(var, llvmName);
+		}
+	}
+}
+
+std::string MethodNode::getLlvmNameInScope(std::string var)
+{
+	for (int i=0; i<params.size(); i++)
+	{
+		if (params[i]->getName())
+		{
+			return params[i]->getLlvmNameInScope(var);
+		}
+	}
+	if (parentNode)
+		return parentNode->getLlvmNameInScope(var);
+	else
+		return "";
 }

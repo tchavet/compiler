@@ -6,6 +6,7 @@ FieldNode::FieldNode(int line, int column, std::string name, std::string type, E
 	this->name = name;
 	this->type = type;
 	this->init = init;
+	llvmName = name;
 	if (init)
 		init->setParent(this);
 }
@@ -74,4 +75,16 @@ std::vector<SemErr*> FieldNode::semCheck()
 std::string FieldNode::getTypeInScope(std::string id)
 {
 	return "";
+}
+
+void FieldNode::setLlvmNameInScope(std::string var, std::string llvmName)
+{
+	if (name == var)
+		this->llvmName = llvmName;
+}
+
+std::string FieldNode::getLlvmNameInScope(std::string var)
+{
+	if (name == var)
+		return llvmName;
 }

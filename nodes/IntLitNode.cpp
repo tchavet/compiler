@@ -18,3 +18,8 @@ ExprType* IntLitNode::getType()
 	type = "int32";
 	return new ExprType("int32");
 }
+
+std::string llvm(LlvmManager* manager)
+{
+	return this->value;
+}

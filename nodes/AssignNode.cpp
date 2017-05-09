@@ -57,3 +57,9 @@ ExprType* AssignNode::getType()
 	type = exprType->type;
 	return exprType;
 }
+
+std::string llvm(LlvmManager* manager)
+{
+	std::string exprLlvmName = expr.llvm(manager);
+	return manager.write(exprLlvmName, name);
+}

@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <string>
+#include "../LlvmManager.h"
 
 class AstNode
 {
@@ -13,6 +14,9 @@ public:
 	int getColumn();
 	void setParent(AstNode* parent);
 	virtual std::string getTypeInScope(std::string id);
+	virtual std::string llvm(LlvmManager* manager){};
+	virtual void setLlvmNameInScope(std::string var, std::string llvmName);
+	virtual std::string getLlvmNameInScope(std::string var);
 
 protected:
 	int line;

@@ -22,3 +22,8 @@ ExprType* ObjectIdNode::getType()
 	type = exprType->type;
 	return exprType;
 }
+
+std::string ObjectIdNode::llvm(LlvmManager* manager)
+{
+	return parent->getLlvmNameInScope(name);
+}

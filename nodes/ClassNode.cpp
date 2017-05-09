@@ -120,6 +120,16 @@ MethodNode* ClassNode::getMethod(std::string methodName)
 	return NULL;
 }
 
+std::vector<FieldNode*> getFields()
+{
+	return fields;
+}
+
+std::vector<MethodNode*> getMethods()
+{
+	return methods;
+}
+
 std::vector<SemErr*> ClassNode::semCheck()
 {
 	std::vector<SemErr*> errors;
@@ -222,4 +232,30 @@ stringmap* ClassNode::getFieldsStruct()
 	}
 
 	return fieldsStruct;
+}
+
+void ClassNode::setLlvmNameInScope(std::string var, std::string llvmName)
+{
+	for (int i=0; i<fields.size(); i++)
+	{
+		if (fields[i]->getName())
+		{
+			fields[i]->setLlvmNameInScope(var, llvmName);
+		}
+	}
+}
+
+std::string ClassNode::getLlvmNameInScope(std::string var)
+{
+	for (int i=0; i<fields.size(); i++)
+	{
+		if (fields[i]->getName())
+		{
+			return fields[i]->getLlvmNameInScope(var);
+		}
+	}
+	if (parentNode)
+		return parentNode->getLlvmNameInScope(var);
+	else
+		return "";
 }
