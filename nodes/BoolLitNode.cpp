@@ -16,3 +16,10 @@ ExprType* BoolLitNode::getType()
 	type = "bool";
 	return exprType;
 }
+
+std::string BoolLitNode::llvm(LlvmManager* manager)
+{
+	if(this->value == "false")
+		return "0";
+	return "1";	
+}
