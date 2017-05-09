@@ -99,10 +99,10 @@ std::string LetNode::llvm(LlvmManager* manager)
 {
 	std::string exprLlvmName;
 	if(init != NULL)	
-		exprLlvmName = this->init->llvm(manager);
+		exprLlvmName = init->llvm(manager);
 	else 
 		exprLlvmName = "0";
-	manager.write(this->exprLlvmName, name);
-	return this->scope->llvm(manager);
+	manager->write(exprLlvmName, name);
+	return scope->llvm(manager);
 
 }

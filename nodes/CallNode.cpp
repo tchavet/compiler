@@ -117,5 +117,5 @@ std::string CallNode::llvm(LlvmManager* manager)
 			llvm += ", ";
 	}
 	llvm += ")";
-	return manager.write(llvm);
+	return manager->write(llvm);
 }

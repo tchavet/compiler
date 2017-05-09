@@ -40,6 +40,11 @@ std::string MethodNode::getName()
 	return name;
 }
 
+std::string MethodNode::getReturnType()
+{
+	return returnType;
+}
+
 std::vector<FormalNode*> MethodNode::getParams()
 {
 	return params;
@@ -92,7 +97,7 @@ void MethodNode::setLlvmNameInScope(std::string var, std::string llvmName)
 {
 	for (int i=0; i<params.size(); i++)
 	{
-		if (params[i]->getName())
+		if (params[i]->getName() == var)
 		{
 			params[i]->setLlvmNameInScope(var, llvmName);
 		}
@@ -103,13 +108,13 @@ std::string MethodNode::getLlvmNameInScope(std::string var)
 {
 	for (int i=0; i<params.size(); i++)
 	{
-		if (params[i]->getName())
+		if (params[i]->getName() == var)
 		{
 			return params[i]->getLlvmNameInScope(var);
 		}
 	}
-	if (parentNode)
-		return parentNode->getLlvmNameInScope(var);
+	if (parent)
+		return parent->getLlvmNameInScope(var);
 	else
 		return "";
 }

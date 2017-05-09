@@ -120,12 +120,12 @@ MethodNode* ClassNode::getMethod(std::string methodName)
 	return NULL;
 }
 
-std::vector<FieldNode*> getFields()
+std::vector<FieldNode*> ClassNode::getFields()
 {
 	return fields;
 }
 
-std::vector<MethodNode*> getMethods()
+std::vector<MethodNode*> ClassNode::getMethods()
 {
 	return methods;
 }
@@ -238,7 +238,7 @@ void ClassNode::setLlvmNameInScope(std::string var, std::string llvmName)
 {
 	for (int i=0; i<fields.size(); i++)
 	{
-		if (fields[i]->getName())
+		if (fields[i]->getName() == var)
 		{
 			fields[i]->setLlvmNameInScope(var, llvmName);
 		}
@@ -249,7 +249,7 @@ std::string ClassNode::getLlvmNameInScope(std::string var)
 {
 	for (int i=0; i<fields.size(); i++)
 	{
-		if (fields[i]->getName())
+		if (fields[i]->getName() == var)
 		{
 			return fields[i]->getLlvmNameInScope(var);
 		}

@@ -29,21 +29,12 @@ std::string ExprNode::getLlvmNameInScope(std::string var)
 		return "";
 }
 
-std::string getComputedType()
+std::string ExprNode::getComputedType()
 {
 	return type;
 }
 
-std::string getLlvmType()
+std::string ExprNode::getLlvmType()
 {
-	if (type == "bool")
-		return "i1";
-	else if (type == "int32")
-		return "i32";
-	else if (type == "string")
-		return "i8*";
-	else if (type == "unit")
-		return "void";
-	else
-		return "%class."+type;
+	LlvmManager::llvmType(type);
 }

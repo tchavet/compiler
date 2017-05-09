@@ -11,7 +11,7 @@ public:
 	void addExpression(ExprNode* expression);
 	void addExpressions(std::vector<ExprNode*>* expressions);
 	ExprType* getType();
-	std::string llvm(LlvmManager manager);
+	std::string llvm(LlvmManager* manager);
 
 protected:
 	std::vector<ExprNode*> expressions;

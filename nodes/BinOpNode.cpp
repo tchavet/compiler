@@ -63,23 +63,23 @@ std::string BinOpNode::llvm(LlvmManager* manager)
 	std::string leftExprLlvm = leftExpr->llvm(manager);
 	std::string rightExprLlvm = rightExpr->llvm(manager);
 	if (op == "=")
-		return manager.write("icmp eq "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("icmp eq "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "<")
-		return manager.write("icmp ult "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("icmp ult "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "<=")
-		return manager.write("icmp slt "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("icmp slt "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "+")
-		return manager.write("add "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("add "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "-")
-		return manager.write("sub "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("sub "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "*")
-		return manager.write("mul "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("mul "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "/")
-		return manager.write("sdiv "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("sdiv "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "^")
-		return manager.write("prout "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("prout "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "and")
-		return manager.write("and i1 "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("and i1 "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else
 		return "";
 }

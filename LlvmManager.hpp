@@ -7,7 +7,10 @@ class LlvmManager
 {
 	public:
 		std::string write(std::string towrite, std::string ret = "");
-		std::string writeLabel(std::string label);
+		void writeLabel(std::string label);
+		std::string getNewLabel(std::string label);
 		std::string getFunction(std::string className, std::string fctName, std::string obj);
+		std::string getField(std::string className, std::string fieldName, std::string obj);
+		static std::string llvmType(std::string type);
 };
 #endif
