@@ -78,4 +78,6 @@ std::string llvm(LlvmManager* manager)
 		return manager.write("sdiv "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "^")
 		return manager.write("prout "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+	else if (op == "and")
+		return manager.write("and i1 "+leftExprLlvm+", "+rightExprLlvm, ".");
 }
