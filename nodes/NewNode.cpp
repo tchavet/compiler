@@ -14,3 +14,8 @@ ExprType* NewNode::getType()
 {
 	return new ExprType(type);
 }
+
+std::string llvm(LlvmManager* manager)
+{
+	return manager->write("alloca "+LlvmManager::llvmType(type));
+}
