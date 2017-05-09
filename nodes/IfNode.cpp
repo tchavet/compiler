@@ -101,3 +101,24 @@ ExprType* IfNode::getType()
 	type = exprType->type;
 	return exprType;
 }
+
+string IfNode::llvm(LlvmManager* manager)
+{
+	string if_true = manager->getNewLabel("if_true");
+	string if_false = manager->getNewLabel("if_false");
+	string if_end = manager->getNewLabel("if_end");
+	string cond = this->cond->llvm(manager);
+	manager->write("br i1 "+ cond  + ", label "+while_body +", label "+end_while);
+	manager->writeLabel(if_true);
+	this->then->llvm(manager);
+	manager->write("br label "+if_end);
+	if(els != NULL)
+	{
+		manager->writeLabel(if_false);
+		els->llvm(manager);
+		manager->write("br label "+if_end);//could be removed
+	}
+	manager->writeLabel(if_end);
+	return "";
+
+}

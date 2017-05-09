@@ -9,6 +9,7 @@ public:
 	IfNode(int line, int column, ExprNode* cond, ExprNode* then, ExprNode* els = NULL);
 	std::string printTree(int tabsNb=0, bool types=false);
 	ExprType* getType();
+	void llvm(LlvmManager* manager);
 
 protected:
 	ExprNode* cond;
