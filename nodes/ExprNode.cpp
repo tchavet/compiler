@@ -29,6 +29,11 @@ std::string ExprNode::getLlvmNameInScope(std::string var)
 		return "";
 }
 
+std::string getComputedType()
+{
+	return type;
+}
+
 std::string getLlvmType()
 {
 	if (type == "bool")
