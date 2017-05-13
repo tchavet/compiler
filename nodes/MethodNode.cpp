@@ -53,24 +53,26 @@ std::vector<FormalNode*> MethodNode::getParams()
 std::vector<SemErr*> MethodNode::semCheck()
 {
 	std::vector<SemErr*> errors;
-	if (!Types::defined(returnType))
+	if (!Types::defined(returnType)) // If the return type is not a valid type
 	{
 		errors.push_back(new SemErr(line, column, "undefined return type " + returnType));
 	}
-	if (((ClassNode*)parent)->redefinedMethod(this))
+	if (((ClassNode*)parent)->redefinedMethod(this)) // If the method has already been defined
 	{
 		errors.push_back(new SemErr(line, column, "multiple definitions of method " + name));
 	}
+	/* Check parameters */
 	for (int i=0; i<params.size(); i++)
 	{
-		if (params[i]->getName() == "self")
+		if (params[i]->getName() == "self") // If the parameter's name is self
 		{
 			errors.push_back(new SemErr(line, column, "cannot use self as an argument name"));
 		}
-		else if (!Types::defined(params[i]->getType()))
+		else if (!Types::defined(params[i]->getType())) // If the parameter's type is undefined
 		{
 			errors.push_back(new SemErr(line, column, "undefined type " + params[i]->getType()));
 		}
+		/* Check that there are no other parameters with the same name */
 		for (int j=0; j<i; j++)
 		{
 			if (params[i]->getName() == params[j]->getName())
@@ -79,9 +81,11 @@ std::vector<SemErr*> MethodNode::semCheck()
 			}
 		}
 	}
+	/* Run semantic checking on the method's body */
 	ExprType* bodyType = body->getType();
 	std::vector<SemErr*> bodyErrors = bodyType->errors;
 	errors.insert(errors.begin(), bodyErrors.begin(), bodyErrors.end());
+	/* Check that the body's return type is the same as the one that was declared */
 	if (bodyType->type != "")
 	{
 		ClassNode* classNode = Types::getNode(bodyType->type);

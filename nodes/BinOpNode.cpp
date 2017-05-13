@@ -23,6 +23,7 @@ ExprType* BinOpNode::getType()
 	ExprType* leftType = leftExpr->getType();
 	ExprType* rightType = rightExpr->getType();
 
+	/* Get the errors that happened in the subexpressions */
 	if (leftType->error)
 		exprType->addErrors(leftType->errors);
 	if (rightType->error)
@@ -36,6 +37,7 @@ ExprType* BinOpNode::getType()
 			opType = "bool";
 		else if (op == "=")
 			opType = leftType->type;
+		/* Check that the type of both expression is consistant with the type required by the operand */
 		if (leftType->type != opType)
 		{
 			SemErr* semErr = new SemErr(line, column, "cannot do opperation " + op + " on left operand object of type " + leftType->type);
@@ -63,21 +65,21 @@ std::string BinOpNode::llvm(LlvmManager* manager)
 	std::string leftExprLlvm = leftExpr->llvm(manager);
 	std::string rightExprLlvm = rightExpr->llvm(manager);
 	if (op == "=")
-		return manager->write("icmp eq "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("icmp eq "+LlvmManager::llvmType(leftExpr->getType)+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "<")
-		return manager->write("icmp ult "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("icmp ult "+LlvmManager::llvmType(leftExpr->getType)+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "<=")
-		return manager->write("icmp slt "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("icmp slt "+LlvmManager::llvmType(leftExpr->getType)+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "+")
-		return manager->write("add "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("add "+LlvmManager::llvmType(leftExpr->getType)+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "-")
-		return manager->write("sub "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("sub "+LlvmManager::llvmType(leftExpr->getType)+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "*")
-		return manager->write("mul "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("mul "+LlvmManager::llvmType(leftExpr->getType)+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "/")
-		return manager->write("sdiv "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("sdiv "+LlvmManager::llvmType(leftExpr->getType)+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "^")
-		return manager->write("prout "+leftExpr->getLlvmType()+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("prout "+LlvmManager::llvmType(leftExpr->getType)+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "and")
 		return manager->write("and i1 "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else

@@ -35,6 +35,7 @@ ExprType* CallNode::getType()
 	}
 	else
 	{
+		/* Get the class node of the class the object belongs to */
 		ClassNode* callingClass = Types::getNode(objType->type);
 		if (callingClass)
 		{
@@ -42,9 +43,9 @@ ExprType* CallNode::getType()
 			MethodNode* methodNode = callingClass->getMethod(name);
 			if (methodNode)
 			{
-				/* Check arguments */
+				/* Arguments checking */
 				std::vector<FormalNode*> params = methodNode->getParams();
-				// check number
+				// check number of arguments
 				if (args.size() != params.size())
 				{
 					std::stringstream paramsSize;
@@ -57,15 +58,16 @@ ExprType* CallNode::getType()
 				else
 				{
 					bool argErr = false;
+					// check the type of the arguments
 					for (int i=0; i<args.size(); i++)
 					{
-						// check type
 						ExprType* argType = args[i]->getType();
 						if (argType->error)
 							exprType->addErrors(argType->errors);
 						if (argType->type != "")
 						{
 							ClassNode* argClass = Types::getNode(argType->type);
+							// check that the declared type and the one of the expression are compatible
 							if (!argClass && argType->type != params[i]->getType() || argClass && !argClass->isA(params[i]->getType()))
 							{
 								std::stringstream ss;
@@ -98,9 +100,13 @@ ExprType* CallNode::getType()
 
 std::string CallNode::llvm(LlvmManager* manager)
 {
+	// Get the llvm pointer name to the function
 	std::string function = manager->getFunction(objExpr->getComputedType(), name, objExpr->llvm(manager));
+	// Get the method and parameters node of the method that is being called
 	MethodNode* methodNode = Types::getNode(objExpr->getComputedType())->getMethod(name);
 	std::vector<FormalNode*> methodParams = methodNode->getParams();
+
+	// llvm calling code
 	std::string llvm = "call fastcc "+LlvmManager::llvmType(methodNode->getReturnType())+" (";
 	for (int i=0; i<methodParams.size(); i++)
 	{

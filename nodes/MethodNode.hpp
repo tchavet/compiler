@@ -6,23 +6,53 @@
 #include "BlockNode.hpp"
 #include "../semantic/structures.hpp"
 
+/**
+ * A node representing a class method
+ */
 class MethodNode : public AstNode
 {
 public:
+	/**
+	 * Constructor
+	 * 
+	 * @see AstNode
+	 * @param name The name of the method
+	 * @param params The method parameters
+	 * @param returnType The method return type
+	 * @param body The method body
+	 */
 	MethodNode(int line, int column, std::string name, std::vector<FormalNode*> params, std::string returnType, BlockNode* body);
+
 	std::string printTree(int tabsNb=0, bool types=false);
+
 	std::string getTypeInScope(std::string id);
+
+	/**
+	 * Get the name of the method
+	 * 
+	 * @return The method's name
+	 */
 	std::string getName();
+
+	/**
+	 * Get the parameters of the method
+	 * 
+	 * @return A vector of the method's parameters
+	 */
 	std::vector<FormalNode*> getParams();
+
 	std::vector<SemErr*> semCheck();
+
 	std::string getReturnType();
+
 	void setLlvmNameInScope(std::string var, std::string llvmName);
+
 	std::string getLlvmNameInScope(std::string var);
 
 protected:
-	std::string name;
-	std::vector<FormalNode*> params;
-	std::string returnType;
-	BlockNode* body;
+	std::string name; /**< The name of the method */
+	std::vector<FormalNode*> params; /**< The method's parameters */
+	std::string returnType; /**< The method's return type */
+	BlockNode* body; /**< The method's body */
 };
 #endif

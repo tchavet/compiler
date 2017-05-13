@@ -12,6 +12,7 @@ std::string ObjectIdNode::printTree(int tabsNb, bool types)
 
 ExprType* ObjectIdNode::getType()
 {
+	/* Get the type of the object */
 	ExprType* exprType = new ExprType(getTypeInScope(name));
 	/* If type is "", it means the id is undifined in this scope */
 	if (exprType->type == "")

@@ -33,8 +33,3 @@ std::string ExprNode::getComputedType()
 {
 	return type;
 }
-
-std::string ExprNode::getLlvmType()
-{
-	LlvmManager::llvmType(type);
-}

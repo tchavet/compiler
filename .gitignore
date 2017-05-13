@@ -5,3 +5,5 @@ test*
 *.tab.c
 *.tab.h
 *.tar.xz
+doxygen/html/
+doxygen/latex/

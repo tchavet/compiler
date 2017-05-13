@@ -73,6 +73,7 @@ std::string ClassNode::commonAncestor(ClassNode* class2)
 	if (class2->isA(name))
 		return name;
 
+	/* Cycle through the parents */
 	ClassNode* curClass = class2;
 	while (curClass->getName() != "Object")
 	{
@@ -98,11 +99,13 @@ std::string ClassNode::getTypeInScope(std::string id)
 {
 	if (id == "self")
 		return name;
+	/* Check the classes fields */
 	for (int i=0; i<fields.size(); i++)
 	{
 		if (fields[i]->getName() == id)
 			return fields[i]->getType();
 	}
+	/* Check the parent's fields */
 	if (parentNode)
 		return parentNode->getTypeInScope(id);
 	return AstNode::getTypeInScope(id);
@@ -133,11 +136,13 @@ std::vector<MethodNode*> ClassNode::getMethods()
 std::vector<SemErr*> ClassNode::semCheck()
 {
 	std::vector<SemErr*> errors;
+	/* Run semantic checking on each method */
 	for (int i=0; i<methods.size(); i++)
 	{
 		std::vector<SemErr*> methodErrors = methods[i]->semCheck();
 		errors.insert(errors.end(), methodErrors.begin(), methodErrors.end());
 	}
+	/* Run semantic checking on each field */
 	for (int i=0; i<fields.size(); i++)
 	{
 		std::vector<SemErr*> fieldErrors = fields[i]->semCheck();
@@ -148,11 +153,11 @@ std::vector<SemErr*> ClassNode::semCheck()
 
 bool ClassNode::redefinedField(FieldNode* field)
 {
-	if (parentNode && parentNode->getTypeInScope(field->getName()) != "")
+	if (parentNode && parentNode->getTypeInScope(field->getName()) != "") // If the field exists in the parent
 		return true;
 	for (int i=0; i<fields.size(); i++)
 	{
-		if (fields[i] != field && fields[i]->getName() == field->getName())
+		if (fields[i] != field && fields[i]->getName() == field->getName()) // If there is another field of that name in this class
 			return true;
 	}
 	return false;
@@ -162,23 +167,23 @@ bool ClassNode::redefinedMethod(MethodNode* method)
 {
 	for (int i=0; i<methods.size(); i++)
 	{
-		if (methods[i] != method && methods[i]->getName() == method->getName())
+		if (methods[i] != method && methods[i]->getName() == method->getName()) // If there is another method of that name in this class
 			return true;
 	}
 	if (parentNode)
 	{
 		MethodNode* redefMethod = parentNode->getMethod(method->getName());
-		if (redefMethod)
+		if (redefMethod) // If a method of that name was found in the parent's class
 		{
-			if (redefMethod->getReturnType() != method->getReturnType())
+			if (redefMethod->getReturnType() != method->getReturnType()) // If the parent's method has a different return type
 				return true;
 			std::vector<FormalNode*> methodParams = method->getParams();
 			std::vector<FormalNode*> redefParams = redefMethod->getParams();
-			if (redefParams.size() != methodParams.size())
+			if (redefParams.size() != methodParams.size()) // If the parent's method has a different number of parameters
 				return true;
 			for (int i=0; i<methodParams.size(); i++)
 			{
-				if (methodParams[i]->getType() != redefParams[i]->getType() || methodParams[i]->getName() != redefParams[i]->getName())
+				if (methodParams[i]->getType() != redefParams[i]->getType() || methodParams[i]->getName() != redefParams[i]->getName()) // If the parent's method's parameter type or name is different
 					return true;
 			}
 		}

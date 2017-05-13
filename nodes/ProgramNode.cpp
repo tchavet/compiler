@@ -27,6 +27,7 @@ std::vector<ClassNode*> ProgramNode::getClasses()
 
 std::vector<SemErr*> ProgramNode::semCheck()
 {
+	/* Run semantic checking on all classes */
 	std::vector<SemErr*> errors;
 	for (int i=0; i<classes.size(); i++)
 	{
