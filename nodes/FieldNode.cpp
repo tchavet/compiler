@@ -39,31 +39,32 @@ std::vector<SemErr*> FieldNode::semCheck()
 	std::vector<SemErr*> semErr;
 	std::string typeInScope;
     if (parent)
-		typeInScope = parent->getTypeInScope(name);
-	if (typeInScope != type)
+		typeInScope = parent->getTypeInScope(name); // Ask the class for the type of the field
+	if (typeInScope != type) // If the field has already been defined with another type
 	{
 		semErr.push_back(new SemErr(line, column, "field " + name + " has already been defined as a " + typeInScope));
 	}
-	else if (((ClassNode*)parent)->redefinedField(this))
+	else if (((ClassNode*)parent)->redefinedField(this)) // If the field has already been defined in the class or a parent
 	{
 		semErr.push_back(new SemErr(line, column, "multiple definitions of field " + name));
 	}
-	if (!Types::defined(type))
+	if (!Types::defined(type)) // If the field's type is undefined
 	{
 		semErr.push_back(new SemErr(line, column, "undefined type " + type));
 	}
 	
-	if (init)
+	if (init) // If an initialization expression was provided
 	{
+		/* Run semantic check on the initialization expression */
 		ExprType* initType = init->getType();
 		if (initType->error)
 			semErr.insert(semErr.end(),initType->errors.begin(),initType->errors.end());
 
-		if (initType->type != "" && initType->type != type)
+		if (initType->type != "" && initType->type != type) // If the initialization expression's type is different from the declared field type
 		{
 			ClassNode* initClass = Types::getNode(initType->type);
  
-			if(!(initClass && initClass->isA(type)))
+			if(!(initClass && initClass->isA(type))) // If the types are not compatible (inheritance)
 			{
 				semErr.push_back(new SemErr(line, column, name + " defined as type " + type + ", but assignement expression is of type " + initType->type));
 			}

@@ -108,13 +108,13 @@ std::string IfNode::llvm(LlvmManager* manager)
 	std::string if_false = manager->getNewLabel("if_false");
 	std::string if_end = manager->getNewLabel("if_end");
 	std::string cond = this->cond->llvm(manager);
-	manager->write("br i1 "+ cond  + ", label "+while_body +", label "+end_while);
+	manager->write("br i1 "+ cond  + ", label "+if_true +", label "+if_false);
 	manager->writeLabel(if_true);
 	this->then->llvm(manager);
 	manager->write("br label "+if_end);
+	manager->writeLabel(if_false);
 	if(els != NULL)
 	{
-		manager->writeLabel(if_false);
 		els->llvm(manager);
 		manager->write("br label "+if_end);//could be removed
 	}

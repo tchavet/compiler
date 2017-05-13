@@ -1,3 +1,8 @@
+/**
+@file vsop.lex
+This file contains the parsing rules for the vsop language
+*/
+
 %x NEST_COM LINE_COM STR_LIT
 
 EOL			(\r|\n|\r\n)

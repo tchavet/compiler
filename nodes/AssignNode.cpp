@@ -34,17 +34,17 @@ ExprType* AssignNode::getType()
 		{
 			/* Check that the expression type is the same as the one of the variable being assigned, and that this variable exists */
 			std::string nameType = getTypeInScope(name);
-			if (nameType == "")
+			if (nameType == "") // If there is no type, it means that the variable is undefined
 			{
 				SemErr* semErr = new SemErr(line, column, "variable " + name + " is undefined in this scope");
 				exprType->addError(semErr);
 				exprType->type == "";
 			}
-			else if (nameType != exprType->type)
+			else if (nameType != exprType->type) // If the type of the variable being assigned and the one of the expression to assign are different
 			{
 				ClassNode* exprClass = Types::getNode(exprType->type);
 
-				if(!(exprClass && exprClass->isA(nameType)))
+				if(!(exprClass && exprClass->isA(nameType))) // Check if the types are compatible by inheritance
 				{
 					SemErr* semErr = new SemErr(line, column, "types do not match: type of " + name + " is " + nameType + " but type of the expression to assign is " + exprType->type);
 					exprType->addError(semErr);
@@ -58,8 +58,8 @@ ExprType* AssignNode::getType()
 	return exprType;
 }
 
-std::string llvm(LlvmManager* manager)
+std::string AssignNode::llvm(LlvmManager* manager)
 {
-	std::string exprLlvmName = expr.llvm(manager);
-	return manager.write(exprLlvmName, name);
+	std::string exprLlvmName = expr->llvm(manager); // Convert the expression to llvm and get the unnamed variable where the result is stored
+	return manager->write(exprLlvmName, name); // %name.x = %exprLlvmName
 }
