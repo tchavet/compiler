@@ -87,8 +87,8 @@ public:
 
 protected:
 	int line; /**< The line number where this node's vsop code begins */
-	int column; /**< The column number where this node's vsop code begins */
-	AstNode* parent; /**< The parent node of this node */
+	int column; /**< The column number where this node's vsop code begins */
+	AstNode* parent; /**< The parent node of this node */
 
 	/**
 	 * Get a string made of <tabsNb> tabs
