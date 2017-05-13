@@ -5,7 +5,7 @@
 #include "MethodNode.hpp"
 #include "unordered_map"
 
-typedef std::unordered_map<std::string,std::string> stringmap;
+typedef std::unordered_map<std::string,int> stringmap;
 
 class ClassNode : public AstNode
 {

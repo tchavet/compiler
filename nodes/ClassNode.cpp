@@ -201,9 +201,7 @@ stringmap* ClassNode::getFuncStruct()
 
 		for(int j = funcStruct->size(); j < funcStruct->size() + methods.size(); ++j)
 		{
-			std::stringstream ss;
-			ss << j;
-			funcStruct->insert({{methods[j]->getName(), ss.str()}});
+			funcStruct->insert({{methods[j]->getName(), j}});
 		}
 	}
 
@@ -225,9 +223,7 @@ stringmap* ClassNode::getFieldsStruct()
 
 		for(int j = fieldsStruct->size(); j < fieldsStruct->size() + fields.size(); ++j)
 		{
-			std::stringstream ss;
-			ss << j;
-			fieldsStruct->insert({{fields[j]->getName(), ss.str()}});
+			fieldsStruct->insert({{fields[j]->getName(), j}});
 		}
 	}
 
