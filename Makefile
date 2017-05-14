@@ -40,6 +40,7 @@ make_archive: clean
 	mkdir vsopcompiler/vsopl
 	cp report/report.pdf vsopcompiler/
 	cp *.cpp  vsopcompiler/
+	cp *.hpp  vsopcompiler/
 	cp Makefile vsopcompiler/
 	cp *.lex vsopcompiler/
 	cp *.y vsopcompiler/

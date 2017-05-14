@@ -4,6 +4,8 @@
 #include "AstNode.hpp"
 #include "ClassNode.hpp"
 
+class LlvmManager;
+
 /**
  * The root node of the program tree.
  * The program node is the parent of all the class nodes

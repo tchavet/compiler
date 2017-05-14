@@ -5,6 +5,8 @@
 #include <string>
 #include "../LlvmManager.hpp"
 
+class LlvmManager;
+
 /**
  * A syntactic tree node
  */

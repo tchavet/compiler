@@ -4,6 +4,9 @@
 #include "AstNode.hpp"
 #include "../semantic/structures.hpp"
 
+class LlvmManager;
+class AstNode;
+
 /**
  * A node representing an expression
  */
@@ -27,7 +30,7 @@ public:
 
 	virtual std::string printTree(int tabsNb=0, bool types=false);
 
-	virtual std::string llvm(LlvmManager* manager);
+	virtual std::string llvm(LlvmManager* manager){};
 
 	virtual void setLlvmNameInScope(std::string var, std::string llvmName);
 
