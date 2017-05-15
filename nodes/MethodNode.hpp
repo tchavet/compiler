@@ -49,10 +49,26 @@ public:
 
 	std::string getLlvmNameInScope(std::string var);
 
+	/**
+	 * Write the llvm header for this method.
+	 * - Write the definition of the type of the method
+	 *   
+	 * @param manager The LlvmManager
+	 */
+	void llvmHeader(LlvmManager* manager);
+
+	/**
+	 * Get the llvm variable representing the type of the method in llvm.
+	 * 
+	 * @return The llvm variable of the type of the method
+	 */
+	std::string getLlvmType();
+
 protected:
 	std::string name; /**< The name of the method */
 	std::vector<FormalNode*> params; /**< The method's parameters */
 	std::string returnType; /**< The method's return type */
 	BlockNode* body; /**< The method's body */
+	std::string llvmType; /**< The llvm variable holding the type of the method */
 };
 #endif

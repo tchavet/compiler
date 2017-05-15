@@ -1,92 +1,26 @@
 #include "LlvmManager.hpp"
 #include "nodes/ProgramNode.hpp"
+#include <iostream>
 
 using namespace std;
 
-LlvmManager::LlvmManager(ProgramNode *programNode, vector<ostream*> outs, std::string moduleId)
+LlvmManager::LlvmManager(vector<ostream*> outs, std::string moduleId)
 {
 	indent = false;
 	outputs = outs;
 	llvmVars = stringmap();
-	std::vector<ClassNode*> classes = programNode->getClasses();
 	
 	write("; ModuleID = '"+moduleId +"'");
-	
-	for(vector<ClassNode*>::const_iterator it = classes.cbegin(); it != classes.cend(); ++it)
-	{
-		ClassNode* classNode = *it;
-		stringmap* methods = classNode->getAllMethods();
-		methodsMap.emplace(classNode->getName(), methods);
-
-		stringmap* fields = classNode->getAllMethods();
-		fieldsMap.emplace(classNode->getName(), fields);
-		
-		string methodsStruct = "%methods.type."+classNode->getName()+" = type {";
-		string classStruct = "%class."+classNode->getName()+" type {%methods.type."+classNode->getName()+"*";
-		vector<string> methodNames(methods->size());
-		for(stringmap::const_iterator jt = fields->cbegin(); jt != fields->cend(); ++jt)
-		{
-			methodNames[jt->second] = jt->first;
-		}
-		for(int i = 0; i < methodNames.size(); ++i)
-		{
-			if(i != 0)
-			{
-				methodsStruct += ", ";
-			}
-
-			MethodNode* methodNode = classNode->getMethod(methodNames[i]);
-			methodsStruct += llvmType(methodNode->getReturnType()) + " (";
-			std::vector<FormalNode*> params = methodNode->getParams();
-			for(int j=0; params.size(); ++j)
-			{
-				if(j != 0)
-				{
-					methodsStruct += ", ";
-				}
-
-				methodsStruct += llvmType(params[j]->getType());
-			}
-			methodsStruct += ")*";
-		}
-
-		methodsStruct += "}";
-		write(methodsStruct);
-
-		write("%methods."+classNode->getName()+" = alloca %methods.type."+classNode->getName());
-
-		implementMethodsVector(classNode);
-
-
-		string clasStruct = "";
-		vector<string> fieldNames(fields->size());
-		for(stringmap::const_iterator jt = fields->cbegin(); jt != fields->cend(); ++jt)
-		{
-			fieldNames[jt->second] = jt->first;
-		}
-
-		for(int i = 0; i < fieldNames.size(); ++i)
-		{
-			clasStruct += ", ";
-
-			clasStruct += llvmType(classNode->getTypeInScope(fieldNames[i]));
-		}
-	
-		clasStruct += "}";
-
-		write(clasStruct);
-	}
 }
 
-LlvmManager::LlvmManager(ProgramNode *programNode, ostream* out, std::string moduleId)
+LlvmManager::LlvmManager(ostream* out, std::string moduleId) : LlvmManager(vector<ostream*>(1,out), moduleId)
 {
-	LlvmManager(programNode, vector<ostream*>(1,out), moduleId);
 }
 
 std::string LlvmManager::write(std::string toWrite, std::string ret)
 {
 	string var = "";
-	if(ret != ".")
+	if(ret != "")
 	{
 		stringmap::iterator it = llvmVars.find(ret);
 		if(it == llvmVars.end())
@@ -97,7 +31,10 @@ std::string LlvmManager::write(std::string toWrite, std::string ret)
 		{
 			++(it->second);
 		}
-		var = "%"+it->first+"."+to_string(it->second);
+		if (ret == ".")
+			var = "%"+to_string(it->second);
+		else
+			var = "%"+it->first+"."+to_string(it->second);
 		toWrite = var+" = "+toWrite;
 
 	}	
@@ -107,11 +44,10 @@ std::string LlvmManager::write(std::string toWrite, std::string ret)
 		toWrite = "\t" + toWrite;
 	}
 
-	toWrite += "\n";
-
 	for(vector<ostream*>::iterator it=outputs.begin(); it!=outputs.end(); ++it)
 	{
-		(*it)->write(toWrite.c_str(), toWrite.size());
+		(**it) << toWrite << endl;
+//		(*it)->flush();
 	}
 
 	return var;
@@ -159,9 +95,10 @@ std::string LlvmManager::getField(std::string className, std::string fieldName, 
 	return write("getelementptr class."+className+"* "+object+", i32 0, i32 "+to_string(fieldPos), "");
 }
 
-void LlvmManager::implementMethodsVector(ClassNode *classNode)
+void LlvmManager::addClass(std::string className, stringmap* methods, stringmap* fields)
 {
-	
+	methodsMap.emplace(className, methods);
+	fieldsMap.emplace(className, fields);
 }
 
 std::string LlvmManager::llvmType(std::string type)

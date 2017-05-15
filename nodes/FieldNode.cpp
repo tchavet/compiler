@@ -89,3 +89,11 @@ std::string FieldNode::getLlvmNameInScope(std::string var)
 	if (name == var)
 		return llvmName;
 }
+
+std::string FieldNode::llvm(LlvmManager* manager)
+{
+	if (init)
+		return init->llvm(manager);
+	else
+		return manager->write("0", ".");
+}

@@ -44,6 +44,8 @@ public:
 	void setLlvmNameInScope(std::string var, std::string llvmName);
 
 	std::string getLlvmNameInScope(std::string var);
+	
+	std::string llvm(LlvmManager* manager);
 
 protected:
 	std::string name; /**< The name of the field */

@@ -11,6 +11,7 @@ MethodNode::MethodNode(int line, int column, std::string name, std::vector<Forma
 	body->setParent(this);
 	for (int i=0; i<params.size(); i++)
 		params[i]->setParent(this);
+	llvmType = "";
 }
 
 std::string MethodNode::printTree(int tabsNb, bool types)
@@ -121,4 +122,28 @@ std::string MethodNode::getLlvmNameInScope(std::string var)
 		return parent->getLlvmNameInScope(var);
 	else
 		return "";
+}
+
+void MethodNode::llvmHeader(LlvmManager* manager)
+{
+	llvmType = "%method.type."+((ClassNode*)parent)->getName()+"."+name;
+	/* Define the method type */
+	// %method.type.<className>.<methodName> = type <retType> (<paramType>, <paramType,...)
+	std::string methodType = llvmType+" = type "+LlvmManager::llvmType(returnType) + " (";
+	for(int i=0; i<params.size(); ++i)
+	{
+		if(i != 0)
+		{
+			methodType += ", ";
+		}
+
+		methodType += LlvmManager::llvmType(params[i]->getType());
+	}
+	methodType += ")*";
+	manager->write(methodType);
+}
+
+std::string MethodNode::getLlvmType()
+{
+	return llvmType;
 }

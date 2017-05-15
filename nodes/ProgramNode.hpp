@@ -49,6 +49,16 @@ public:
 	 */
 	std::vector<SemErr*> semCheck();
 
+	/**
+	 * Write the llvm of the program.
+	 * Calls LlvmHeader and llvm for each class
+	 * 
+	 * @param LlvmManager manager The llvm manager
+	 * 
+	 * @return An empty string
+	 */
+	std::string llvm(LlvmManager* manager);
+
 protected:
 	std::vector<ClassNode*> classes; /**< The nodes representing the classes of the program */
 };

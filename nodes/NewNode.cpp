@@ -1,4 +1,5 @@
 #include "NewNode.hpp"
+#include "../semantic/Types.hpp"
 
 NewNode::NewNode(int line, int column, std::string type) : ExprNode(line, column)
 {
@@ -17,5 +18,5 @@ ExprType* NewNode::getType()
 
 std::string NewNode::llvm(LlvmManager* manager)
 {
-	return manager->write("alloca "+LlvmManager::llvmType(type));
+	return Types::getNode(type)->llvmAllocate(manager);
 }

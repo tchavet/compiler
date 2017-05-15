@@ -53,6 +53,13 @@ public:
 	void setParent(AstNode* parent);
 
 	/**
+	 * Get the parent node
+	 * 
+	 * @return A pointer to the parent node
+	 */
+	AstNode* getParent();
+
+	/**
 	 * Get the type of a variable in the scope where this node is located
 	 *
 	 * @param id The name of the variable

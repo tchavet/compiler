@@ -123,6 +123,18 @@ MethodNode* ClassNode::getMethod(std::string methodName)
 	return NULL;
 }
 
+FieldNode* ClassNode::getField(std::string fieldName)
+{
+	for (int i=0; i<fields.size(); i++)
+	{
+		if (fields[i]->getName() == fieldName)
+			return fields[i];
+	}
+	if (parentNode)
+		return parentNode->getField(fieldName);
+	return NULL;
+}
+
 std::vector<FieldNode*> ClassNode::getFields()
 {
 	return fields;
@@ -204,9 +216,9 @@ stringmap* ClassNode::getAllMethods()
 			allMethods = new stringmap();
 		}
 
-		for(int j = allMethods->size(); j < allMethods->size() + methods.size(); ++j)
+		for(int i = 0; i < methods.size(); ++i)
 		{
-			allMethods->insert({{methods[j]->getName(), j}});
+			allMethods->insert({{methods[i]->getName(), allMethods->size()}});
 		}
 	}
 
@@ -226,9 +238,9 @@ stringmap* ClassNode::getAllFields()
 			allFields = new stringmap();
 		}
 
-		for(int j = allFields->size(); j < allFields->size() + fields.size(); ++j)
+		for(int i = 0; i < fields.size(); ++i)
 		{
-			allFields->insert({{fields[j]->getName(), j}});
+			allFields->insert({{fields[i]->getName(), allFields->size()}});
 		}
 	}
 
@@ -259,4 +271,107 @@ std::string ClassNode::getLlvmNameInScope(std::string var)
 		return parentNode->getLlvmNameInScope(var);
 	else
 		return "";
+}
+
+void ClassNode::llvmHeader(LlvmManager* manager)
+{
+	/* Fill the hashmap with the methods */
+	getAllMethods();
+
+	/* Fill the hashmap with the fields */
+	getAllFields();
+
+	manager->addClass(name, allMethods, allFields);
+	
+	std::vector<std::string> methodNames(allMethods->size()); // Names of the methods in the right order
+
+	/* Fill the methodNames vector in the right order */
+	for(stringmap::const_iterator it = allMethods->cbegin(); it != allMethods->cend(); ++it)
+	{
+		methodNames[it->second] = it->first;
+	}
+
+	/* Write the methods llvm header and add the method type to the methods structure */
+	std::string methodsType = "%methods.type."+name+" = type {"; // Type of the structure containing the pointers to the methods
+	for(int i = 0; i < methodNames.size(); ++i)
+	{
+		if(i != 0)
+		{
+			methodsType += ", ";
+		}
+
+		MethodNode* methodNode = getMethod(methodNames[i]);
+		methodNode->llvmHeader(manager);
+		methodsType += methodNode->getLlvmType();
+	}
+	methodsType += "}";
+	manager->write(methodsType);
+
+	/* Instantiate the methods structure */
+	manager->write("%methods."+name+" = alloca %methods.type."+name);
+	/* Fill the methods structure */
+	for (int i=0; i<methodNames.size(); i++)
+	{
+		MethodNode* methodNode = getMethod(methodNames[i]);
+		// %# = getelementpointer %methods.type.<className>* %methods.<className>, i32 0, i32 #
+		std::string ptr = manager->write("getelementptr %methods.type."+name+"* %methods."+name+", i32 0, i32 "+std::to_string(i), ".");
+		std::string methodClass = ((ClassNode*)methodNode->getParent())->getName();
+		// store <methodType> @method.<className>.<methodName>, <methodType>* %#
+		manager->write("store "+methodNode->getLlvmType()+" @method."+methodClass+"."+methodNode->getName()+", "+methodNode->getLlvmType()+" "+ptr);
+	}
+
+	/* Define the class structure type */
+	std::string classType = "%class."+name+" type {%methods.type."+name+"*";
+	std::vector<std::string> fieldNames(allFields->size()); // Names of the fields in the right order
+	/* Fill the fieldNames vector in the right order */
+	for(stringmap::const_iterator it = allFields->cbegin(); it != allFields->cend(); ++it)
+	{
+		fieldNames[it->second] = it->first;
+	}
+
+	for(int i = 0; i < fieldNames.size(); ++i)
+	{
+		classType += ", ";
+		classType += LlvmManager::llvmType(getTypeInScope(fieldNames[i]));
+	}
+
+	classType += "}";
+
+	manager->write(classType);
+}
+
+std::string ClassNode::llvm(LlvmManager *manager)
+{
+	return "";
+}
+
+std::string ClassNode::llvmAllocate(LlvmManager *manager)
+{
+	/* Allocate the class struct */
+	std::string objPtr = manager->write("alloca "+name, ".");
+
+	/* Set the methods vector */
+	// %# = getelementpointer %class.<className>* %<objPtr>, i32 0, i32 0
+	std::string methodsPtr = manager->write("getelementptr %class."+name+"* "+objPtr+", i32 0, i32 0", ".");
+	// store %methods.type.<className> %methods.<className>, %methods.type.<className>* %#
+	manager->write("store %methods.type."+name+" %methods."+name+", %methods.type."+name+"* "+methodsPtr);
+
+	/* Set all the fields */
+	std::vector<std::string> fieldNames(allFields->size()); // Names of the fields in the right order
+	/* Fill the fieldNames vector in the right order */
+	for(stringmap::const_iterator it = allFields->cbegin(); it != allFields->cend(); ++it)
+	{
+		fieldNames[it->second] = it->first;
+	}
+	for (int i=0; i<fieldNames.size(); i++)
+	{
+		FieldNode *fieldNode = getField(fieldNames[i]);
+		// %# = getelementptr %class.<className>* %<objPtr>, i32 0, <fieldType> <i+1>
+		std::string ptr = manager->write("getelementptr %class."+name+"* "+objPtr+", i32 0, i32 "+std::to_string(i+1), ".");
+		std::string fieldType = LlvmManager::llvmType(fieldNode->getType());
+		std::string initExpr = fieldNode->llvm(manager);
+		// store <fieldType> <fieldInit>, <fieldType>* %#
+		manager->write("store "+fieldType+" "+initExpr+", "+fieldType+"* "+ptr);
+	}
+	return objPtr;
 }

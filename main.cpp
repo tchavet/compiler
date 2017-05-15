@@ -1,5 +1,6 @@
 #include <cstddef>
 #include <iostream>
+#include <fstream>
 #include <stdexcept>
 #include <cstring>
 #include <iostream>
@@ -79,6 +80,10 @@ int main(int argc, char** argv)
 			std::cerr << "File Opening failed :" << argv[argc-1]  << std::endl;
 			return -5;
 		}
+		std::string programName = filename.c_str();
+		// TODO remove .vsop
+		programName = "out";
+
 		yyin = file;
 
 		yyparse();
@@ -106,6 +111,12 @@ int main(int argc, char** argv)
 
 		if (err_sem)
 			return -7;
+
+		std::ofstream llvmFile;
+		llvmFile.open(programName+".ll");
+		LlvmManager *llvmManager = new LlvmManager(&llvmFile);
+		root->llvm(llvmManager);
+		llvmFile.close();
 	}//end try
 	catch(std::runtime_error& e)
 	{

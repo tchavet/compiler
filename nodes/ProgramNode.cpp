@@ -36,3 +36,16 @@ std::vector<SemErr*> ProgramNode::semCheck()
 	}
 	return errors;
 }
+
+std::string ProgramNode::llvm(LlvmManager* manager)
+{
+	for (int i=0; i<classes.size(); i++)
+	{
+		classes[i]->llvmHeader(manager);
+	}
+	for (int i=0; i<classes.size(); i++)
+	{
+		classes[i]->llvm(manager);
+	}
+	return "";
+}

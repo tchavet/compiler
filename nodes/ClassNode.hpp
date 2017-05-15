@@ -110,6 +110,15 @@ public:
 	MethodNode* getMethod(std::string methodName);
 
 	/**
+	 * Get the field node of one of this class' fields (also works if the field is inherited)
+	 *
+	 * @param fieldName The name of the field to get
+	 *
+	 * @return The field's node
+	 */
+	FieldNode* getField(std::string fieldName);
+
+	/**
 	 * Get all the fields of this class (without the inherited ones, except if redefined)
 	 *
 	 * @return A vector of the field nodes
@@ -148,13 +157,48 @@ public:
 	 */
 	bool redefinedMethod(MethodNode* method);
 
+	/**
+	 * Get a hashmap of all the methods of the class, including inherited ones.
+	 * The methods are in the order they appear in the code, the second element is the position
+	 * 
+	 * @return A hashmap where the first element is the method's name, the second its position in the code
+	 */
 	stringmap* getAllMethods();
 
+	/**
+	 * Get a hashmap of all the fields of the class, including inherited ones.
+	 * The fields are in the order they appear in the code, the second element is the position
+	 * 
+	 * @return A hashmap where the first element is the field's name, the second its position in the code
+	 */
 	stringmap* getAllFields();
 
 	void setLlvmNameInScope(std::string var, std::string llvmName);
 
 	std::string getLlvmNameInScope(std::string var);
+
+	/**
+	 * Write the llvm header for the class.
+	 *  - create methods structure
+	 *  - instantiate method structures
+	 *  - create class structure
+	 *  - send the methods and fields maps to the llvm manager
+	 *  
+	 *  @param llvmManager The llvm manager
+	 */
+	void llvmHeader(LlvmManager *manager);
+
+	std::string llvm(LlvmManager *manager);
+
+	/**
+	 * Write the llvm code to allocate and initialize this class
+	 * 
+	 * @param manager The llvm manager
+	 * 
+	 * @return The llvm variable pointing to the allocated class
+	 */
+	std::string llvmAllocate(LlvmManager *manager);
+
 protected:
 	std::string name; /**< The name of the class */
 	std::string parentName; /**< The name of the parent of the class */
