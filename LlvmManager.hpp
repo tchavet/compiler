@@ -15,22 +15,22 @@ typedef std::unordered_map<std::string,stringmap*> classmap;
 class LlvmManager
 {
 	public:
-		LlvmManager(ProgramNode *pgrn, std::vector<std::ostream*> outs, std::string moduleID = "main.vsop");
-		LlvmManager(ProgramNode *pgrn, std::ostream *out, std::string moduleID = "main.vsop");
-		std::string write(std::string towrite, std::string ret = ".");
+		LlvmManager(ProgramNode *programNode, std::vector<std::ostream*> outs, std::string moduleId = "main.vsop");
+		LlvmManager(ProgramNode *programNode, std::ostream *out, std::string moduleId = "main.vsop");
+		std::string write(std::string toWrite, std::string ret = "");
 		void writeLabel(std::string llvmLabel);
 		std::string getNewLabel(std::string label);
-		std::string getFunction(std::string className, std::string fctName, std::string obj);
-		std::string getField(std::string className, std::string fieldName, std::string obj);
+		std::string getFunction(std::string className, std::string functionName, std::string object);
+		std::string getField(std::string className, std::string fieldName, std::string object);
 		static std::string llvmType(std::string type);
 
 	protected:
 		bool indent;
-		classmap cm = classmap(); //for the functions
-		classmap cfm = classmap(); //for the fields//
+		classmap methodsMap = classmap(); //for the functions
+		classmap fieldsMap = classmap(); //for the fields//
 		stringmap llvmVars; 
 		stringmap llvmLabels; 
 		std::vector<std::ostream*> outputs;
-		void implementMethodsVector(ClassNode *cn);
+		void implementMethodsVector(ClassNode *classNode);
 };
 #endif

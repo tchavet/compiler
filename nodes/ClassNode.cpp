@@ -191,48 +191,48 @@ bool ClassNode::redefinedMethod(MethodNode* method)
 	return false;
 }
 
-stringmap* ClassNode::getFuncStruct()
+stringmap* ClassNode::getAllMethods()
 {
-	if(funcStruct == NULL)
+	if(!allMethods)
 	{
-		if(parentNode != NULL)
+		if(parentNode)
 		{
-			funcStruct = parentNode->getFuncStruct();
+			allMethods = parentNode->getAllMethods();
 		}
 		else
 		{
-			funcStruct = new stringmap();
+			allMethods = new stringmap();
 		}
 
-		for(int j = funcStruct->size(); j < funcStruct->size() + methods.size(); ++j)
+		for(int j = allMethods->size(); j < allMethods->size() + methods.size(); ++j)
 		{
-			funcStruct->insert({{methods[j]->getName(), j}});
+			allMethods->insert({{methods[j]->getName(), j}});
 		}
 	}
 
-	return funcStruct;
+	return allMethods;
 }
 
-stringmap* ClassNode::getFieldsStruct()
+stringmap* ClassNode::getAllFields()
 {
-	if(fieldsStruct == NULL)
+	if(!allFields)
 	{
-		if(parentNode != NULL)
+		if(parentNode)
 		{
-			fieldsStruct = parentNode->getFieldsStruct();
+			allFields = parentNode->getAllFields();
 		}
 		else
 		{
-			fieldsStruct = new stringmap();
+			allFields = new stringmap();
 		}
 
-		for(int j = fieldsStruct->size(); j < fieldsStruct->size() + fields.size(); ++j)
+		for(int j = allFields->size(); j < allFields->size() + fields.size(); ++j)
 		{
-			fieldsStruct->insert({{fields[j]->getName(), j}});
+			allFields->insert({{fields[j]->getName(), j}});
 		}
 	}
 
-	return fieldsStruct;
+	return allFields;
 }
 
 void ClassNode::setLlvmNameInScope(std::string var, std::string llvmName)

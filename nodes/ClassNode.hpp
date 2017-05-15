@@ -148,9 +148,9 @@ public:
 	 */
 	bool redefinedMethod(MethodNode* method);
 
-	stringmap* getFuncStruct();
+	stringmap* getAllMethods();
 
-	stringmap* getFieldsStruct();
+	stringmap* getAllFields();
 
 	void setLlvmNameInScope(std::string var, std::string llvmName);
 
@@ -161,7 +161,7 @@ protected:
 	ClassNode* parentNode; /**< The class node of the parent of the class */
 	std::vector<FieldNode*> fields; /**< The field nodes of this class */
 	std::vector<MethodNode*> methods; /**< The method nodes of this class */
-	stringmap* funcStruct = NULL;
-	stringmap* fieldsStruct = NULL;
+	stringmap* allMethods = NULL;
+	stringmap* allFields = NULL;
 };
 #endif
