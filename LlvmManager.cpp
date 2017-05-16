@@ -17,9 +17,9 @@ LlvmManager::LlvmManager(ostream* out, std::string moduleId) : LlvmManager(vecto
 {
 }
 
-std::string LlvmManager::write(std::string toWrite, std::string ret)
+std::string LlvmManager::write(std::string toWrite, std::string ret, bool global)
 {
-	string var = "";
+	string var = global ? "@" : "%";
 	if(ret != "")
 	{
 		stringmap::iterator it = llvmVars.find(ret);
@@ -32,9 +32,9 @@ std::string LlvmManager::write(std::string toWrite, std::string ret)
 			++(it->second);
 		}
 		if (ret == ".")
-			var = "%"+to_string(it->second);
+			var += to_string(it->second);
 		else
-			var = "%"+it->first+"."+to_string(it->second);
+			var += it->first+"."+to_string(it->second);
 		toWrite = var+" = "+toWrite;
 
 	}	

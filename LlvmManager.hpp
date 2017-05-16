@@ -36,7 +36,7 @@ class LlvmManager
 		 * 
 		 * @return The llvm name of the variable that was assigned
 		 */
-		std::string write(std::string toWrite, std::string ret = "");
+		std::string write(std::string toWrite, std::string ret = "", bool global=false);
 
 		/**
 		 * Get a new unique llvm variable name for a vsop variable

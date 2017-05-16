@@ -102,7 +102,7 @@ std::string LetNode::llvm(LlvmManager* manager)
 		exprLlvmName = init->llvm(manager);
 	else 
 		exprLlvmName = "0";
-	manager->write(exprLlvmName, name);
+	llvmName = manager->write(exprLlvmName, name);
 	return scope->llvm(manager);
 
 }

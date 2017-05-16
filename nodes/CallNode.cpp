@@ -110,7 +110,7 @@ std::string CallNode::llvm(LlvmManager* manager)
 	std::string llvm = "call fastcc "+LlvmManager::llvmType(methodNode->getReturnType())+" (";
 	for (int i=0; i<methodParams.size(); i++)
 	{
-		llvm += methodParams[i]->getType();
+		llvm += LlvmManager::llvmType(methodParams[i]->getType());
 		if (i < methodParams.size()-1)
 			llvm += ", ";
 	}
