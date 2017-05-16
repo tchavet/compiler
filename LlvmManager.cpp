@@ -127,7 +127,7 @@ std::string LlvmManager::llvmType(std::string type)
 	else if (type == "unit")
 		return "void";
 	else
-		return "%class."+type;
+		return "%class."+type+"*";
 }
 
 void LlvmManager::incIndent()

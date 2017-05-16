@@ -21,10 +21,12 @@ std::string StringLitNode::llvm(LlvmManager* manager)
 	std::ostringstream oss;
 
 	int sizeString = this->str.size();
-	std::string stringPtr = manager->write("alloca i8*, align 8",".");
+/*	std::string stringPtr = manager->write("alloca i8*, align 8",".");
 	
 	//WITHOUT DEFINING the @.str before... Maybe there is a need !
-	oss << "store i8* getelementptr inbounds (" << sizeString  << " x i8], [" << sizeString << " x i8]*c\"" << this->str << "\\00\" align 1";
-	manager->write(oss.str());
+	oss << "store i8* getelementptr inbounds [" << sizeString  << " x i8], [" << sizeString << " x i8]*c\"" << this->str << "\\00\" align 1";
+*/
+	oss << "constant [" << sizeString << " + i8] c\"" << str << "\\00\"";
+	std::string stringPtr =  manager->write(oss.str(), ".");
 	return stringPtr;
 }
