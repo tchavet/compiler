@@ -30,6 +30,7 @@
 #include "nodes/WhileNode.hpp"
 
 #include "semantic/Semantic.hpp"
+#include "vsopl/Vsopl.hpp"
 
 #include "vsop.tab.h"
 
@@ -96,6 +97,8 @@ int main(int argc, char** argv)
 		if (err_parse)
 			return -6;
 
+		Vsopl::init();
+
 		if (check || !lex && !parse && !check)
 		{
 			Semantic semantic(filename, root);
@@ -115,6 +118,7 @@ int main(int argc, char** argv)
 		std::ofstream llvmFile;
 		llvmFile.open(programName+".ll");
 		LlvmManager *llvmManager = new LlvmManager(&llvmFile);
+		Vsopl::llvmHeader(llvmManager);
 		root->llvm(llvmManager);
 		llvmFile.close();
 	}//end try

@@ -315,13 +315,12 @@ void ClassNode::llvmHeader(LlvmManager* manager)
 		MethodNode* methodNode = getMethod(methodNames[i]);
 		// %# = getelementpointer %methods.type.<className>* %methods.<className>, i32 0, i32 #
 		std::string ptr = manager->write("getelementptr %methods.type."+name+"* %methods."+name+", i32 0, i32 "+std::to_string(i), ".");
-		std::string methodClass = ((ClassNode*)methodNode->getParent())->getName();
 		// store <methodType> @method.<className>.<methodName>, <methodType>* %#
-		manager->write("store "+methodNode->getLlvmType()+" @method."+methodClass+"."+methodNode->getName()+", "+methodNode->getLlvmType()+" "+ptr);
+		manager->write("store "+methodNode->getLlvmType()+" @method."+name+"."+methodNode->getName()+", "+methodNode->getLlvmType()+" "+ptr);
 	}
 
 	/* Define the class structure type */
-	std::string classType = "%class."+name+" type {%methods.type."+name+"*";
+	std::string classType = "%class."+name+" = type {%methods.type."+name+"*";
 	std::vector<std::string> fieldNames(allFields->size()); // Names of the fields in the right order
 	/* Fill the fieldNames vector in the right order */
 	for(stringmap::const_iterator it = allFields->cbegin(); it != allFields->cend(); ++it)
@@ -342,6 +341,10 @@ void ClassNode::llvmHeader(LlvmManager* manager)
 
 std::string ClassNode::llvm(LlvmManager *manager)
 {
+	for (int i=0; i<methods.size(); i++)
+	{
+		methods[i]->llvm(manager);
+	}
 	return "";
 }
 

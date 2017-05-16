@@ -39,6 +39,15 @@ class LlvmManager
 		std::string write(std::string toWrite, std::string ret = "");
 
 		/**
+		 * Get a new unique llvm variable name for a vsop variable
+		 * 
+		 * @param name The name of the variable for which to get a name
+		 * 
+		 * @return A unique llvm name for the variable
+		 */
+		std::string getNewVarName(std::string name);
+
+		/**
 		 * Write an llvm label to the output
 		 * 
 		 * @param llvmLabel The name of the label to output
@@ -93,8 +102,11 @@ class LlvmManager
 		 */
 		static std::string llvmType(std::string type);
 
+		void incIndent();
+		void decIndent();
+
 	protected:
-		bool indent;
+		int indent;
 		classmap methodsMap; //for the functions
 		classmap fieldsMap; //for the fields//
 		stringmap llvmVars; 

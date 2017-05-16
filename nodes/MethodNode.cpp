@@ -147,3 +147,27 @@ std::string MethodNode::getLlvmType()
 {
 	return llvmType;
 }
+
+std::string MethodNode::llvm(LlvmManager* manager)
+{
+	std::string className = ((ClassNode*)parent)->getName();
+	//define fastcc <retType> @method.<className>.<methodName>(<paramType> <paramName>,..)
+	std::string definition = "define fastcc "+LlvmManager::llvmType(returnType)+" @method."+className+"."+name+"(";
+	for (int i=0; i<params.size(); i++)
+	{
+		std::string varName = manager->getNewVarName(params[i]->getName());
+		params[i]->setLlvmNameInScope(params[i]->getName(), varName);
+		definition += LlvmManager::llvmType(params[i]->getType())+" "+varName;
+		if (i<params.size()-1)
+			definition += ", ";
+	}
+	definition += ")";
+	manager->write(definition);
+	manager->write("{");
+	manager->incIndent();
+	std::string bodyRet = body->llvm(manager);
+	manager->write("ret "+bodyRet);
+	manager->decIndent();
+	manager->write("}");
+	return "";
+}

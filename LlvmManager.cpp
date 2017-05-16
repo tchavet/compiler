@@ -6,7 +6,7 @@ using namespace std;
 
 LlvmManager::LlvmManager(vector<ostream*> outs, std::string moduleId)
 {
-	indent = false;
+	indent = 0;
 	outputs = outs;
 	llvmVars = stringmap();
 	
@@ -41,7 +41,7 @@ std::string LlvmManager::write(std::string toWrite, std::string ret)
 
 	if(indent)
 	{
-		toWrite = "\t" + toWrite;
+		toWrite = string(indent,'\t') + toWrite;
 	}
 
 	for(vector<ostream*>::iterator it=outputs.begin(); it!=outputs.end(); ++it)
@@ -53,16 +53,31 @@ std::string LlvmManager::write(std::string toWrite, std::string ret)
 	return var;
 }
 
+std::string LlvmManager::getNewVarName(std::string name)
+{
+	stringmap::iterator it = llvmVars.find(name);
+	if(it == llvmVars.end())
+	{
+		it = (llvmVars.emplace(name,0)).first;
+	}
+	else 
+	{
+		++(it->second);
+	}
+	return "%"+it->first+"."+to_string(it->second);
+}
+
 void LlvmManager::writeLabel(std::string llvmLabel)
 {
-	indent = true;
-	
-	llvmLabel += ":\n";
+	llvmLabel += ":";
 
-	for(vector<ostream*>::iterator it=outputs.begin(); it!=outputs.end(); ++it)
+/*	for(vector<ostream*>::iterator it=outputs.begin(); it!=outputs.end(); ++it)
 	{
 		(*it)->write(llvmLabel.c_str(), llvmLabel.size());
 	}
+*/
+	write(llvmLabel);
+	incIndent();
 }
 
 std::string LlvmManager::getNewLabel(std::string label)
@@ -86,13 +101,13 @@ std::string LlvmManager::getNewLabel(std::string label)
 std::string LlvmManager::getFunction(std::string className, std::string methodName, std::string object)
 {
 	int methodPos = (*(methodsMap[className]))[methodName];
-	return write("getelementptr class."+className+"* "+object+", i32 0, i32 0, i32 0, i32 "+to_string(methodPos), "");
+	return write("getelementptr class."+className+"* "+object+", i32 0, i32 0, i32 0, i32 "+to_string(methodPos), ".");
 }
 
 std::string LlvmManager::getField(std::string className, std::string fieldName, std::string object)
 {
 	int fieldPos = (*(fieldsMap[fieldName]))[fieldName]+1; // +1 because the struct start with a pointer to the methods
-	return write("getelementptr class."+className+"* "+object+", i32 0, i32 "+to_string(fieldPos), "");
+	return write("getelementptr class."+className+"* "+object+", i32 0, i32 "+to_string(fieldPos), ".");
 }
 
 void LlvmManager::addClass(std::string className, stringmap* methods, stringmap* fields)
@@ -113,4 +128,14 @@ std::string LlvmManager::llvmType(std::string type)
 		return "void";
 	else
 		return "%class."+type;
+}
+
+void LlvmManager::incIndent()
+{
+	indent++;
+}
+
+void LlvmManager::decIndent()
+{
+	indent--;
 }

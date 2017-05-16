@@ -64,6 +64,8 @@ public:
 	 */
 	std::string getLlvmType();
 
+	std::string llvm(LlvmManager* manager);
+
 protected:
 	std::string name; /**< The name of the method */
 	std::vector<FormalNode*> params; /**< The method's parameters */

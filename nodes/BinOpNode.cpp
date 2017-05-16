@@ -67,9 +67,9 @@ std::string BinOpNode::llvm(LlvmManager* manager)
 	if (op == "=")
 		return manager->write("icmp eq "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "<")
-		return manager->write("icmp ult "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
-	else if (op == "<=")
 		return manager->write("icmp slt "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+	else if (op == "<=")
+		return manager->write("icmp sle "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "+")
 		return manager->write("add "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "-")

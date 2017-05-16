@@ -1,12 +1,32 @@
-#include "IOClass.hpp"
-#include "../nodes/MethodNode.hpp"
-#include "../nodes/FieldNode.hpp"
-#include "../nodes/FormalNode.hpp"
-#include "../nodes/BlockNode.hpp"
+#include "Vsopl.hpp"
+#include "../semantic/Types.hpp"
 
-IOClass::IOClass()
+std::vector<ClassNode*> Vsopl::classes = std::vector<ClassNode*>();
+
+void Vsopl::init()
 {
-	classNode = new ClassNode(0,0,"IO");
+	createIoClass();
+}
+
+void Vsopl::semantic()
+{
+	for (int i=0; i<classes.size(); i++)
+	{
+		Types::add(classes[i]->getName(), classes[i]);
+	}
+}
+
+void Vsopl::llvmHeader(LlvmManager* manager)
+{
+	for (int i=0; i<classes.size(); i++)
+	{
+		classes[i]->llvmHeader(manager);
+	}
+}
+
+void Vsopl::createIoClass()
+{
+	ClassNode* classNode = new ClassNode(0,0,"IO");
 
 	std::vector<FormalNode*> params;
 
@@ -27,9 +47,6 @@ IOClass::IOClass()
 	classNode->addMethod(new MethodNode(0,0,"inputInt32",std::vector<FormalNode*>(), "int32", new BlockNode(0,0)));
 	classNode->addMethod(new MethodNode(0,0,"inputBool",std::vector<FormalNode*>(), "bool", new BlockNode(0,0)));
 	classNode->addMethod(new MethodNode(0,0,"inputLine",std::vector<FormalNode*>(), "string", new BlockNode(0,0)));
-}
 
-ClassNode* IOClass::getClassNode()
-{
-	return classNode;
+	classes.push_back(classNode);
 }

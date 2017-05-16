@@ -110,15 +110,23 @@ std::string IfNode::llvm(LlvmManager* manager)
 	std::string cond = this->cond->llvm(manager);
 	manager->write("br i1 "+ cond  + ", label "+if_true +", label "+if_false);
 	manager->writeLabel(if_true);
-	this->then->llvm(manager);
+	std::string thenResult = then->llvm(manager);
 	manager->write("br label "+if_end);
+	manager->decIndent();
 	manager->writeLabel(if_false);
+	std::string elseResult = "";
 	if(els != NULL)
 	{
-		els->llvm(manager);
+		elseResult = els->llvm(manager);
 		manager->write("br label "+if_end);//could be removed
 	}
+	else
+	{
+		elseResult = manager->write("void", ".");
+	}
+	manager->decIndent();
 	manager->writeLabel(if_end);
-	return "";
-
+	std::string ret = manager->write("phi "+LlvmManager::llvmType(type)+" ["+thenResult+", "+if_true+"], ["+elseResult+", "+if_false+"]", ".");
+	manager->decIndent();
+	return ret;
 }

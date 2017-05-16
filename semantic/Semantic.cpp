@@ -1,6 +1,6 @@
 #include "Semantic.hpp"
 #include "../nodes/ClassNode.hpp"
-#include "../vsopl/IOClass.hpp"
+#include "../vsopl/Vsopl.hpp"
 #include <iostream>
 
 Semantic::Semantic(std::string filename, ProgramNode* tree)
@@ -15,8 +15,7 @@ Semantic::Semantic(std::string filename, ProgramNode* tree)
 	builtIns.push_back("unit");
 	builtIns.push_back("Object");
 	Types::init(builtIns);
-	IOClass io;
-	Types::add("IO", io.getClassNode());
+	Vsopl::semantic();
 }
 
 bool Semantic::classesCheck()
