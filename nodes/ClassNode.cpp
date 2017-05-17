@@ -285,13 +285,19 @@ void ClassNode::llvmHeader(LlvmManager* manager)
 	
 	std::vector<std::string> methodNames(allMethods->size()); // Names of the methods in the right order
 
+	/* Define the type for the methods that this class declares */
+	for (int i=0; i<methods.size(); i++)
+	{
+		methods[i]->llvmHeader(manager);
+	}
+
 	/* Fill the methodNames vector in the right order */
 	for(stringmap::const_iterator it = allMethods->cbegin(); it != allMethods->cend(); ++it)
 	{
 		methodNames[it->second] = it->first;
 	}
 
-	/* Write the methods llvm header and add the method type to the methods structure */
+	/* Add the methods types to the methods structure type */
 	std::string methodsType = "%methods.type."+name+" = type {"; // Type of the structure containing the pointers to the methods
 	for(int i = 0; i < methodNames.size(); ++i)
 	{
@@ -301,7 +307,6 @@ void ClassNode::llvmHeader(LlvmManager* manager)
 		}
 
 		MethodNode* methodNode = getMethod(methodNames[i]);
-		methodNode->llvmHeader(manager);
 		methodsType += methodNode->getLlvmType();
 	}
 	methodsType += "}";
