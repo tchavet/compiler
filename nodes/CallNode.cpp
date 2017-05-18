@@ -107,14 +107,7 @@ std::string CallNode::llvm(LlvmManager* manager)
 	std::vector<FormalNode*> methodParams = methodNode->getParams();
 
 	// llvm calling code
-	std::string llvm = "call fastcc "+LlvmManager::llvmType(methodNode->getReturnType())+" (";
-	for (int i=0; i<methodParams.size(); i++)
-	{
-		llvm += LlvmManager::llvmType(methodParams[i]->getType());
-		if (i < methodParams.size()-1)
-			llvm += ", ";
-	}
-	llvm += ")* "+function+"(";
+	std::string llvm = "call fastcc "+LlvmManager::llvmType(methodNode->getReturnType())+" "+function+"(";
 	for (int i=0; i<args.size(); i++)
 	{
 		std::string argLlvm = args[i]->llvm(manager);

@@ -129,7 +129,7 @@ void LlvmManager::beginMain()
 void LlvmManager::endMain()
 {
 	std::string mainObj = Types::getNode("Main")->llvmAllocate(this);
-	std::string mainRet = write("call fastcc i32 @method.Main.main("+mainObj+")", ".");
+	std::string mainRet = write("call fastcc i32 @method.Main.main(%class.Main* "+mainObj+")", ".");
 	write("ret i32 "+mainRet);
 	decIndent();
 	write("}");
