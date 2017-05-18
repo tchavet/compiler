@@ -337,9 +337,9 @@ std::string ClassNode::llvmAllocate(LlvmManager *manager)
 
 	/* Set the methods vector */
 	// %# = getelementpointer %class.<className>* %<objPtr>, i32 0, i32 0
-	std::string methodsPtr = manager->write("getelementptr %class."+name+"* "+objPtr+", i32 0, i32 0", ".");
+	std::string methodsPtr = manager->write("getelementptr %class."+name+", %class."+name+"* "+objPtr+", i32 0, i32 0", ".");
 	// store %methods.type.<className> %methods.<className>, %methods.type.<className>* %#
-	manager->write("store %methods.type."+name+" %methods."+name+", %methods.type."+name+"* "+methodsPtr);
+	manager->write("store %methods.type."+name+"* %methods."+name+", %methods.type."+name+"** "+methodsPtr);
 
 	/* Set all the fields */
 	std::vector<std::string> fieldNames(allFields.size()); // Names of the fields in the right order
@@ -352,7 +352,7 @@ std::string ClassNode::llvmAllocate(LlvmManager *manager)
 	{
 		FieldNode *fieldNode = getField(fieldNames[i]);
 		// %# = getelementptr %class.<className>* %<objPtr>, i32 0, <fieldType> <i+1>
-		std::string ptr = manager->write("getelementptr %class."+name+"* "+objPtr+", i32 0, i32 "+std::to_string(i+1), ".");
+		std::string ptr = manager->write("getelementptr %class."+name+", %class."+name+"* "+objPtr+", i32 0, i32 "+std::to_string(i+1), ".");
 		std::string fieldType = LlvmManager::llvmType(fieldNode->getType());
 		std::string initExpr = fieldNode->llvm(manager);
 		// store <fieldType> <fieldInit>, <fieldType>* %#
