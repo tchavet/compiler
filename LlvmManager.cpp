@@ -26,7 +26,7 @@ std::string LlvmManager::write(std::string toWrite, std::string ret, bool global
 		stringmap::iterator it = llvmVars.find(ret);
 		if(it == llvmVars.end())
 		{
-			it = (llvmVars.emplace(ret,0)).first;
+			it = (llvmVars.emplace(ret,1)).first;
 		}
 		else 
 		{
@@ -59,7 +59,7 @@ std::string LlvmManager::getNewVarName(std::string name)
 	stringmap::iterator it = llvmVars.find(name);
 	if(it == llvmVars.end())
 	{
-		it = (llvmVars.emplace(name,0)).first;
+		it = (llvmVars.emplace(name,1)).first;
 	}
 	else 
 	{
@@ -88,7 +88,7 @@ std::string LlvmManager::getNewLabel(std::string label)
 	stringmap::iterator it = llvmLabels.find(label);
 	if(it == llvmLabels.end())
 	{
-		it = (llvmLabels.emplace(label,0)).first;
+		it = (llvmLabels.emplace(label,1)).first;
 	}
 	else
 	{
