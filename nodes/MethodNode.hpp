@@ -72,5 +72,6 @@ protected:
 	std::string returnType; /**< The method's return type */
 	BlockNode* body; /**< The method's body */
 	std::string llvmType; /**< The llvm variable holding the type of the method */
+	std::string objPtr; /**< The llvm variable name pointing to the object calling this method */
 };
 #endif

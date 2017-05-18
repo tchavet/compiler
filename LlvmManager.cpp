@@ -1,5 +1,7 @@
 #include "LlvmManager.hpp"
 #include "nodes/ProgramNode.hpp"
+#include "nodes/ClassNode.hpp"
+#include "semantic/Types.hpp"
 #include <iostream>
 
 using namespace std;
@@ -107,7 +109,7 @@ std::string LlvmManager::getFunction(std::string className, std::string methodNa
 
 std::string LlvmManager::getField(std::string className, std::string fieldName, std::string object)
 {
-	int fieldPos = fieldsMap[fieldName][fieldName]+1; // +1 because the struct start with a pointer to the methods
+	int fieldPos = fieldsMap[className][fieldName]+1; // +1 because the struct start with a pointer to the methods
 	return write("getelementptr %class."+className+", %class."+className+"* "+object+", i32 0, i32 "+to_string(fieldPos), ".");
 }
 
@@ -126,7 +128,8 @@ void LlvmManager::beginMain()
 
 void LlvmManager::endMain()
 {
-	std::string mainRet = write("call fastcc i32 @method.Main.main(%class.Main)", ".");
+	std::string mainObj = Types::getNode("Main")->llvmAllocate(this);
+	std::string mainRet = write("call fastcc i32 @method.Main.main("+mainObj+")", ".");
 	write("ret i32 "+mainRet);
 	decIndent();
 	write("}");

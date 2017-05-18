@@ -12,6 +12,7 @@ MethodNode::MethodNode(int line, int column, std::string name, std::vector<Forma
 	for (int i=0; i<params.size(); i++)
 		params[i]->setParent(this);
 	llvmType = "";
+	objPtr = "";
 }
 
 std::string MethodNode::printTree(int tabsNb, bool types)
@@ -111,6 +112,8 @@ void MethodNode::setLlvmNameInScope(std::string var, std::string llvmName)
 
 std::string MethodNode::getLlvmNameInScope(std::string var)
 {
+	if (var == "self" || var == "obj.ptr")
+		return objPtr;
 	for (int i=0; i<params.size(); i++)
 	{
 		if (params[i]->getName() == var)
@@ -118,10 +121,7 @@ std::string MethodNode::getLlvmNameInScope(std::string var)
 			return params[i]->getLlvmNameInScope(var);
 		}
 	}
-	if (parent)
-		return parent->getLlvmNameInScope(var);
-	else
-		return "";
+	return "";
 }
 
 void MethodNode::llvmHeader(LlvmManager* manager)
@@ -148,15 +148,15 @@ std::string MethodNode::getLlvmType()
 std::string MethodNode::llvm(LlvmManager* manager)
 {
 	std::string className = ((ClassNode*)parent)->getName();
+	objPtr = manager->getNewVarName("obj.ptr");
 	//define fastcc <retType> @method.<className>.<methodName>(<paramType> <paramName>,..)
-	std::string definition = "define fastcc "+LlvmManager::llvmType(returnType)+" @method."+className+"."+name+"(";
+	std::string definition = "define fastcc "+LlvmManager::llvmType(returnType)+" @method."+className+"."+name+"(%class."+className+"* "+objPtr;
 	for (int i=0; i<params.size(); i++)
 	{
+		definition += ", ";
 		std::string varName = manager->getNewVarName(params[i]->getName());
 		params[i]->setLlvmNameInScope(params[i]->getName(), varName);
 		definition += LlvmManager::llvmType(params[i]->getType())+" "+varName;
-		if (i<params.size()-1)
-			definition += ", ";
 	}
 	definition += ")";
 	manager->write(definition);

@@ -32,10 +32,6 @@ public:
 
 	virtual std::string llvm(LlvmManager* manager){};
 
-	virtual void setLlvmNameInScope(std::string var, std::string llvmName);
-
-	virtual std::string getLlvmNameInScope(std::string var);
-
 	/**
 	 * Get the type that was found by getType
 	 * 

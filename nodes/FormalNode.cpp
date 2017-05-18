@@ -32,4 +32,6 @@ std::string FormalNode::getLlvmNameInScope(std::string var)
 {
 	if (name == var)
 		return llvmName;
+	else
+		return "";
 }

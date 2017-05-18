@@ -78,18 +78,6 @@ std::string FieldNode::getTypeInScope(std::string id)
 	return "";
 }
 
-void FieldNode::setLlvmNameInScope(std::string var, std::string llvmName)
-{
-	if (name == var)
-		this->llvmName = llvmName;
-}
-
-std::string FieldNode::getLlvmNameInScope(std::string var)
-{
-	if (name == var)
-		return llvmName;
-}
-
 std::string FieldNode::llvm(LlvmManager* manager)
 {
 	if (init)

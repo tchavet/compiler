@@ -26,5 +26,10 @@ ExprType* ObjectIdNode::getType()
 
 std::string ObjectIdNode::llvm(LlvmManager* manager)
 {
-	return parent->getLlvmNameInScope(name);
+	std::string var = parent->getLlvmNameInScope(name);
+	if (var != "")
+		return var;
+	// If it isn't defined locally, then it is an object field
+	std::string objPtr = parent->getLlvmNameInScope("obj.ptr");
+	return manager->getField(getTypeInScope("self"), name, objPtr);
 }

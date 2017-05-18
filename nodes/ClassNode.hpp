@@ -173,10 +173,6 @@ public:
 	 */
 	stringmap getAllFields();
 
-	void setLlvmNameInScope(std::string var, std::string llvmName);
-
-	std::string getLlvmNameInScope(std::string var);
-
 	/**
 	 * Write the llvm header for the class.
 	 *  - create methods structure

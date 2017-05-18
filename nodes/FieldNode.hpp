@@ -40,10 +40,6 @@ public:
 	std::vector<SemErr*> semCheck();
 
 	std::string getTypeInScope(std::string id);
-
-	void setLlvmNameInScope(std::string var, std::string llvmName);
-
-	std::string getLlvmNameInScope(std::string var);
 	
 	std::string llvm(LlvmManager* manager);
 
