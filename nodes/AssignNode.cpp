@@ -61,5 +61,13 @@ ExprType* AssignNode::getType()
 std::string AssignNode::llvm(LlvmManager* manager)
 {
 	std::string exprLlvmName = expr->llvm(manager); // Convert the expression to llvm and get the unnamed variable where the result is stored
-	return manager->write(exprLlvmName, name); // %name.x = %exprLlvmName
+	if (getLlvmNameInScope(name) == "") // The variable is a field
+	{
+		std::string objPtr = getLlvmNameInScope("obj.ptr");
+		std::string varPtr = manager->getField(getTypeInScope("self"), name, objPtr);
+		manager->write("store "+LlvmManager::llvmType(type)+" "+exprLlvmName+", "+LlvmManager::llvmType(type)+"* "+varPtr);
+		return exprLlvmName;
+	}
+	else
+		return manager->write(exprLlvmName, name); // %name.x = %exprLlvmName
 }
