@@ -41,7 +41,7 @@ std::string WhileNode::llvm(LlvmManager* manager){
 	std::string end_label = manager->getNewLabel("while_end");
 	manager->writeLabel(begin_label);
 	std::string cond = this->cond->llvm(manager);
-	manager->write("br i1 "+ cond  + ", label "+while_body +", label "+end_label);
+	manager->write("br i1 "+ cond  + ", label %"+while_body +", label %"+end_label);
 	manager->writeLabel(while_body);
 	this->body->llvm(manager);
 	manager->writeLabel(end_label);

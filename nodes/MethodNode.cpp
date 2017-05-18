@@ -166,7 +166,7 @@ std::string MethodNode::llvm(LlvmManager* manager)
 	manager->write("{");
 	manager->incIndent();
 	std::string bodyRet = body->llvm(manager);
-	manager->write("ret "+bodyRet);
+	manager->write("ret "+LlvmManager::llvmType(returnType)+" "+bodyRet);
 	manager->decIndent();
 	manager->write("}");
 	return "";

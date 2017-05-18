@@ -33,7 +33,7 @@ std::string LlvmManager::write(std::string toWrite, std::string ret, bool global
 			++(it->second);
 		}
 		if (ret == ".")
-			var += to_string(it->second);
+			var += ret + to_string(it->second);
 		else
 			var += it->first+"."+to_string(it->second);
 		toWrite = var+" = "+toWrite;
@@ -126,8 +126,8 @@ void LlvmManager::beginMain()
 
 void LlvmManager::endMain()
 {
-	std::string mainRet = write("call fastcc i32 ()* @method.Main.main()", ".");
-	write("ret "+mainRet);
+	std::string mainRet = write("call fastcc i32  @method.Main.main()", ".");
+	write("ret i32 "+mainRet);
 	decIndent();
 	write("}");
 }

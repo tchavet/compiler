@@ -108,17 +108,17 @@ std::string IfNode::llvm(LlvmManager* manager)
 	std::string if_false = manager->getNewLabel("if_false");
 	std::string if_end = manager->getNewLabel("if_end");
 	std::string cond = this->cond->llvm(manager);
-	manager->write("br i1 "+ cond  + ", label "+if_true +", label "+if_false);
+	manager->write("br i1 "+ cond  + ", label %"+if_true +", label %"+if_false);
 	manager->writeLabel(if_true);
 	std::string thenResult = then->llvm(manager);
-	manager->write("br label "+if_end);
+	manager->write("br label %"+if_end);
 	manager->decIndent();
 	manager->writeLabel(if_false);
 	std::string elseResult = "";
 	if(els != NULL)
 	{
 		elseResult = els->llvm(manager);
-		manager->write("br label "+if_end);//could be removed
+		manager->write("br label %"+if_end);//could be removed
 	}
 	else
 	{
@@ -126,7 +126,7 @@ std::string IfNode::llvm(LlvmManager* manager)
 	}
 	manager->decIndent();
 	manager->writeLabel(if_end);
-	std::string ret = manager->write("phi "+LlvmManager::llvmType(type)+" ["+thenResult+", "+if_true+"], ["+elseResult+", "+if_false+"]", ".");
+	std::string ret = manager->write("phi "+LlvmManager::llvmType(type)+" ["+thenResult+", %"+if_true+"], ["+elseResult+", %"+if_false+"]", ".");
 	manager->decIndent();
 	return ret;
 }
