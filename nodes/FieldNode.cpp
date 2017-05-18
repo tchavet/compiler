@@ -83,5 +83,5 @@ std::string FieldNode::llvm(LlvmManager* manager)
 	if (init)
 		return init->llvm(manager);
 	else
-		return manager->write("0", ".");
+		return "0";
 }
