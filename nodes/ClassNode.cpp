@@ -315,7 +315,7 @@ void ClassNode::llvmMain(LlvmManager* manager)
 	{
 		MethodNode* methodNode = getMethod(methodNames[i]);
 		// %# = getelementpointer %methods.type.<className>* %methods.<className>, i32 0, i32 #
-		std::string ptr = manager->write("getelementptr %methods.type."+name+", %methods.type."+name+"* %methods."+name+", i32 0, i32 "+std::to_string(i), ".");
+		std::string ptr = manager->write("getelementptr %methods.type."+name+"* %methods."+name+", i32 0, i32 "+std::to_string(i), ".");
 		// store <methodType> @method.<className>.<methodName>, <methodType>* %#
 		manager->write("store "+methodNode->getLlvmType()+" @method."+name+"."+methodNode->getName()+", "+methodNode->getLlvmType()+"* "+ptr);
 	}
@@ -337,7 +337,7 @@ std::string ClassNode::llvmAllocate(LlvmManager *manager)
 
 	/* Set the methods vector */
 	// %# = getelementpointer %class.<className>* %<objPtr>, i32 0, i32 0
-	std::string methodsPtr = manager->write("getelementptr %class."+name+", %class."+name+"* "+objPtr+", i32 0, i32 0", ".");
+	std::string methodsPtr = manager->write("getelementptr %class."+name+"* "+objPtr+", i32 0, i32 0", ".");
 	// store %methods.type.<className> %methods.<className>, %methods.type.<className>* %#
 	manager->write("store %methods.type."+name+"* %methods."+name+", %methods.type."+name+"** "+methodsPtr);
 
@@ -352,7 +352,7 @@ std::string ClassNode::llvmAllocate(LlvmManager *manager)
 	{
 		FieldNode *fieldNode = getField(fieldNames[i]);
 		// %# = getelementptr %class.<className>* %<objPtr>, i32 0, <fieldType> <i+1>
-		std::string ptr = manager->write("getelementptr %class."+name+", %class."+name+"* "+objPtr+", i32 0, i32 "+std::to_string(i+1), ".");
+		std::string ptr = manager->write("getelementptr %class."+name+"* "+objPtr+", i32 0, i32 "+std::to_string(i+1), ".");
 		std::string fieldType = LlvmManager::llvmType(fieldNode->getType());
 		std::string initExpr = fieldNode->llvm(manager);
 		// store <fieldType> <fieldInit>, <fieldType>* %#
