@@ -126,7 +126,7 @@ void LlvmManager::beginMain()
 
 void LlvmManager::endMain()
 {
-	std::string mainRet = write("call fastcc i32  @method.Main.main()", ".");
+	std::string mainRet = write("call fastcc i32 @method.Main.main(%class.Main)", ".");
 	write("ret i32 "+mainRet);
 	decIndent();
 	write("}");

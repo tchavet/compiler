@@ -129,13 +129,10 @@ void MethodNode::llvmHeader(LlvmManager* manager)
 	llvmType = "%method.type."+((ClassNode*)parent)->getName()+"."+name;
 	/* Define the method type */
 	// %method.type.<className>.<methodName> = type <retType> (<paramType>, <paramType,...)
-	std::string methodType = llvmType+" = type "+LlvmManager::llvmType(returnType) + " (";
+	std::string methodType = llvmType+" = type "+LlvmManager::llvmType(returnType) + " (%class."+((ClassNode*)parent)->getName()+"*";
 	for(int i=0; i<params.size(); ++i)
 	{
-		if(i != 0)
-		{
-			methodType += ", ";
-		}
+		methodType += ", ";
 
 		methodType += LlvmManager::llvmType(params[i]->getType());
 	}
