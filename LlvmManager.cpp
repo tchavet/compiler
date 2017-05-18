@@ -102,13 +102,13 @@ std::string LlvmManager::getNewLabel(std::string label)
 std::string LlvmManager::getFunction(std::string className, std::string methodName, std::string object)
 {
 	int methodPos = methodsMap[className][methodName];
-	return write("getelementptr class."+className+"* "+object+", i32 0, i32 0, i32 0, i32 "+to_string(methodPos), ".");
+	return write("getelementptr %class."+className+", %class."+className+"* "+object+", i32 0, i32 0, i32 0, i32 "+to_string(methodPos), ".");
 }
 
 std::string LlvmManager::getField(std::string className, std::string fieldName, std::string object)
 {
 	int fieldPos = fieldsMap[fieldName][fieldName]+1; // +1 because the struct start with a pointer to the methods
-	return write("getelementptr class."+className+"* "+object+", i32 0, i32 "+to_string(fieldPos), ".");
+	return write("getelementptr %class."+className+", %class."+className+"* "+object+", i32 0, i32 "+to_string(fieldPos), ".");
 }
 
 void LlvmManager::addClass(std::string className, stringmap methods, stringmap fields)
