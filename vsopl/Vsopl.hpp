@@ -25,6 +25,13 @@ public:
 	 */
 	static void llvmHeader(LlvmManager* manager);
 
+	/**
+	 * Instantiate the methods structures in the llvm main function
+	 * 
+	 * @param manager The LlvmManager
+	 */
+	static void llvmMain(LlvmManager* manager);
+
 protected:
 	static std::vector<ClassNode*> classes; /**< The vsop library classes */
 

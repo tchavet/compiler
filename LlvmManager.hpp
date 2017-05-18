@@ -7,7 +7,7 @@
 #include <vector>
 
 typedef std::unordered_map<std::string,int> stringmap;
-typedef std::unordered_map<std::string,stringmap*> classmap;
+typedef std::unordered_map<std::string,stringmap> classmap;
 
 class LlvmManager
 {
@@ -91,7 +91,17 @@ class LlvmManager
 		 * @param methods The stringmap of the methods of the class
 		 * @param fields The stringmap of the fields of the class
 		 */
-		void addClass(std::string className, stringmap* methods, stringmap* fields);
+		void addClass(std::string className, stringmap methods, stringmap fields);
+
+		/**
+		 * Write the code to begin the llvm main function
+		 */
+		void beginMain();
+
+		/**
+		 * Write the code to end the llvm main function
+		 */
+		void endMain();
 
 		/**
 		 * Get the corresponding llvm type of a vsop type

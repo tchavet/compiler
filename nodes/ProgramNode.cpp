@@ -37,14 +37,29 @@ std::vector<SemErr*> ProgramNode::semCheck()
 	return errors;
 }
 
-std::string ProgramNode::llvm(LlvmManager* manager)
+void ProgramNode::llvmHeader(LlvmManager* manager)
 {
 	for (int i=0; i<classes.size(); i++)
 	{
 		classes[i]->llvmHeader(manager);
+		manager->write("");
 	}
+} 
+
+void ProgramNode::llvmMain(LlvmManager* manager)
+{
 	for (int i=0; i<classes.size(); i++)
 	{
+		classes[i]->llvmMain(manager);
+		manager->write("");
+	}
+}
+
+std::string ProgramNode::llvm(LlvmManager* manager)
+{
+	for (int i=0; i<classes.size(); i++)
+	{
+		manager->write("");
 		classes[i]->llvm(manager);
 	}
 	return "";

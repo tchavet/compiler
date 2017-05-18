@@ -21,6 +21,16 @@ void Vsopl::llvmHeader(LlvmManager* manager)
 	for (int i=0; i<classes.size(); i++)
 	{
 		classes[i]->llvmHeader(manager);
+		manager->write("");
+	}
+}
+
+void Vsopl::llvmMain(LlvmManager* manager)
+{
+	for (int i=0; i<classes.size(); i++)
+	{
+		classes[i]->llvmMain(manager);
+		manager->write("");
 	}
 }
 

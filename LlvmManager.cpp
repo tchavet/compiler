@@ -11,6 +11,7 @@ LlvmManager::LlvmManager(vector<ostream*> outs, std::string moduleId)
 	llvmVars = stringmap();
 	
 	write("; ModuleID = '"+moduleId +"'");
+	write("");
 }
 
 LlvmManager::LlvmManager(ostream* out, std::string moduleId) : LlvmManager(vector<ostream*>(1,out), moduleId)
@@ -100,20 +101,35 @@ std::string LlvmManager::getNewLabel(std::string label)
 
 std::string LlvmManager::getFunction(std::string className, std::string methodName, std::string object)
 {
-	int methodPos = (*(methodsMap[className]))[methodName];
+	int methodPos = methodsMap[className][methodName];
 	return write("getelementptr class."+className+"* "+object+", i32 0, i32 0, i32 0, i32 "+to_string(methodPos), ".");
 }
 
 std::string LlvmManager::getField(std::string className, std::string fieldName, std::string object)
 {
-	int fieldPos = (*(fieldsMap[fieldName]))[fieldName]+1; // +1 because the struct start with a pointer to the methods
+	int fieldPos = fieldsMap[fieldName][fieldName]+1; // +1 because the struct start with a pointer to the methods
 	return write("getelementptr class."+className+"* "+object+", i32 0, i32 "+to_string(fieldPos), ".");
 }
 
-void LlvmManager::addClass(std::string className, stringmap* methods, stringmap* fields)
+void LlvmManager::addClass(std::string className, stringmap methods, stringmap fields)
 {
 	methodsMap.emplace(className, methods);
 	fieldsMap.emplace(className, fields);
+}
+
+void LlvmManager::beginMain()
+{
+	write("define fastcc i32 @main()");
+	write("{");
+	incIndent();
+}
+
+void LlvmManager::endMain()
+{
+	std::string mainRet = write("call fastcc i32 ()* @method.Main.main()", ".");
+	write("ret "+mainRet);
+	decIndent();
+	write("}");
 }
 
 std::string LlvmManager::llvmType(std::string type)

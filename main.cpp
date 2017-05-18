@@ -119,6 +119,11 @@ int main(int argc, char** argv)
 		llvmFile.open(programName+".ll");
 		LlvmManager *llvmManager = new LlvmManager(&llvmFile);
 		Vsopl::llvmHeader(llvmManager);
+		root->llvmHeader(llvmManager);
+		llvmManager->beginMain();
+		Vsopl::llvmMain(llvmManager);
+		root->llvmMain(llvmManager);
+		llvmManager->endMain();
 		root->llvm(llvmManager);
 		llvmFile.close();
 	}//end try

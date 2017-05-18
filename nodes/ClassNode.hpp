@@ -163,7 +163,7 @@ public:
 	 * 
 	 * @return A hashmap where the first element is the method's name, the second its position in the code
 	 */
-	stringmap* getAllMethods();
+	stringmap getAllMethods();
 
 	/**
 	 * Get a hashmap of all the fields of the class, including inherited ones.
@@ -171,7 +171,7 @@ public:
 	 * 
 	 * @return A hashmap where the first element is the field's name, the second its position in the code
 	 */
-	stringmap* getAllFields();
+	stringmap getAllFields();
 
 	void setLlvmNameInScope(std::string var, std::string llvmName);
 
@@ -180,13 +180,20 @@ public:
 	/**
 	 * Write the llvm header for the class.
 	 *  - create methods structure
-	 *  - instantiate method structures
 	 *  - create class structure
 	 *  - send the methods and fields maps to the llvm manager
 	 *  
-	 *  @param llvmManager The llvm manager
+	 * @param llvmManager The llvm manager
 	 */
 	void llvmHeader(LlvmManager *manager);
+
+	/**
+	 * Write the llvm instanciation of the method structures.
+	 * This needs to be done inside the llvm main function
+	 * 
+	 * @param llvmManager The llvm manager
+	 */
+	void llvmMain(LlvmManager* manager);
 
 	std::string llvm(LlvmManager *manager);
 
@@ -205,7 +212,9 @@ protected:
 	ClassNode* parentNode; /**< The class node of the parent of the class */
 	std::vector<FieldNode*> fields; /**< The field nodes of this class */
 	std::vector<MethodNode*> methods; /**< The method nodes of this class */
-	stringmap* allMethods = NULL;
-	stringmap* allFields = NULL;
+	stringmap allMethods;
+	stringmap allFields;
+	bool allMethodsSet;
+	bool allFieldsSet;
 };
 #endif
