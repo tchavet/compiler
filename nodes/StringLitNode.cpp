@@ -27,7 +27,7 @@ std::string StringLitNode::llvm(LlvmManager* manager)
 	oss << "store i8* getelementptr inbounds [" << sizeString  << " x i8], [" << sizeString << " x i8]*c\"" << this->str << "\\00\" align 1";
 */
 	oss << "constant [" << sizeString << " x i8] c\"" << str << "\\00\"";
-	std::string stringCst = manager->write(oss.str(), ".");
+	std::string stringCst = manager->addCst(oss.str(), ".");
 	oss = std::ostringstream();
 	oss << "getelementptr [" << sizeString << " x i8]* " << stringCst << ", i32 0, i32 0";
 	std::string stringPtr = manager->write(oss.str(), ".");
