@@ -104,7 +104,10 @@ std::string LlvmManager::getNewLabel(std::string label)
 std::string LlvmManager::getFunction(std::string className, std::string methodName, std::string object)
 {
 	int methodPos = methodsMap[className][methodName];
-	return write("getelementptr %class."+className+"* "+object+", i32 0, i32 0, i32 0, i32 "+to_string(methodPos), ".");
+	std::string ptr2vector = write("getelementptr %class."+className+"* "+object+", i32 0, i32 0", ".");
+	std::string vector = write("load %methods.type."+className+"** "+ptr2vector, ".");
+	std::string ptr2ptr2method = write("getelementptr %methods.type."+className+"* "+vector+", i32 0, i32 "+to_string(methodPos), ".");
+	return write("load %method.type."+className+"."+methodName+"* "+ptr2ptr2method, ".");
 }
 
 std::string LlvmManager::getField(std::string className, std::string fieldName, std::string object)
