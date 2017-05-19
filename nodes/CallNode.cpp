@@ -100,20 +100,21 @@ ExprType* CallNode::getType()
 
 std::string CallNode::llvm(LlvmManager* manager)
 {
-	// Get the llvm pointer name to the function
-	std::string function = manager->getFunction(objExpr->getComputedType(), name, objExpr->llvm(manager));
 	// Get the method and parameters node of the method that is being called
 	MethodNode* methodNode = Types::getNode(objExpr->getComputedType())->getMethod(name);
 	std::vector<FormalNode*> methodParams = methodNode->getParams();
+	
+	// Get the llvm pointer name to the function
+	std::string objptr = objExpr->llvm(manager);
+	std::string function = manager->getFunction(objExpr->getComputedType(), name, ((ClassNode*)methodNode->getParent())->getName() , objptr);
 
 	// llvm calling code
-	std::string llvm = "call fastcc "+LlvmManager::llvmType(methodNode->getReturnType())+" "+function+"(";
+	std::string llvm = "call fastcc "+LlvmManager::llvmType(methodNode->getReturnType())+" "+function+"(%class."+objExpr->getComputedType()+"* "+objptr;
 	for (int i=0; i<args.size(); i++)
 	{
+		llvm += ", ";
 		std::string argLlvm = args[i]->llvm(manager);
 		llvm += LlvmManager::llvmType(args[i]->getComputedType())+" "+argLlvm;
-		if (i < args.size()-1)
-			llvm += ", ";
 	}
 	llvm += ")";
 	return manager->write(llvm, ".");

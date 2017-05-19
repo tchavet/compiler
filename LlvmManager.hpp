@@ -72,7 +72,7 @@ class LlvmManager
 		 * 
 		 * @return The llvm variable name of the pointer to the function
 		 */
-		std::string getFunction(std::string className, std::string functionName, std::string object);
+		std::string getFunction(std::string className, std::string methodName, std::string methodClassName, std::string object);
 		/**
 		 * Get a pointer to the field of an object
 		 * 
