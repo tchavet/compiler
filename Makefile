@@ -28,6 +28,13 @@ clean:
 install-tools:
 	sudo DEBIAN_FRONTEND=noninteractive apt-get -qq install flex bison
 
+#Makes the documentation of the code.
+#You need doxygen installed on your machine
+#This script also launches the main html in Mozilla Firefox
+doc:
+	$ doxygen doxygen/Doxyfile
+	$ firefox doxygen/html/index.html
+
 # This target will build a new archive of this cleaned folder in its parent
 # directory. You can use it to generate an archive to be submitted for
 # evaluation.

@@ -7,3 +7,6 @@ test*
 *.tar.xz
 doxygen/html/
 doxygen/latex/
+*.ll
+*-swp
+report/*.toc
