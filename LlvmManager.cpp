@@ -56,6 +56,42 @@ std::string LlvmManager::write(std::string toWrite, std::string ret, bool global
 	return var;
 }
 
+std::string LlvmManager::addCst(std::string toWrite, std::string ret)
+{
+	string var = "@";
+	if(ret != "")
+	{
+		stringmap::iterator it = llvmVars.find(ret);
+		if(it == llvmVars.end())
+		{
+			it = (llvmVars.emplace(ret,1)).first;
+		}
+		else 
+		{
+			++(it->second);
+		}
+		if (ret == ".")
+			var += ret + to_string(it->second);
+		else
+			var += it->first+"."+to_string(it->second);
+		toWrite = var+" = "+toWrite;
+	}
+	constants.push_back(toWrite);
+	return var;
+}
+
+void LlvmManager::writeConstants()
+{
+	for (int i=0; i<constants.size(); i++)
+	{
+		for(vector<ostream*>::iterator it=outputs.begin(); it!=outputs.end(); ++it)
+		{
+			(**it) << constants[i] << endl;
+			(*it)->flush();
+		}
+	}
+}
+
 std::string LlvmManager::getNewVarName(std::string name)
 {
 	stringmap::iterator it = llvmVars.find(name);
@@ -103,7 +139,6 @@ std::string LlvmManager::getNewLabel(std::string label)
 
 std::string LlvmManager::getFunction(std::string className, std::string methodName, std::string methodClassName, std::string object)
 {
-	cout << "getFu:" << className <<" "<<methodName <<":"<<methodClassName<<endl;
 	int methodPos = methodsMap[className][methodName];
 	std::string ptr2vector = write("getelementptr %class."+className+"* "+object+", i32 0, i32 0", ".");
 	std::string vector = write("load %methods.type."+className+"** "+ptr2vector, ".");

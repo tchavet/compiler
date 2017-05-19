@@ -99,10 +99,17 @@ std::string LetNode::llvm(LlvmManager* manager)
 {
 	std::string exprLlvmName;
 	if(init != NULL)	
-		exprLlvmName = init->llvm(manager);
+	{
+		std::string exprResult = init->llvm(manager);
+		// If needed, cast the expression result
+		if (init->getComputedType() != letType)
+		{
+			exprResult = manager->write("bitcast "+LlvmManager::llvmType(init->getComputedType())+" "+exprResult+" to "+LlvmManager::llvmType(letType)+" ", ".");
+		}
+		llvmName = manager->write("add "+LlvmManager::llvmType(letType)+" "+exprResult+", 0", name);
+	}
 	else 
-		exprLlvmName = "0";
-	llvmName = manager->write(exprLlvmName, name);
+		llvmName = manager->write("0", name);
 	return scope->llvm(manager);
 
 }

@@ -125,6 +125,7 @@ int main(int argc, char** argv)
 		root->llvmMain(llvmManager);
 		llvmManager->endMain();
 		root->llvm(llvmManager);
+		llvmManager->writeConstants();
 		llvmFile.close();
 	}//end try
 	catch(std::runtime_error& e)

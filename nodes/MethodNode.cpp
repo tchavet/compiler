@@ -9,6 +9,7 @@ MethodNode::MethodNode(int line, int column, std::string name, std::vector<Forma
 	this->returnType = returnType;
 	this->body = body;
 	body->setParent(this);
+	classNode = NULL;
 	for (int i=0; i<params.size(); i++)
 		params[i]->setParent(this);
 	llvmType = "";
@@ -50,6 +51,16 @@ std::string MethodNode::getReturnType()
 std::vector<FormalNode*> MethodNode::getParams()
 {
 	return params;
+}
+
+ClassNode* MethodNode::getClass()
+{
+	return classNode;
+}
+
+ClassNode* MethodNode::setClass(ClassNode* classNode)
+{
+	this->classNode = classNode;
 }
 
 std::vector<SemErr*> MethodNode::semCheck()

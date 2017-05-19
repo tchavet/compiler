@@ -1,5 +1,6 @@
 #include "ClassNode.hpp"
 #include <sstream>
+#include <iostream>
 
 ClassNode::ClassNode(int line, int column, std::string name, std::string parent) : AstNode(line, column)
 {
@@ -24,20 +25,26 @@ void ClassNode::addFields(std::vector<FieldNode*>* fields)
 {
 	this->fields.insert(this->fields.end(), fields->begin(), fields->end());
 	for (int i=0; i<fields->size(); i++)
+	{
 		(*fields)[i]->setParent(this);
+	}
 }
 
 void ClassNode::addMethod(MethodNode* method)
 {
 	methods.push_back(method);
 	method->setParent(this);
+	method->setClass(this);
 }
 
 void ClassNode::addMethods(std::vector<MethodNode*>* methods)
 {
 	this->methods.insert(this->methods.end(), methods->begin(), methods->end());
 	for (int i=0; i<methods->size(); i++)
+	{
 		(*methods)[i]->setParent(this);
+		(*methods)[i]->setClass(this);
+	}
 }
 
 std::string ClassNode::getName()

@@ -39,6 +39,21 @@ class LlvmManager
 		std::string write(std::string toWrite, std::string ret = "", bool global=false);
 
 		/**
+		 * Write an llvm constant outside of a function
+		 * 
+		 * @param toWrite The llvm code to write
+		 * @param ret The name of the llvm variable to assign
+		 * 
+		 * @return The llvm name of the variable that was assigned
+		 */
+		std::string addCst(std::string toWrite, std::string ret="");
+
+		/**
+		 * Write all the llvm constants
+		 */
+		void writeConstants();
+
+		/**
 		 * Get a new unique llvm variable name for a vsop variable
 		 * 
 		 * @param name The name of the variable for which to get a name
@@ -122,5 +137,6 @@ class LlvmManager
 		stringmap llvmVars; 
 		stringmap llvmLabels; 
 		std::vector<std::ostream*> outputs;
+		std::vector<std::string> constants;
 };
 #endif

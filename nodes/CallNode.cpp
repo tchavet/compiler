@@ -5,8 +5,6 @@
 #include "../semantic/Types.hpp"
 #include <sstream>
 
-#include <iostream>
-
 CallNode::CallNode(int line, int column, ExprNode* objExpr, std::string name, std::vector<ExprNode*> args) : ExprNode(line, column)
 {
 	this->objExpr = objExpr;
@@ -108,11 +106,19 @@ std::string CallNode::llvm(LlvmManager* manager)
 	
 	// Get the llvm pointer name to the function
 	std::string objptr = objExpr->llvm(manager);
-	std::cout << name << ":" << ((ClassNode*)(methodNode->getParent()))->getName() << std::endl;
-	std::string function = manager->getFunction(objExpr->getComputedType(), name, ((ClassNode*)(methodNode->getParent()))->getName() , objptr);
+	ClassNode* classNode = methodNode->getClass();
+	std::string function = manager->getFunction(objExpr->getComputedType(), name, methodNode->getClass()->getName() , objptr);
+	std::string objptrType = objExpr->getComputedType();
+
+	// If needed, cast the object pointer
+	if (classNode->getName() != objExpr->getComputedType())
+	{
+		objptr = manager->write("bitcast %class."+objptrType+"* "+objptr+" to %class."+classNode->getName()+"*", ".");
+		objptrType = classNode->getName();
+	}
 
 	// llvm calling code
-	std::string llvm = "call fastcc "+LlvmManager::llvmType(methodNode->getReturnType())+" "+function+"(%class."+objExpr->getComputedType()+"* "+objptr;
+	std::string llvm = "call fastcc "+LlvmManager::llvmType(methodNode->getReturnType())+" "+function+"(%class."+objptrType+"* "+objptr;
 	for (int i=0; i<args.size(); i++)
 	{
 		llvm += ", ";

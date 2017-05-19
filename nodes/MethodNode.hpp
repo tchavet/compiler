@@ -6,6 +6,8 @@
 #include "BlockNode.hpp"
 #include "../semantic/structures.hpp"
 
+class ClassNode;
+
 /**
  * A node representing a class method
  */
@@ -41,6 +43,20 @@ public:
 	 */
 	std::vector<FormalNode*> getParams();
 
+	/**
+	 * Get the node of the class this method is defined in
+	 * 
+	 * @return The class node
+	 */
+	ClassNode* getClass();
+
+	/**
+	 * Set the node of the class this method is defined in
+	 * 
+	 * @param classNode The class node
+	 */
+	ClassNode* setClass(ClassNode* classNode);
+
 	std::vector<SemErr*> semCheck();
 
 	std::string getReturnType();
@@ -71,6 +87,7 @@ protected:
 	std::vector<FormalNode*> params; /**< The method's parameters */
 	std::string returnType; /**< The method's return type */
 	BlockNode* body; /**< The method's body */
+	ClassNode* classNode; /**< The node of the class that this method is defined in */
 	std::string llvmType; /**< The llvm variable holding the type of the method */
 	std::string objPtr; /**< The llvm variable name pointing to the object calling this method */
 };
