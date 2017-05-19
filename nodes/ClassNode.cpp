@@ -285,6 +285,8 @@ void ClassNode::llvmHeader(LlvmManager* manager)
 	}
 	methodsType += "}";
 	manager->write(methodsType);
+	/* Instantiate the methods structure */
+	manager->write("@methods."+name+" = external global %methods.type."+name);
 
 	/* Define the class structure type */
 	std::string classType = "%class."+name+" = type {%methods.type."+name+"*";
@@ -315,14 +317,12 @@ void ClassNode::llvmMain(LlvmManager* manager)
 		methodNames[it->second] = it->first;
 	}
 
-	/* Instantiate the methods structure */
-	manager->write("%methods."+name+" = alloca %methods.type."+name);
 	/* Fill the methods structure */
 	for (int i=0; i<methodNames.size(); i++)
 	{
 		MethodNode* methodNode = getMethod(methodNames[i]);
-		// %# = getelementpointer %methods.type.<className>* %methods.<className>, i32 0, i32 #
-		std::string ptr = manager->write("getelementptr %methods.type."+name+"* %methods."+name+", i32 0, i32 "+std::to_string(i), ".");
+		// %# = getelementpointer %methods.type.<className>* @methods.<className>, i32 0, i32 #
+		std::string ptr = manager->write("getelementptr %methods.type."+name+"* @methods."+name+", i32 0, i32 "+std::to_string(i), ".");
 		// store <methodType> @method.<className>.<methodName>, <methodType>* %#
 		manager->write("store "+methodNode->getLlvmType()+" @method."+name+"."+methodNode->getName()+", "+methodNode->getLlvmType()+"* "+ptr);
 	}
@@ -345,8 +345,8 @@ std::string ClassNode::llvmAllocate(LlvmManager *manager)
 	/* Set the methods vector */
 	// %# = getelementpointer %class.<className>* %<objPtr>, i32 0, i32 0
 	std::string methodsPtr = manager->write("getelementptr %class."+name+"* "+objPtr+", i32 0, i32 0", ".");
-	// store %methods.type.<className> %methods.<className>, %methods.type.<className>* %#
-	manager->write("store %methods.type."+name+"* %methods."+name+", %methods.type."+name+"** "+methodsPtr);
+	// store %methods.type.<className> @methods.<className>, %methods.type.<className>* %#
+	manager->write("store %methods.type."+name+"* @methods."+name+", %methods.type."+name+"** "+methodsPtr);
 
 	/* Set all the fields */
 	std::vector<std::string> fieldNames(allFields.size()); // Names of the fields in the right order
