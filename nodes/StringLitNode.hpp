@@ -23,5 +23,7 @@ public:
 	std::string llvm(LlvmManager* manager);
 protected:
 	std::string str; /**< The string */
+	std::string llvmStr; /**< The llvm compliant string */
+	int llvmStrSize; /**< The size of the llvm string */
 };
 #endif
