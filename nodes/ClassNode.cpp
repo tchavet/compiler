@@ -324,7 +324,7 @@ void ClassNode::llvmMain(LlvmManager* manager)
 		// %# = getelementpointer %methods.type.<className>* @methods.<className>, i32 0, i32 #
 		std::string ptr = manager->write("getelementptr %methods.type."+name+"* @methods."+name+", i32 0, i32 "+std::to_string(i), ".");
 		// store <methodType> @method.<className>.<methodName>, <methodType>* %#
-		manager->write("store "+methodNode->getLlvmType()+" @method."+name+"."+methodNode->getName()+", "+methodNode->getLlvmType()+"* "+ptr);
+		manager->write("store "+methodNode->getLlvmType()+" @method."+methodNode->getClass()->getName()+"."+methodNode->getName()+", "+methodNode->getLlvmType()+"* "+ptr);
 	}
 }
 
