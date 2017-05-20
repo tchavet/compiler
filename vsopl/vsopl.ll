@@ -40,40 +40,28 @@ define fastcc i32 @method.IO.inputInt32(%class.IO* %io.ptr.5)
 
 define fastcc i1 @method.IO.inputBool(%class.IO* %io.ptr.5)
 {
-  %io.5 = alloca i8*, align 8
-  %io.6 = alloca i8, align 1
-  store i32 0, i32* %io.5
-  store i8 1, i8* %io.5, align 1
-  %io.7 = load i8** %io.5, align 8
-  %io.8 = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8]* @.iostr2, i32 0, i32 0), i8* %io.7)
-  %io.8 = load i8** %io.5, align 8
-  %io.9 = call i32 @strcmp(i8* %io.8, i8* getelementptr inbounds ([5 x i8]* @true.str, i32 0, i32 0)) #3
-  %io.10 = icmp ne i32 %io.9, 0
-  br i1 %io.10, label %io.11, label %io.15
-
-; <label>:io.11                                       ; preds = %0
-  %io.12 = load i8* %t, align 1
-  %io.13 = trunc i8 %io.12 to i1
-  %io.14 = zext i1 %io.13 to i32
-  store i32 %io.14, i32* %io.5
-  br label %io.19
-
-; <label>:io.14                                      ; preds = %0
-  %io.15 = load i8* %io.6, align 1
-  %io.16 = trunc i8 %io.15 to i1
-  %io.17 = xor i1 %io.16, true
-  %io.18 = zext i1 %io.17 to i32
-  store i32 %io.18, i32* %1
-  br label %io.19
-
-; <label>:16                                      ; preds = %io.15, %io.11
-  %io.20 = load i32* %1
-  ret i1 %io.20
+	%io.7 = alloca i8*, align 8
+    %io.8 = load i8** %io.7, align 8
+    %io.9 = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8]* @.iostr2, i32 0, i32 0), i8* %io.8)
+    %io.10 = load i8** %io.7, align 8
+    %io.11 = call i32 @strcmp(i8* %io.10, i8* getelementptr inbounds ([6 x i8]* @true.str, i32 0, i32 0)) #3
+    %io.12 = icmp ne i32 %io.11, 0
+    br i1 %io.12, label %io.if_true, label %io.if_false
+    io.if_true:
+    ret i1 1
+    io.if_false:
+    ret i1 0
 }
 
 define fastcc i8* @method.IO.inputLine(%class.IO* %io.ptr.6)
 {
-	%io.5 = alloca i8*, align 8
+	%io.5 = alloca i8, align 8
 	%io.6 = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8]* @.iostr2, i32 0, i32 0), i8* %io.5)
-	ret i8* %io.6
+	ret i8* %io.5
 }
+
+
+declare i32 @__isoc99_scanf(i8*, ...) #1
+
+; Function Attrs: nounwind readonly
+declare i32 @strcmp(i8*, i8*) #2
