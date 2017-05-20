@@ -75,3 +75,5 @@ declare i32 @__isoc99_scanf(i8*, ...) #1
 
 ; Function Attrs: nounwind readonly
 declare i32 @strcmp(i8*, i8*) #2
+
+declare i32 @puts(i8*) #3
