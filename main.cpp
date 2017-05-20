@@ -198,16 +198,37 @@ int main(int argc, char** argv)
 		std::cerr << "Other Exception error:" << e.what() << std::endl;
 		return -4;
 	}
-	std::string command = "lli ";
+	std::string command = "llvm-link -S vsopl/vsopl.ll ";
 	command += programName;
-	command += ".ll -o";
+	command += ".ll -o ";
+	command += programName;
+	command += "_linked.ll";
+	system(command.c_str());
+	command = "llc -o ";
+	command += programName;
+	command += ".s ";
+	command += programName;
+	command += "_linked.ll";
+	system(command.c_str());
+	command = "gcc ";
+	command += programName;
+	command += ".s -o";
 	command += programName;
 	system(command.c_str());
 	command = "rm ";
 	command += programName;
 	command += ".ll";
 	system(command.c_str());
-	std::cout << "Your program is called "<< programName;
+	command = "rm ";
+	command += programName;
+	command += ".s";
+	system(command.c_str());
+	command = "rm ";
+	command += programName;
+	command += "_linked.ll";
+	system(command.c_str());
+
+	std::cout << "Your program is called "<< programName <<std::endl; 
 	return 0;
 }
 
