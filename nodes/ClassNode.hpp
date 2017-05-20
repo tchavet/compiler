@@ -202,6 +202,13 @@ public:
 	 */
 	std::string llvmAllocate(LlvmManager *manager);
 
+	/**
+	 * Write the llvm code to declare the methods of this class
+	 * 
+	 * @param manager The LlvmManager
+	 */
+	void declareMethods(LlvmManager *manager);
+
 protected:
 	std::string name; /**< The name of the class */
 	std::string parentName; /**< The name of the parent of the class */

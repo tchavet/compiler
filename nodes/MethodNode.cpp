@@ -144,7 +144,6 @@ void MethodNode::llvmHeader(LlvmManager* manager)
 	for(int i=0; i<params.size(); ++i)
 	{
 		methodType += ", ";
-
 		methodType += LlvmManager::llvmType(params[i]->getType());
 	}
 	methodType += ")*";
@@ -158,7 +157,7 @@ std::string MethodNode::getLlvmType()
 
 std::string MethodNode::llvm(LlvmManager* manager)
 {
-	std::string className = ((ClassNode*)parent)->getName();
+	std::string className = classNode->getName();
 	objPtr = manager->getNewVarName("obj.ptr");
 	//define fastcc <retType> @method.<className>.<methodName>(<paramType> <paramName>,..)
 	std::string definition = "define fastcc "+LlvmManager::llvmType(returnType)+" @method."+className+"."+name+"(%class."+className+"* "+objPtr;
@@ -178,4 +177,16 @@ std::string MethodNode::llvm(LlvmManager* manager)
 	manager->decIndent();
 	manager->write("}");
 	return "";
+}
+
+void MethodNode::declare(LlvmManager* manager)
+{
+	std::string declaration = "declare "+LlvmManager::llvmType(returnType)+" @method."+classNode->getName()+"."+name+"(%class."+classNode->getName()+"*";
+	for(int i=0; i<params.size(); ++i)
+	{
+		declaration += ", ";
+		declaration += LlvmManager::llvmType(params[i]->getType());
+	}
+	declaration += ")";
+	manager->write(declaration);
 }

@@ -367,3 +367,11 @@ std::string ClassNode::llvmAllocate(LlvmManager *manager)
 	}
 	return objPtr;
 }
+
+void ClassNode::declareMethods(LlvmManager *manager)
+{
+	for (int i=0; i<methods.size(); i++)
+	{
+		methods[i]->declare(manager);
+	}
+}

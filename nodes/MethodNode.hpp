@@ -82,6 +82,13 @@ public:
 
 	std::string llvm(LlvmManager* manager);
 
+	/**
+	 * Write the code to declare the function
+	 * 
+	 * @param manager The LlvmManager
+	 */
+	void declare(LlvmManager* manager);
+
 protected:
 	std::string name; /**< The name of the method */
 	std::vector<FormalNode*> params; /**< The method's parameters */

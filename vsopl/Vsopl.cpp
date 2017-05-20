@@ -21,6 +21,7 @@ void Vsopl::llvmHeader(LlvmManager* manager)
 	for (int i=0; i<classes.size(); i++)
 	{
 		classes[i]->llvmHeader(manager);
+		classes[i]->declareMethods(manager);
 		manager->write("");
 	}
 }
