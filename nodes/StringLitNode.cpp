@@ -47,11 +47,11 @@ ExprType* StringLitNode::getType()
 }
 std::string StringLitNode::llvm(LlvmManager* manager)
 {
-	std::ostringstream oss;
-	oss << "constant [" << llvmStrSize << " x i8] c\"" << llvmStr << "\\00\"";
-	std::string stringCst = manager->addCst(oss.str(), ".");
-	oss = std::ostringstream();
-	oss << "getelementptr [" << llvmStrSize << " x i8]* " << stringCst << ", i32 0, i32 0";
-	std::string stringPtr = manager->write(oss.str(), ".");
+	std::stringstream ss;
+	ss << "constant [" << llvmStrSize << " x i8] c\"" << llvmStr << "\\00\"";
+	std::string stringCst = manager->addCst(ss.str(), ".");
+	ss = std::stringstream();
+	ss << "getelementptr [" << llvmStrSize << " x i8]* " << stringCst << ", i32 0, i32 0";
+	std::string stringPtr = manager->write(ss.str(), ".");
 	return stringPtr;
 }
