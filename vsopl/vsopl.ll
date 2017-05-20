@@ -4,6 +4,7 @@
 @false.str = constant [7 x i8] c"false\0a\00"
 @.iostr = private unnamed_addr constant [3 x i8] c"%d\00"
 @.iostr2 = private unnamed_addr constant [3 x i8] c"%s\00"
+@.strstr = private unnamed_addr constant [2 x i8] c"%s"
 @.intstr = private unnamed_addr constant [3 x i8] c"%d\00", align 1
 declare i32 @__isoc99_scanf(i8*, ...) #1
 ; Function Attrs: nounwind readonly
@@ -23,7 +24,7 @@ declare i32 @printf(i8*, ...)
 
 define fastcc %class.IO* @method.IO.print(%class.IO* %io.ptr.1, i8* %str)
 {
-	call i32 @puts(i8* %str)
+	call i32 (i8*, ...)* @printf(i8* getelementptr inbounds ([2 x i8]* @.strstr, i32 0, i32 0), i8* %str)
 	ret %class.IO* %io.ptr.1
 }
 
