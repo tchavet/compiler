@@ -187,11 +187,11 @@ int main(int argc, char** argv)
 		root->llvm(llvmManager);
 		llvmManager->writeConstants();
 		llvmFile.close();
-		if(llvm)
-		{
-			std::cout << "The fileName of the generated file is "<< programName << ".ll" << std::endl;
-			return 0;
-		}
+		//if(llvm)
+		//{
+		//	std::cout << "The fileName of the generated file is "<< programName << ".ll" << std::endl;
+		//	return 0;
+		//}
 	}//end try
 	catch(std::runtime_error& e)
 	{
@@ -207,39 +207,36 @@ int main(int argc, char** argv)
 	vsopLib = vsopLib.substr(0, vsopLib.find_last_of("/"));
 	vsopLib +="/vsopl/vsopl.ll";
 	std::cout <<"vsopLib" <<vsopLib <<std::endl;
-	std::string command = "llvm-link -S ";
-	command += vsopLib;
-	command += " ";
-	command += programName;
-	command += ".ll -o ";
-	command += programName;
-	command += "_linked.ll";
-	system(command.c_str());
-	command = "llc -o ";
-	command += programName;
-	command += ".s ";
-	command += programName;
-	command += "_linked.ll";
-	system(command.c_str());
-	command = "gcc ";
-	command += programName;
-	command += ".s -o";
-	command += programName;
-	system(command.c_str());
-	command = "rm ";
-	command += programName;
-	command += ".ll";
-	system(command.c_str());
-	command = "rm ";
-	command += programName;
-	command += ".s";
-	system(command.c_str());
-	command = "rm ";
-	command += programName;
-	command += "_linked.ll";
+	std::string command;
+	
+	if(llvm)
+	{
+		command = "llvm-link -S "+vsopLib+" "+programName+".ll";
+		system(command.c_str());
+	}
+	else 
+	{
+		command = "llvm-link -S "+vsopLib+" "+programName+".ll -o "+programName+"_linked.ll";
+		system(command.c_str());
+	
+		command = "llc -o "+programName+".s "+programName+"_linked.ll";
+		system(command.c_str());
+	
+		command = "gcc "+programName+".s -o"+programName;
+		system(command.c_str());
+	
+	
+		command = "rm "+programName+".s";
+		system(command.c_str());
+	
+		command = "rm "+programName+"_linked.ll";
+		system(command.c_str());
+	}
+
+	command = "rm "+programName+".ll";
 	system(command.c_str());
 
-	std::cout << "Your program is called "<< programName <<std::endl; 
+	//std::cout << "Your program is called "<< programName <<std::endl; 
 	return 0;
 }
 
