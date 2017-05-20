@@ -2,53 +2,43 @@
 
 @true.str = constant [6 x i8] c"true\0a\00"
 @false.str = constant [7 x i8] c"false\0a\00"
+@.iostr = private unnamed_addr constant [3 x i8] c"%d\00"
+@.iostr2 = private unnamed_addr constant [3 x i8] c"%s\00"
 
-define fastcc %class.IO* @method.IO.print(%class.IO*, i8* %str)
+define fastcc %class.IO* @method.IO.print(%class.IO* %io.ptr.1, i8* %str)
 {
 	call i32 @puts(i8* %str)
-	%io = alloca %class.IO, align 8
-	%ioPtr = getelementptr %class.IO* %io, i32 0, i32 0
-	store %methods.type.IO* %methods.IO, %methods.type.IO** %ioPtr
-	ret %class.IO* %io
+	ret %class.IO* %io.ptr.1
 }
 
-define fastcc %class.IO* @method.IO.printInt32(%class.IO*, i32 %nb)
+define fastcc %class.IO* @method.IO.printInt32(%class.IO* %io.ptr.2, i32 %nb)
 {
-	call i32 @puts(i32 %nb)
-	%io.1 = alloca %class.IO
-	%ioPtr.1 = getelementptr %class.IO* %io.1, i32 0, i32 0
-	store %methods.type.IO* %methods.IO, %methods.type.IO** %ioPtr.1
-	ret %class.IO* %io.1
+	ret %class.IO* %io.ptr.2
 }
 
-define fastcc %class.IO* @method.IO.printBool(%class.IO*, i1 %b)
+define fastcc %class.IO* @method.IO.printBool(%class.IO* %io.ptr.3, i1 %b)
 {
-	br i1 %b, label if_true, label if_false
+	br i1 %b, label %if_true, label %if_false
 	if_true:
-		%true.ptr = getelementptr [6 x i8]* %true.str, i32 0, i32 0
-		br label if_end
+		%true.ptr = getelementptr [6 x i8]* @true.str, i32 0, i32 0
+		br label %if_end
 	if_false:
-		%false.ptr = getelementptr [7 x i8]* %false.str, i32 0, i32 0
-		br label if_end
+		%false.ptr = getelementptr [7 x i8]* @false.str, i32 0, i32 0
+		br label %if_end
 	if_end:
-		%toPrint = phi i8* [%true.ptr, if_true], [%false.ptr, if_false]
-	%io.2 = call fastcc %class.IO* @method.IO.print(i8* %toPrint)
-	ret %class.IO* %io.2
+		%toPrint = phi i8* [%true.ptr, %if_true], [%false.ptr, %if_false]
+	%io.ptr.4 = call fastcc %class.IO* @method.IO.print(%class.IO* %io.ptr.3, i8* %toPrint)
+	ret %class.IO* %io.ptr.4
 }
 
-@.iostr = private unnamed_addr constant [3 x i8] c"%d\00", align 1
-@.iostr2 = private unnamed_addr constant [3 x i8] c"%s\00", align 1
-@.iostrTrue = private unnamed_addr constant [3 x i8] c"true\x0a\00", align 1
-@.iostrFalse= private unnamed_addr constant [3 x i8] c"false\x0a\00", align 1
-
-define fastcc i32 @method.IO.inputInt32()
+define fastcc i32 @method.IO.inputInt32(%class.IO* %io.ptr.5)
 {	
     %io.3 = alloca i32, align 4
 	%io.4 = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8]* @.iostr, i32 0, i32 0), i32* %io.3)
-	ret %io.4
+	ret i32 %io.4
 }
 
-define fastcc i1 @method.IO.inputBool(%class.IO*)
+define fastcc i1 @method.IO.inputBool(%class.IO* %io.ptr.5)
 {
   %io.5 = alloca i8*, align 8
   %io.6 = alloca i8, align 1
@@ -57,7 +47,7 @@ define fastcc i1 @method.IO.inputBool(%class.IO*)
   %io.7 = load i8** %io.5, align 8
   %io.8 = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8]* @.iostr2, i32 0, i32 0), i8* %io.7)
   %io.8 = load i8** %io.5, align 8
-  %io.9 = call i32 @strcmp(i8* %io.8, i8* getelementptr inbounds ([5 x i8]* @.iostrTrue, i32 0, i32 0)) #3
+  %io.9 = call i32 @strcmp(i8* %io.8, i8* getelementptr inbounds ([5 x i8]* @true.str, i32 0, i32 0)) #3
   %io.10 = icmp ne i32 %io.9, 0
   br i1 %io.10, label %io.11, label %io.15
 
@@ -78,13 +68,12 @@ define fastcc i1 @method.IO.inputBool(%class.IO*)
 
 ; <label>:16                                      ; preds = %io.15, %io.11
   %io.20 = load i32* %1
-  ret i32 %io.20
-
+  ret i1 %io.20
 }
 
-define fastcc i8* @method.IO.inputLine(%class.IO*)
+define fastcc i8* @method.IO.inputLine(%class.IO* %io.ptr.6)
 {
 	%io.5 = alloca i8*, align 8
 	%io.6 = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8]* @.iostr2, i32 0, i32 0), i8* %io.5)
-	ret %io.6
+	ret i8* %io.6
 }
