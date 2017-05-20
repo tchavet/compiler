@@ -4,6 +4,12 @@
 @false.str = constant [7 x i8] c"false\0a\00"
 @.iostr = private unnamed_addr constant [3 x i8] c"%d\00"
 @.iostr2 = private unnamed_addr constant [3 x i8] c"%s\00"
+@.intstr = private unnamed_addr constant [3 x i8] c"%d\00", align 1
+declare i32 @__isoc99_scanf(i8*, ...) #1
+; Function Attrs: nounwind readonly
+declare i32 @strcmp(i8*, i8*) #2
+declare i32 @puts(i8*) #3
+declare i32 @printf(i8*, ...)
 
 %method.type.IO.print = type %class.IO* (%class.IO*, i8*)*
 %method.type.IO.printInt32 = type %class.IO* (%class.IO*, i32)*
@@ -23,6 +29,7 @@ define fastcc %class.IO* @method.IO.print(%class.IO* %io.ptr.1, i8* %str)
 
 define fastcc %class.IO* @method.IO.printInt32(%class.IO* %io.ptr.2, i32 %nb)
 {
+	call i32 (i8*, ...)* @printf(i8* getelementptr inbounds ([3 x i8]* @.intstr, i32 0, i32 0), i32 %nb)
 	ret %class.IO* %io.ptr.2
 }
 
@@ -69,11 +76,3 @@ define fastcc i8* @method.IO.inputLine(%class.IO* %io.ptr.6)
 	%io.6 = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8]* @.iostr2, i32 0, i32 0), i8* %io.5)
 	ret i8* %io.5
 }
-
-
-declare i32 @__isoc99_scanf(i8*, ...) #1
-
-; Function Attrs: nounwind readonly
-declare i32 @strcmp(i8*, i8*) #2
-
-declare i32 @puts(i8*) #3
