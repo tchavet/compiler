@@ -286,7 +286,7 @@ void ClassNode::llvmHeader(LlvmManager* manager)
 	methodsType += "}";
 	manager->write(methodsType);
 	/* Instantiate the methods structure */
-	manager->write("@methods."+name+" = external global %methods.type."+name);
+	manager->write("@methods."+name+" = global %methods.type."+name+" zeroinitializer");
 
 	/* Define the class structure type */
 	std::string classType = "%class."+name+" = type {%methods.type."+name+"*";
