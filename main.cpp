@@ -8,6 +8,9 @@
 #include <list>
 #include <vector>
 #include <utility>
+#include <string>
+#include <limits.h>
+#include <unistd.h>
 
 #include "nodes/AstNode.hpp"
 #include "nodes/AssignNode.hpp"
@@ -39,6 +42,8 @@ extern "C"  int yylex();
 extern "C" FILE* yyin;
 
 using namespace std;
+
+std::string getCurrentPath();
 
 std::string filename;
 std::string programName;
@@ -198,7 +203,13 @@ int main(int argc, char** argv)
 		std::cerr << "Other Exception error:" << e.what() << std::endl;
 		return -4;
 	}
-	std::string command = "llvm-link -S vsopl/vsopl.ll ";
+	std::string vsopLib = getCurrentPath();
+	vsopLib = vsopLib.substr(0, vsopLib.find_last_of("/"));
+	vsopLib +="/vsopl/vsopl.ll";
+	std::cout <<"vsopLib" <<vsopLib <<std::endl;
+	std::string command = "llvm-link -S ";
+	command += vsopLib;
+	command += " ";
 	command += programName;
 	command += ".ll -o ";
 	command += programName;
@@ -248,4 +259,11 @@ void syntax_error(int line, int col, string message="")
 		cerr << ": " << message;
 	cerr << endl;
 	err_parse=true;
+}
+
+std::string getCurrentPath()
+{
+	char result[ PATH_MAX ];
+	ssize_t count = readlink( "/proc/self/exe", result, PATH_MAX );
+	return std::string( result, (count > 0) ? count : 0 );
 }
