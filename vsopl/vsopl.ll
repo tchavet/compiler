@@ -5,6 +5,16 @@
 @.iostr = private unnamed_addr constant [3 x i8] c"%d\00"
 @.iostr2 = private unnamed_addr constant [3 x i8] c"%s\00"
 
+%method.type.IO.print = type %class.IO* (%class.IO*, i8*)*
+%method.type.IO.printInt32 = type %class.IO* (%class.IO*, i32)*
+%method.type.IO.printBool = type %class.IO* (%class.IO*, i1)*
+%method.type.IO.inputInt32 = type i32 (%class.IO*)*
+%method.type.IO.inputBool = type i1 (%class.IO*)*
+%method.type.IO.inputLine = type i8* (%class.IO*)*
+%methods.type.IO = type {%method.type.IO.print, %method.type.IO.printInt32, %method.type.IO.printBool, %method.type.IO.inputInt32, %method.type.IO.inputBool, %method.type.IO.inputLine}
+@methods.IO = external global %methods.type.IO
+%class.IO = type {%methods.type.IO*}
+
 define fastcc %class.IO* @method.IO.print(%class.IO* %io.ptr.1, i8* %str)
 {
 	call i32 @puts(i8* %str)
