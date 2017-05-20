@@ -265,6 +265,9 @@ Our compiler computes the LLVM which is then being compiled to machine code usin
     since the main purpose of llvm code is not to have the greatest readibility. The only drawback of keeping or first idea is just making the llvm file a bit heavier
     \item We saw that getelemntptr in LLVM requires a load just afterwards. So we did it every time.
     \item The functions always takes as first argument the element on which they act. It allows us to use the keyword `self` accordingly.
+    \item The number of the variables does not start back to 0 when the program changes function.
+    We first thought that it was module dependant but we decided for debugging and code understanding not to reset that counter variable.
+    \item We realized that the declare statements in llvm language can refer to functions declared in other modules. We then used them at the end of our code.
     \end{itemize}
 
   \section{Code structure}

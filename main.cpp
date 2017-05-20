@@ -40,13 +40,16 @@ extern "C" FILE* yyin;
 
 using namespace std;
 
-string filename;
+std::string filename;
+std::string programName;
 ProgramNode* root= new ProgramNode();
 bool lex= false;
 bool parse =false;
 bool check =false;
 bool err_lex =false;
 bool err_parse = false;
+bool completeCompile = false;
+bool llvm =false;
 
 int main(int argc, char** argv)
 {
@@ -64,6 +67,9 @@ int main(int argc, char** argv)
 			return -1;
 		}
 		
+		/****************************************
+		 *Retrieve the arguments of the function*
+		 ****************************************/
 		
 		for(int i=1; i <= argc-2;i++){
 			if(strcmp(argv[i], "-lex") == 0)
@@ -72,8 +78,15 @@ int main(int argc, char** argv)
 				parse=true;
 			if(strcmp(argv[i], "-check") == 0)
 				check =true;
+			if(strcmp(argv[i], "-llvm") == 0)
+				llvm =true;
 		}
+		if(argc == 2)
+			completeCompile = true;
 
+		/****************************************
+		 *Open input file						*
+		 ****************************************/
 		filename = argv[argc-1];
 		FILE* file = fopen(filename.c_str(),"r");
 		if(!file)
@@ -81,52 +94,99 @@ int main(int argc, char** argv)
 			std::cerr << "File Opening failed :" << argv[argc-1]  << std::endl;
 			return -5;
 		}
-		std::string programName = filename.c_str();
-		// TODO remove .vsop
-		programName = "out";
 
+		/****************************************
+		 *Define output file name				*
+		 ****************************************/
+		programName = filename.substr(0, filename.find_last_of(".")); ;
+
+		/****************************************
+		 *Configure lex and parse				*
+		 ****************************************/
+		
 		yyin = file;
 
+		
+		/****************************************
+		 *Perform the parsing and lexing		*
+		 ****************************************/
+
 		yyparse();
+
+
+		/****************************************
+		 *Prints the Tree if required			*
+		 ****************************************/
 
 		if (parse)
 		{
 			cout<<root->printTree()<<endl;
 		}
-
+		/****************************************
+		 *Print errors							*
+		 ****************************************/
 		if (err_parse)
 			return -6;
 
+		/****************************************
+		 *If parse finished, stop program		*
+		 ****************************************/
+		if(parse || lex)
+			return 0;
+
+		
+
+		/****************************************
+		 *Semantic testing						*
+		 ****************************************/
 		Vsopl::init();
 
-		if (check || !lex && !parse && !check)
+		Semantic semantic(filename, root);
+		err_sem = semantic.classesCheck();
+		if (!err_sem)
 		{
-			Semantic semantic(filename, root);
-			err_sem = semantic.classesCheck();
-			if (!err_sem)
-			{
-				err_sem = semantic.scopeCheck();
-			}
+			err_sem = semantic.scopeCheck();
 		}
-
+		//print tree
 		if (check)
 			cout<<root->printTree(0,true)<<endl;
-
+		//print errors
 		if (err_sem)
 			return -7;
 
+		/****************************************
+		 *If end check, stop program			*
+		 ****************************************/
+		if(check)
+			return 0;
+
+		
+		/****************************************
+		 *Llvm code generation					*
+		 ****************************************/
 		std::ofstream llvmFile;
+		//open file
 		llvmFile.open(programName+".ll");
+		//creates our manager
 		LlvmManager *llvmManager = new LlvmManager(&llvmFile);
+		//Writes the Header Down
 		Vsopl::llvmHeader(llvmManager);
+		//declares classes and methodds
 		root->llvmHeader(llvmManager);
+		//Writes the main and methods allocations
 		llvmManager->beginMain();
 		Vsopl::llvmMain(llvmManager);
 		root->llvmMain(llvmManager);
 		llvmManager->endMain();
+		//Write the code down
 		root->llvm(llvmManager);
 		llvmManager->writeConstants();
 		llvmFile.close();
+		if(llvm)
+		{
+			std::cout << "The fileName of the generated file is "<< programName << ".ll" << std::endl;
+			return 0;
+		}
 	}//end try
 	catch(std::runtime_error& e)
 	{
@@ -138,7 +198,16 @@ int main(int argc, char** argv)
 		std::cerr << "Other Exception error:" << e.what() << std::endl;
 		return -4;
 	}
-
+	std::string command = "lli ";
+	command += programName;
+	command += ".ll -o";
+	command += programName;
+	system(command.c_str());
+	command = "rm ";
+	command += programName;
+	command += ".ll";
+	system(command.c_str());
+	std::cout << "Your program is called "<< programName;
 	return 0;
 }
 
