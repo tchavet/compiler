@@ -51,9 +51,11 @@ define fastcc %class.IO* @method.IO.printBool(%class.IO* %io.ptr.3, i1 %b)
 
 define fastcc i32 @method.IO.inputInt32(%class.IO* %io.ptr.5)
 {	
-    %io.3 = alloca i32, align 4
-	%io.4 = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8]* @.iostr, i32 0, i32 0), i32* %io.3)
-	ret i32 %io.4
+	;define i32 @readInt() #0 {
+  	%ret = alloca i32, align 4
+  	%1 = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8]* @.intstr, i32 0, i32 0), i32* %ret)
+ 	%2 = load i32* %ret, align 4
+  	ret i32 %2
 }
 
 define fastcc i1 @method.IO.inputBool(%class.IO* %io.ptr.5)
