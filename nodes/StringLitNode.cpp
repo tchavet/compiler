@@ -10,7 +10,7 @@ StringLitNode::StringLitNode(int line, int column, std::string str) : ExprNode(l
 	for (int i=0; i<llvmStr.size(); i++)
 	{
 		llvmStrSize++;
-		if (llvmStr[i] == '\\' && llvmStr[i+1] == 'x')
+		if (llvmStr[i] == '\\')
 		{
 			if (llvmStr[i+1] == 'x')
 			{
@@ -23,6 +23,10 @@ StringLitNode::StringLitNode(int line, int column, std::string str) : ExprNode(l
 			else if (llvmStr[i+1] == '"')
 			{
 				llvmStr.replace(i+1, 1, "22");
+			}
+			else
+			{
+				continue;
 			}
 			i+=2;
 		}
