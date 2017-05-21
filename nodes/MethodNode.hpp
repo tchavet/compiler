@@ -80,6 +80,13 @@ public:
 	 */
 	std::string getLlvmType();
 
+	/**
+	 * Get the llvm variable representing the name of the method in llvm.
+	 * 
+	 * @return The llvm variable of the name of the method
+	 */
+	std::string getLlvmName();
+
 	std::string llvm(LlvmManager* manager);
 
 	/**
@@ -96,6 +103,7 @@ protected:
 	BlockNode* body; /**< The method's body */
 	ClassNode* classNode; /**< The node of the class that this method is defined in */
 	std::string llvmType; /**< The llvm variable holding the type of the method */
+	std::string llvmName; /**< The llvm variable holding the name of the method */
 	std::string objPtr; /**< The llvm variable name pointing to the object calling this method */
 };
 #endif

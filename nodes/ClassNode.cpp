@@ -286,7 +286,20 @@ void ClassNode::llvmHeader(LlvmManager* manager)
 	methodsType += "}";
 	manager->write(methodsType);
 	/* Instantiate the methods structure */
-	manager->write("@methods."+name+" = global %methods.type."+name+" zeroinitializer");
+	std::string methodsVector = "@methods."+name+" = global %methods.type."+name+" {";
+	//manager->write("@methods."+name+" = global %methods.type."+name+" zeroinitializer");
+	for(int i = 0; i < methodNames.size(); ++i)
+	{
+		if(i != 0)
+		{
+			methodsVector += ", ";
+		}
+
+		MethodNode* methodNode = getMethod(methodNames[i]);
+		methodsVector += methodNode->getLlvmType() + " " + methodNode->getLlvmName() ;
+	}
+	methodsVector += "}";
+	manager->write(methodsVector);
 
 	/* Define the class structure type */
 	std::string classType = "%class."+name+" = type {%methods.type."+name+"*";

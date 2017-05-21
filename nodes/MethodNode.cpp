@@ -13,6 +13,7 @@ MethodNode::MethodNode(int line, int column, std::string name, std::vector<Forma
 	for (int i=0; i<params.size(); i++)
 		params[i]->setParent(this);
 	llvmType = "";
+	llvmName = "";
 	objPtr = "";
 }
 
@@ -138,6 +139,7 @@ std::string MethodNode::getLlvmNameInScope(std::string var)
 void MethodNode::llvmHeader(LlvmManager* manager)
 {
 	llvmType = "%method.type."+((ClassNode*)parent)->getName()+"."+name;
+	llvmName = "@method."+((ClassNode*)parent)->getName()+"."+name;
 	/* Define the method type */
 	// %method.type.<className>.<methodName> = type <retType> (<paramType>, <paramType,...)
 	std::string methodType = llvmType+" = type "+LlvmManager::llvmType(returnType) + " (%class."+((ClassNode*)parent)->getName()+"*";
@@ -153,6 +155,11 @@ void MethodNode::llvmHeader(LlvmManager* manager)
 std::string MethodNode::getLlvmType()
 {
 	return llvmType;
+}
+
+std::string MethodNode::getLlvmName()
+{
+	return llvmName;
 }
 
 std::string MethodNode::llvm(LlvmManager* manager)
