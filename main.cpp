@@ -103,7 +103,8 @@ int main(int argc, char** argv)
 		/****************************************
 		 *Define output file name				*
 		 ****************************************/
-		programName = filename.substr(0, filename.find_last_of(".")); ;
+		programName = filename.substr(filename.find_last_of("/")+1);
+		programName = programName.substr(0, programName.find_last_of("."));
 
 		/****************************************
 		 *Configure lex and parse				*
