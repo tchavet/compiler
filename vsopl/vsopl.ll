@@ -1,7 +1,7 @@
 ; ModuleID = 'main.vsop'
 
-@true.str = constant [6 x i8] c"true\0a\00"
-@false.str = constant [7 x i8] c"false\0a\00"
+@true.str = constant [5 x i8] c"true\00"
+@false.str = constant [6 x i8] c"false\00"
 @.iostr = private unnamed_addr constant [3 x i8] c"%d\00"
 @.iostr2 = private unnamed_addr constant [3 x i8] c"%s\00"
 ;@.strstr = private unnamed_addr constant [2 x i8] c"%s"
@@ -45,10 +45,10 @@ define fastcc %class.IO* @method.IO.printBool(%class.IO* %io.ptr.3, i1 %b)
 {
 	br i1 %b, label %if_true, label %if_false
 	if_true:
-		%true.ptr = getelementptr [6 x i8]* @true.str, i32 0, i32 0
+		%true.ptr = getelementptr [5 x i8]* @true.str, i32 0, i32 0
 		br label %if_end
 	if_false:
-		%false.ptr = getelementptr [7 x i8]* @false.str, i32 0, i32 0
+		%false.ptr = getelementptr [6 x i8]* @false.str, i32 0, i32 0
 		br label %if_end
 	if_end:
 		%toPrint = phi i8* [%true.ptr, %if_true], [%false.ptr, %if_false]
@@ -71,7 +71,7 @@ define fastcc i1 @method.IO.inputBool(%class.IO* %io.ptr.5)
     %io.8 = load i8** %io.7, align 8
     %io.9 = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8]* @.iostr2, i32 0, i32 0), i8* %io.8)
     %io.10 = load i8** %io.7, align 8
-    %io.11 = call i32 @strcmp(i8* %io.10, i8* getelementptr inbounds ([6 x i8]* @true.str, i32 0, i32 0)) #3
+    %io.11 = call i32 @strcmp(i8* %io.10, i8* getelementptr inbounds ([5 x i8]* @true.str, i32 0, i32 0)) #3
     %io.12 = icmp ne i32 %io.11, 0
     br i1 %io.12, label %io.if_true, label %io.if_false
     io.if_true:
