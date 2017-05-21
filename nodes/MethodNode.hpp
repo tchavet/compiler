@@ -87,7 +87,7 @@ public:
 	 */
 	std::string getLlvmName();
 
-	std::string llvm(LlvmManager* manager);
+	std::string llvm(LlvmManager* manager, std::string retName=".");
 
 	/**
 	 * Write the code to declare the function

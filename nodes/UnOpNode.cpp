@@ -58,15 +58,15 @@ ExprType* UnOpNode::getType()
 	return exprType;
 }
 
-std::string UnOpNode::llvm(LlvmManager* manager)
+std::string UnOpNode::llvm(LlvmManager* manager, std::string retName)
 {
 	std::string exprLlvm = expr->llvm(manager);
 	if (op == "not")
-		return manager->write("xor i1 1, "+exprLlvm, ".");
+		return manager->write("xor i1 1, "+exprLlvm, retName);
 	else if (op == "-")
-		return manager->write("sub i32 0, "+exprLlvm, ".");
+		return manager->write("sub i32 0, "+exprLlvm, retName);
 	else if (op == "isnull")
-		return manager->write("icmp eq "+LlvmManager::llvmType(expr->getComputedType())+" 0, "+exprLlvm, ".");
+		return manager->write("icmp eq "+LlvmManager::llvmType(expr->getComputedType())+" 0, "+exprLlvm, retName);
 	else
 		return "";
 }

@@ -41,7 +41,7 @@ public:
 
 	std::string getTypeInScope(std::string id);
 	
-	std::string llvm(LlvmManager* manager);
+	std::string llvm(LlvmManager* manager, std::string retName=".");
 
 protected:
 	std::string name; /**< The name of the field */

@@ -98,7 +98,7 @@ ExprType* CallNode::getType()
 	return exprType;
 }
 
-std::string CallNode::llvm(LlvmManager* manager)
+std::string CallNode::llvm(LlvmManager* manager, std::string retName)
 {
 	// Get the method and parameters node of the method that is being called
 	MethodNode* methodNode = Types::getNode(objExpr->getComputedType())->getMethod(name);
@@ -126,5 +126,5 @@ std::string CallNode::llvm(LlvmManager* manager)
 		llvm += LlvmManager::llvmType(args[i]->getComputedType())+" "+argLlvm;
 	}
 	llvm += ")";
-	return manager->write(llvm, ".");
+	return manager->write(llvm, retName);
 }

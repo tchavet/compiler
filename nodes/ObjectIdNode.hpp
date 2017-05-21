@@ -22,7 +22,7 @@ public:
 
 	ExprType* getType();
 
-	std::string llvm(LlvmManager* manager);
+	std::string llvm(LlvmManager* manager, std::string retName=".");
 
 protected:
 	std::string name; /**< The object id */

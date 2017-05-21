@@ -16,7 +16,7 @@ ExprType* NewNode::getType()
 	return new ExprType(type);
 }
 
-std::string NewNode::llvm(LlvmManager* manager)
+std::string NewNode::llvm(LlvmManager* manager, std::string retName)
 {
-	return Types::getNode(type)->llvmAllocate(manager);
+	return Types::getNode(type)->llvmAllocate(manager, retName);
 }

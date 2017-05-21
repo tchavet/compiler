@@ -59,27 +59,21 @@ ExprType* AssignNode::getType()
 	return exprType;
 }
 
-std::string AssignNode::llvm(LlvmManager* manager)
+std::string AssignNode::llvm(LlvmManager* manager, std::string retName)
 {
-	std::string exprLlvmName = expr->llvm(manager); // Convert the expression to llvm and get the unnamed variable where the result is stored
+	std::string exprLlvmName = expr->llvm(manager, name); // Convert the expression to llvm and get the unnamed variable where the result is stored
 	// Cast if needed
-	if (LlvmManager::llvmType(expr->getComputedType()) != type)
-		exprLlvmName = manager->write("bitcast "+LlvmManager::llvmType(expr->getComputedType())+" "+exprLlvmName+" to "+LlvmManager::llvmType(type), ".");
+	if (expr->getComputedType() != type)
+		exprLlvmName = manager->write("bitcast "+LlvmManager::llvmType(expr->getComputedType())+" "+exprLlvmName+" to "+LlvmManager::llvmType(type), name);
 	if (getLlvmNameInScope(name) == "") // The variable is a field
 	{
 		std::string objPtr = getLlvmNameInScope("obj.ptr");
 		std::string varPtr = manager->getField(getTypeInScope("self"), name, objPtr);
 		manager->write("store "+LlvmManager::llvmType(type)+" "+exprLlvmName+", "+LlvmManager::llvmType(type)+"* "+varPtr);
-		return exprLlvmName;
 	}
-	else
-	{
-		std::string varName = "";
-		if (dynamic_cast<IntLitNode*>(expr))
-			varName = exprLlvmName;
-		else
-			varName =  manager->write(exprLlvmName, name); // %name.x = %exprLlvmName
-		setLlvmNameInScope(name, varName);
-		return varName;
-	}
+	if (expr->getComputedType() == "int32")
+		exprLlvmName = manager->write("add i32 "+exprLlvmName+", 0", name);
+	if (expr->getComputedType() == "bool")
+		exprLlvmName = manager->write("add i1 "+exprLlvmName+", 0", name);
+	return exprLlvmName;
 }

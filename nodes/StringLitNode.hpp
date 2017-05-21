@@ -20,7 +20,7 @@ public:
 	std::string printTree(int tabsNb=0, bool types=false);
 
 	ExprType* getType();
-	std::string llvm(LlvmManager* manager);
+	std::string llvm(LlvmManager* manager, std::string retName=".");
 protected:
 	std::string str; /**< The string */
 	std::string llvmStr; /**< The llvm compliant string */

@@ -75,7 +75,7 @@ public:
 	 * 
 	 * @return An empty string
 	 */
-	std::string llvm(LlvmManager* manager);
+	std::string llvm(LlvmManager* manager, std::string retName=".");
 
 protected:
 	std::vector<ClassNode*> classes; /**< The nodes representing the classes of the program */

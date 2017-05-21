@@ -30,7 +30,7 @@ public:
 
 	virtual std::string printTree(int tabsNb=0, bool types=false);
 
-	virtual std::string llvm(LlvmManager* manager){};
+	virtual std::string llvm(LlvmManager* manager, std::string retName="."){};
 
 	/**
 	 * Get the type that was found by getType

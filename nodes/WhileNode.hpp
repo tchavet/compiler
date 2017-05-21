@@ -22,7 +22,7 @@ public:
 
 	ExprType* getType();
 
-	std::string llvm(LlvmManager* manager);
+	std::string llvm(LlvmManager* manager, std::string retName=".");
 
 protected:
 	ExprNode* cond; /**< The conditional expression of the loop */

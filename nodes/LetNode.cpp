@@ -96,30 +96,36 @@ std::string LetNode::getLlvmNameInScope(std::string var)
 		return "";
 }
 
-std::string LetNode::llvm(LlvmManager* manager)
+std::string LetNode::llvm(LlvmManager* manager, std::string retName)
 {
 	std::string exprLlvmName;
 	if(init != NULL)	
 	{
-		std::string exprResult = init->llvm(manager);
+		std::string exprResult = init->llvm(manager, name);
 		// If needed, cast the expression result
 		if (init->getComputedType() != letType)
 		{
-			exprResult = manager->write("bitcast "+LlvmManager::llvmType(init->getComputedType())+" "+exprResult+" to "+LlvmManager::llvmType(letType)+" ", ".");
+			exprResult = manager->write("bitcast "+LlvmManager::llvmType(init->getComputedType())+" "+exprResult+" to "+LlvmManager::llvmType(letType)+" ", name);
 		}
+		if (init->getComputedType() == "int32")
+			exprResult = manager->write("add i32 "+exprResult+", 0", name);
+		if (init->getComputedType() == "bool")
+			exprResult = manager->write("add i1 "+exprResult+", 0", name);
 		llvmName = exprResult;
 	}
 	else 
 	{
-		if (letType == "int32" || letType == "bool")
-			llvmName = "0";
+		if (letType == "int32")
+			llvmName = manager->write("add i32 0, 0",name);
+		if (letType == "bool")
+			llvmName = manager->write("add i1 0, 0",name);
 		else if (type == "string")
 		{
 			StringLitNode* emptyStr = new StringLitNode(0,0,"");
-			return emptyStr->llvm(manager);
+			return emptyStr->llvm(manager, name);
 		}
 		else
-			llvmName = "null";
+			llvmName = manager->write("getelementptr "+LlvmManager::llvmType(letType)+" null", name);
 	}
 	return scope->llvm(manager);
 }

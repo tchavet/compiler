@@ -102,7 +102,7 @@ ExprType* IfNode::getType()
 	return exprType;
 }
 
-std::string IfNode::llvm(LlvmManager* manager)
+std::string IfNode::llvm(LlvmManager* manager, std::string retName)
 {
 	std::string if_true = manager->getNewLabel("if_true");
 	std::string if_false = manager->getNewLabel("if_false");
@@ -131,7 +131,7 @@ std::string IfNode::llvm(LlvmManager* manager)
 	}
 	manager->decIndent();
 	manager->writeLabel(if_end);
-	std::string ret = manager->write("phi "+LlvmManager::llvmType(type)+" ["+thenResult+", %"+if_true+"], ["+elseResult+", %"+if_false+"]", ".");
+	std::string ret = manager->write("phi "+LlvmManager::llvmType(type)+" ["+thenResult+", %"+if_true+"], ["+elseResult+", %"+if_false+"]", retName);
 	manager->decIndent();
 	return ret;
 }

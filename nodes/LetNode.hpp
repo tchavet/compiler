@@ -30,7 +30,7 @@ public:
 
 	std::string getLlvmNameInScope(std::string var);
 
-	std::string llvm(LlvmManager* manager);
+	std::string llvm(LlvmManager* manager, std::string retName=".");
 protected:
 	std::string name; /**< The name of the variable being created */
 	std::string letType; /**< The type of the variable */

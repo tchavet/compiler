@@ -1,6 +1,7 @@
 #include "MethodNode.hpp"
 #include "../semantic/Types.hpp"
 #include "ClassNode.hpp"
+#include <iostream>
 
 MethodNode::MethodNode(int line, int column, std::string name, std::vector<FormalNode*> params, std::string returnType, BlockNode* body) : AstNode(line, column)
 {
@@ -162,7 +163,7 @@ std::string MethodNode::getLlvmName()
 	return llvmName;
 }
 
-std::string MethodNode::llvm(LlvmManager* manager)
+std::string MethodNode::llvm(LlvmManager* manager, std::string retName)
 {
 	std::string className = classNode->getName();
 	objPtr = manager->getNewVarName("obj.ptr");

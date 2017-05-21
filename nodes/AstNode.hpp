@@ -72,10 +72,11 @@ public:
 	 * Convert this node into llvm
 	 *
 	 * @param manager The LlvmManager
+	 * @param retName The name of the llvm variable to assign this expression to
 	 *
 	 * @return The local llvm variable name that this node's value was assigned to (if the node has a value)
 	 */
-	virtual std::string llvm(LlvmManager* manager){};
+	virtual std::string llvm(LlvmManager* manager, std::string retName = "."){};
 
 	/**
 	 * Set the current local llvm variable name of a variable in this scope (example: x is x.5)
