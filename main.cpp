@@ -207,7 +207,6 @@ int main(int argc, char** argv)
 	std::string vsopLib = getCurrentPath();
 	vsopLib = vsopLib.substr(0, vsopLib.find_last_of("/"));
 	vsopLib +="/vsopl/vsopl.ll";
-	std::cout <<"vsopLib" <<vsopLib <<std::endl;
 	std::string command;
 	
 	if(llvm)
