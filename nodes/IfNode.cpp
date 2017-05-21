@@ -111,6 +111,9 @@ std::string IfNode::llvm(LlvmManager* manager)
 	manager->write("br i1 "+ cond  + ", label %"+if_true +", label %"+if_false);
 	manager->writeLabel(if_true);
 	std::string thenResult = then->llvm(manager);
+	// Cast if necessary
+	if (then->getComputedType() != type)
+		thenResult = manager->write("bitcast "+LlvmManager::llvmType(then->getComputedType())+" "+thenResult+" to "+LlvmManager::llvmType(type), ".");
 	manager->write("br label %"+if_end);
 	manager->decIndent();
 	manager->writeLabel(if_false);
@@ -118,6 +121,8 @@ std::string IfNode::llvm(LlvmManager* manager)
 	if(els != NULL)
 	{
 		elseResult = els->llvm(manager);
+		if (els->getComputedType() != type)
+			elseResult = manager->write("bitcast "+LlvmManager::llvmType(els->getComputedType())+" "+elseResult+" to "+LlvmManager::llvmType(type), ".");
 		manager->write("br label %"+if_end);//could be removed
 	}
 	else
