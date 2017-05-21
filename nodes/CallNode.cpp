@@ -118,6 +118,8 @@ std::string CallNode::llvm(LlvmManager* manager, std::string retName)
 	}
 
 	// llvm calling code
+	if (methodNode->getReturnType() == "unit")
+		retName = ""; // Void method do not return anything
 	std::string llvm = "call fastcc "+LlvmManager::llvmType(methodNode->getReturnType())+" "+function+"(%class."+objptrType+"* "+objptr;
 	for (int i=0; i<args.size(); i++)
 	{
