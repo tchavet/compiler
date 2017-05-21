@@ -73,7 +73,7 @@ std::string AssignNode::llvm(LlvmManager* manager)
 	{
 		std::string varName = "";
 		if (dynamic_cast<IntLitNode*>(expr))
-			varName = manager->write("add i32 "+exprLlvmName+", 0", name);
+			varName = exprLlvmName;
 		else
 			varName =  manager->write(exprLlvmName, name); // %name.x = %exprLlvmName
 		setLlvmNameInScope(name, varName);

@@ -106,10 +106,14 @@ std::string LetNode::llvm(LlvmManager* manager)
 		{
 			exprResult = manager->write("bitcast "+LlvmManager::llvmType(init->getComputedType())+" "+exprResult+" to "+LlvmManager::llvmType(letType)+" ", ".");
 		}
-		llvmName = manager->write("add "+LlvmManager::llvmType(letType)+" "+exprResult+", 0", name);
+		llvmName = exprResult;
 	}
 	else 
-		llvmName = manager->write("0", name);
+	{
+		if (letType == "int32" || letType == "bool")
+			llvmName = "0";
+		else
+			llvmName = "null";
+	}
 	return scope->llvm(manager);
-
 }
