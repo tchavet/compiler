@@ -1,5 +1,6 @@
 #include "AssignNode.hpp"
 #include "ClassNode.hpp"
+#include "IntLitNode.hpp"
 #include "../semantic/Types.hpp"
 
 AssignNode::AssignNode(int line, int column, std::string name, ExprNode* expr) : ExprNode(line, column)
@@ -69,5 +70,13 @@ std::string AssignNode::llvm(LlvmManager* manager)
 		return exprLlvmName;
 	}
 	else
-		return manager->write(exprLlvmName, name); // %name.x = %exprLlvmName
+	{
+		std::string varName = "";
+		if (dynamic_cast<IntLitNode*>(expr))
+			varName = manager->write("add i32 "+exprLlvmName+", 0", name);
+		else
+			varName =  manager->write(exprLlvmName, name); // %name.x = %exprLlvmName
+		setLlvmNameInScope(name, varName);
+		return varName;
+	}
 }
