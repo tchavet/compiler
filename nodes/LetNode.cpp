@@ -1,4 +1,5 @@
 #include "LetNode.hpp"
+#include "StringLitNode.hpp"
 #include "../semantic/Types.hpp"
 
 LetNode::LetNode(int line, int column, std::string name, std::string type, ExprNode* scope, ExprNode* init) : ExprNode(line, column)
@@ -112,6 +113,11 @@ std::string LetNode::llvm(LlvmManager* manager)
 	{
 		if (letType == "int32" || letType == "bool")
 			llvmName = "0";
+		else if (type == "string")
+		{
+			StringLitNode* emptyStr = new StringLitNode(0,0,"");
+			return emptyStr->llvm(manager);
+		}
 		else
 			llvmName = "null";
 	}

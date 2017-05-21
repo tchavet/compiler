@@ -1,4 +1,5 @@
 #include "FieldNode.hpp"
+#include "StringLitNode.hpp"
 #include "../semantic/Types.hpp"
 
 FieldNode::FieldNode(int line, int column, std::string name, std::string type, ExprNode* init) : AstNode(line, column)
@@ -83,5 +84,15 @@ std::string FieldNode::llvm(LlvmManager* manager)
 	if (init)
 		return init->llvm(manager);
 	else
-		return "0";
+	{
+		if (type == "int32" || type == "bool")
+			return "0";
+		else if (type == "string")
+		{
+			StringLitNode* emptyStr = new StringLitNode(0,0,"");
+			return emptyStr->llvm(manager);
+		}
+		else
+			return "null";
+	}
 }

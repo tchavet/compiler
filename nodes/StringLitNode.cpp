@@ -5,6 +5,7 @@
 StringLitNode::StringLitNode(int line, int column, std::string str) : ExprNode(line, column)
 {
 	this->str = str;
+	type = "string";
 	llvmStrSize = 0;
 	llvmStr = str;
 	for (int i=0; i<llvmStr.size(); i++)
@@ -42,7 +43,6 @@ std::string StringLitNode::printTree(int tabsNb, bool types)
 
 ExprType* StringLitNode::getType()
 {
-	type = "string";
 	return new ExprType("string");
 }
 std::string StringLitNode::llvm(LlvmManager* manager)
