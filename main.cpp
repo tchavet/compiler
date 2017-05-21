@@ -217,20 +217,24 @@ int main(int argc, char** argv)
 	else 
 	{
 		command = "llvm-link -S "+vsopLib+" "+programName+".ll -o "+programName+"_linked.ll";
-		system(command.c_str());
-	
+		if(system(command.c_str()) != 0)
+			return -8;
+
 		command = "llc -o "+programName+".s "+programName+"_linked.ll";
-		system(command.c_str());
+		if(system(command.c_str()) != 0)
+			return -8;
 	
 		command = "gcc "+programName+".s -o"+programName;
-		system(command.c_str());
-	
+		if(system(command.c_str()) != 0)
+			return -8;
 	
 		command = "rm "+programName+".s";
-		system(command.c_str());
+		if(system(command.c_str()) != 0)
+			return -8;
 	
 		command = "rm "+programName+"_linked.ll";
-		system(command.c_str());
+		if(system(command.c_str()) != 0)
+			return -8;
 	}
 
 	command = "rm "+programName+".ll";
