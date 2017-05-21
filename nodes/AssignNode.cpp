@@ -62,6 +62,9 @@ ExprType* AssignNode::getType()
 std::string AssignNode::llvm(LlvmManager* manager)
 {
 	std::string exprLlvmName = expr->llvm(manager); // Convert the expression to llvm and get the unnamed variable where the result is stored
+	// Cast if needed
+	if (LlvmManager::llvmType(expr->getComputedType()) != type)
+		exprLlvmName = manager->write("bitcast "+LlvmManager::llvmType(expr->getComputedType())+" "+exprLlvmName+" to "+LlvmManager::llvmType(type), ".");
 	if (getLlvmNameInScope(name) == "") // The variable is a field
 	{
 		std::string objPtr = getLlvmNameInScope("obj.ptr");
