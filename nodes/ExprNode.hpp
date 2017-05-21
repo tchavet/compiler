@@ -37,7 +37,7 @@ public:
 	 * 
 	 * @return The type of the expression
 	 */
-	std::string getComputedType();
+	virtual std::string getComputedType();
 
 protected:
 	std::string type; /**< The type of the expression (need to run getType to get it)*/

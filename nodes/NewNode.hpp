@@ -24,6 +24,5 @@ public:
 	std::string llvm(LlvmManager* manager);
 
 protected:
-	std::string type; /**< The type to instantiate */
 };
 #endif
