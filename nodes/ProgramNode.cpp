@@ -48,11 +48,11 @@ void ProgramNode::llvmHeader(LlvmManager* manager)
 
 void ProgramNode::llvmMain(LlvmManager* manager)
 {
-	for (int i=0; i<classes.size(); i++)
+	/*for (int i=0; i<classes.size(); i++)
 	{
 		classes[i]->llvmMain(manager);
 		manager->write("");
-	}
+	}*/
 }
 
 std::string ProgramNode::llvm(LlvmManager* manager)

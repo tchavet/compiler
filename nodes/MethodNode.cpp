@@ -71,7 +71,7 @@ std::vector<SemErr*> MethodNode::semCheck()
 	{
 		errors.push_back(new SemErr(line, column, "undefined return type " + returnType));
 	}
-	if (((ClassNode*)parent)->redefinedMethod(this)) // If the method has already been defined
+	if (classNode->redefinedMethod(this)) // If the method has already been defined
 	{
 		errors.push_back(new SemErr(line, column, "multiple definitions of method " + name));
 	}
@@ -138,11 +138,11 @@ std::string MethodNode::getLlvmNameInScope(std::string var)
 
 void MethodNode::llvmHeader(LlvmManager* manager)
 {
-	llvmType = "%method.type."+((ClassNode*)parent)->getName()+"."+name;
-	llvmName = "@method."+((ClassNode*)parent)->getName()+"."+name;
+	llvmType = "%method.type."+classNode->getName()+"."+name;
+	llvmName = "@method."+classNode->getName()+"."+name;
 	/* Define the method type */
 	// %method.type.<className>.<methodName> = type <retType> (<paramType>, <paramType,...)
-	std::string methodType = llvmType+" = type "+LlvmManager::llvmType(returnType) + " (%class."+((ClassNode*)parent)->getName()+"*";
+	std::string methodType = llvmType+" = type "+LlvmManager::llvmType(returnType) + " (%class."+classNode->getName()+"*";
 	for(int i=0; i<params.size(); ++i)
 	{
 		methodType += ", ";
