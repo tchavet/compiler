@@ -66,7 +66,7 @@ std::string AssignNode::llvm(LlvmManager* manager)
 	// Cast if needed
 	if (expr->getComputedType() != type)
 		exprLlvmName = manager->write("bitcast "+LlvmManager::llvmType(expr->getComputedType())+" "+exprLlvmName+" to "+llvmType, name);
-	std::string llvmVarName = getLlvmVariable(name, manager);
+	std::string llvmVarName = getLlvmVariable(name, manager, true);
 	if (llvmVarName == "") // The variable is a field
 	{
 		std::string objPtr = getLlvmVariable("obj.ptr", manager);

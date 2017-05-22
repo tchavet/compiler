@@ -20,10 +20,10 @@ std::string ExprNode::getComputedType()
 	return type;
 }
 
-std::string ExprNode::getLlvmVariable(std::string var, LlvmManager* manager)
+std::string ExprNode::getLlvmVariable(std::string var, LlvmManager* manager, bool pointer)
 {
 	if (parent)
-		return parent->getLlvmVariable(var, manager);
+		return parent->getLlvmVariable(var, manager, pointer);
 	else
 		return "";
 }

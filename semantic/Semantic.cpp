@@ -13,7 +13,6 @@ Semantic::Semantic(std::string filename, ProgramNode* tree)
 	builtIns.push_back("bool");
 	builtIns.push_back("string");
 	builtIns.push_back("unit");
-	builtIns.push_back("Object");
 	Types::init(builtIns);
 	Vsopl::semantic();
 }

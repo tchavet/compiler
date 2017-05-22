@@ -45,10 +45,10 @@ AstNode* AstNode::getParent()
 	parent;
 }
 
-std::string AstNode::getLlvmVariable(std::string var, LlvmManager* manager)
+std::string AstNode::getLlvmVariable(std::string var, LlvmManager* manager, bool pointer)
 {
 	if (parent)
-		return parent->getLlvmVariable(var, manager);
+		return parent->getLlvmVariable(var, manager, pointer);
 	else
 		return "";
 }

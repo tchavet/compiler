@@ -78,14 +78,17 @@ std::string LetNode::getTypeInScope(std::string id)
 	return AstNode::getTypeInScope(id);
 }
 
-std::string LetNode::getLlvmVariable(std::string var, LlvmManager* manager)
+std::string LetNode::getLlvmVariable(std::string var, LlvmManager* manager, bool pointer)
 {
 	if (var == name)
 	{
-		return manager->write("load "+LlvmManager::llvmType(letType)+"* "+llvmName, name);
+		if (pointer)
+			return llvmName;
+		else
+			return manager->write("load "+LlvmManager::llvmType(letType)+"* "+llvmName, name);
 	}
 	if (parent)
-		return parent->getLlvmVariable(var, manager);
+		return parent->getLlvmVariable(var, manager, pointer);
 	else
 		return "";
 }
@@ -105,11 +108,9 @@ std::string LetNode::llvm(LlvmManager* manager)
 	}
 	else 
 	{
-		if (letType == "int32")
+		if (letType == "int32" || letType == "bool")
 			exprLlvmName = "0";
-		if (letType == "bool")
-			exprLlvmName = "0";
-		else if (type == "string")
+		else if (letType == "string")
 		{
 			exprLlvmName = "null";
 		}

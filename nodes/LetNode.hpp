@@ -26,7 +26,7 @@ public:
 
 	std::string getTypeInScope(std::string id);
 
-	std::string getLlvmVariable(std::string var, LlvmManager* manager);
+	std::string getLlvmVariable(std::string var, LlvmManager* manager, bool pointer=false);
 
 	std::string llvm(LlvmManager* manager);
 protected:

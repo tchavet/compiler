@@ -61,7 +61,7 @@ public:
 
 	std::string getReturnType();
 
-	std::string getLlvmVariable(std::string var, LlvmManager* manager);
+	std::string getLlvmVariable(std::string var, LlvmManager* manager, bool pointer=false);
 
 	/**
 	 * Write the llvm header for this method.

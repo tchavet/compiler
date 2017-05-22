@@ -112,7 +112,7 @@ std::vector<SemErr*> MethodNode::semCheck()
 	return errors;
 }
 
-std::string MethodNode::getLlvmVariable(std::string var, LlvmManager* manager)
+std::string MethodNode::getLlvmVariable(std::string var, LlvmManager* manager, bool pointer)
 {
 	if (var == "self" || var == "obj.ptr")
 		return objPtr;
@@ -120,7 +120,7 @@ std::string MethodNode::getLlvmVariable(std::string var, LlvmManager* manager)
 	{
 		if (params[i]->getName() == var)
 		{
-			return params[i]->getLlvmVariable(var, manager);
+			return params[i]->getLlvmVariable(var, manager, pointer);
 		}
 	}
 	return "";

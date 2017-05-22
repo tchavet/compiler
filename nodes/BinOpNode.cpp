@@ -63,6 +63,28 @@ ExprType* BinOpNode::getType()
 std::string BinOpNode::llvm(LlvmManager* manager)
 {
 	std::string leftExprLlvm = leftExpr->llvm(manager);
+	if (op == "and")
+	{
+		std::string left_true = manager->getNewLabel("left_true");
+		std::string and_true = manager->getNewLabel("and_true");
+		std::string and_false = manager->getNewLabel("and_false");
+		std::string and_end = manager->getNewLabel("and_end");
+		manager->write("br i1 "+leftExprLlvm+", label %"+left_true+", label %"+and_false);
+		manager->writeLabel(left_true);
+		std::string rightExprLlvm = rightExpr->llvm(manager);
+		manager->write("br i1 "+rightExprLlvm+", label %"+and_true+", label %"+and_false);
+		manager->decIndent();
+		manager->writeLabel(and_true);
+		manager->write("br label %"+and_end);
+		manager->decIndent();
+		manager->writeLabel(and_false);
+		manager->write("br label %"+and_end);
+		manager->decIndent();
+		manager->writeLabel(and_end);
+		std::string result = manager->write("phi i1 [1, %"+and_true+"], [0, %"+and_false+"]",".");
+		manager->decIndent();
+		return result;
+	}
 	std::string rightExprLlvm = rightExpr->llvm(manager);
 	if (op == "=")
 		return manager->write("icmp eq "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
@@ -80,8 +102,6 @@ std::string BinOpNode::llvm(LlvmManager* manager)
 		return manager->write("sdiv "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "^")
 		return manager->write("prout "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
-	else if (op == "and")
-		return manager->write("and i1 "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else
 		return "";
 }

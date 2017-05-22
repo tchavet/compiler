@@ -66,7 +66,7 @@ std::string UnOpNode::llvm(LlvmManager* manager)
 	else if (op == "-")
 		return manager->write("sub i32 0, "+exprLlvm, ".");
 	else if (op == "isnull")
-		return manager->write("icmp eq "+LlvmManager::llvmType(expr->getComputedType())+" 0, "+exprLlvm, ".");
+		return manager->write("icmp eq "+LlvmManager::llvmType(expr->getComputedType())+" null, "+exprLlvm, ".");
 	else
 		return "";
 }

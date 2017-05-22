@@ -39,12 +39,14 @@ std::string WhileNode::llvm(LlvmManager* manager){
 	std::string begin_label = manager->getNewLabel("while_cond");
 	std::string while_body = manager->getNewLabel("while_body");
 	std::string end_label = manager->getNewLabel("while_end");
+	manager->write("br label %"+begin_label);
 	manager->writeLabel(begin_label);
 	std::string cond = this->cond->llvm(manager);
 	manager->write("br i1 "+ cond  + ", label %"+while_body +", label %"+end_label);
 	manager->decIndent();
 	manager->writeLabel(while_body);
 	this->body->llvm(manager);
+	manager->write("br label %"+begin_label);
 	manager->decIndent();
 	manager->writeLabel(end_label);
 	manager->decIndent();
