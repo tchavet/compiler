@@ -35,6 +35,7 @@ public:
 protected:
 	static std::vector<ClassNode*> classes; /**< The vsop library classes */
 
+	static void createObjectClass(); /**< Create the class node for the Object class */
 	static void createIoClass(); /**< Create the class node for the IO class */
 };
 

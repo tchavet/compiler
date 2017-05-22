@@ -1,6 +1,5 @@
 #include "ClassNode.hpp"
 #include <sstream>
-#include <iostream>
 
 ClassNode::ClassNode(int line, int column, std::string name, std::string parent) : AstNode(line, column)
 {

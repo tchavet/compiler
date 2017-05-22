@@ -5,6 +5,7 @@ std::vector<ClassNode*> Vsopl::classes = std::vector<ClassNode*>();
 
 void Vsopl::init()
 {
+	createObjectClass();
 	createIoClass();
 }
 
@@ -33,6 +34,12 @@ void Vsopl::llvmMain(LlvmManager* manager)
 		classes[i]->llvmMain(manager);
 		manager->write("");
 	}
+}
+
+void Vsopl::createObjectClass()
+{
+	ClassNode* classNode = new ClassNode(0,0,"Object");
+	classes.push_back(classNode);
 }
 
 void Vsopl::createIoClass()
