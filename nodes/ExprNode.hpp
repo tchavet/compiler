@@ -32,7 +32,7 @@ public:
 
 	virtual std::string llvm(LlvmManager* manager){return "";};
 
-	virtual std::string getLlvmVariable(std::string var, LlvmManager* manager);
+	virtual std::string getLlvmVariable(std::string var, LlvmManager* manager, bool pointer=false);
 
 	/**
 	 * Get the type that was found by getType

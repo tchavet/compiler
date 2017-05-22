@@ -28,10 +28,15 @@ void FormalNode::setLlvmNameInScope(std::string var, std::string llvmName)
 		this->llvmName = llvmName;
 }
 
-std::string FormalNode::getLlvmVariable(std::string var, LlvmManager* manager)
+std::string FormalNode::getLlvmVariable(std::string var, LlvmManager* manager, bool pointer)
 {
 	if (name == var)
-		return manager->write("load "+LlvmManager::llvmType(type)+"* "+llvmName, name);
+	{
+		if (pointer)
+			return llvmName;
+		else
+			return manager->write("load "+LlvmManager::llvmType(type)+"* "+llvmName, name);
+	}
 	else
 		return "";
 }

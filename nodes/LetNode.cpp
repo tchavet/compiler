@@ -78,11 +78,14 @@ std::string LetNode::getTypeInScope(std::string id)
 	return AstNode::getTypeInScope(id);
 }
 
-std::string LetNode::getLlvmVariable(std::string var, LlvmManager* manager)
+std::string LetNode::getLlvmVariable(std::string var, LlvmManager* manager, bool pointer)
 {
 	if (var == name)
 	{
-		return manager->write("load "+LlvmManager::llvmType(letType)+"* "+llvmName, name);
+		if (pointer)
+			return llvmName;
+		else
+			return manager->write("load "+LlvmManager::llvmType(letType)+"* "+llvmName, name);
 	}
 	if (parent)
 		return parent->getLlvmVariable(var, manager);

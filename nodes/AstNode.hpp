@@ -82,10 +82,11 @@ public:
 	 *
 	 * @param var The vsop variable name
 	 * @param manager The LlvmManager
+	 * @param pointer Wether to just get the llvm pointer to the variable or dereference it
 	 *
 	 * @return The current llvm variable name in this scope
 	 */
-	virtual std::string getLlvmVariable(std::string var, LlvmManager* manager);
+	virtual std::string getLlvmVariable(std::string var, LlvmManager* manager, bool pointer=false);
 
 protected:
 	int line; /**< The line number where this node's vsop code begins */
