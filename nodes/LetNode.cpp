@@ -105,11 +105,9 @@ std::string LetNode::llvm(LlvmManager* manager)
 	}
 	else 
 	{
-		if (letType == "int32")
+		if (letType == "int32" || letType == "bool")
 			exprLlvmName = "0";
-		if (letType == "bool")
-			exprLlvmName = "0";
-		else if (type == "string")
+		else if (letType == "string")
 		{
 			exprLlvmName = "null";
 		}
