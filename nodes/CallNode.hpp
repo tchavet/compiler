@@ -21,7 +21,7 @@ public:
 
 	ExprType* getType();
 
-	std::string llvm(LlvmManager* manager, std::string retName=".");
+	std::string llvm(LlvmManager* manager);
 
 protected:
 	ExprNode* objExpr; /**< The expression representing the object on which to call the method */

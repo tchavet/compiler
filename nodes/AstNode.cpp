@@ -45,16 +45,10 @@ AstNode* AstNode::getParent()
 	parent;
 }
 
-void AstNode::setLlvmNameInScope(std::string var, std::string llvmName)
+std::string AstNode::getLlvmVariable(std::string var, LlvmManager* manager)
 {
 	if (parent)
-		parent->setLlvmNameInScope(var, llvmName);
-}
-
-std::string AstNode::getLlvmNameInScope(std::string var)
-{
-	if (parent)
-		return parent->getLlvmNameInScope(var);
+		return parent->getLlvmVariable(var, manager);
 	else
 		return "";
 }

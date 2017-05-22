@@ -72,28 +72,20 @@ public:
 	 * Convert this node into llvm
 	 *
 	 * @param manager The LlvmManager
-	 * @param retName The name of the llvm variable to assign this expression to
 	 *
 	 * @return The local llvm variable name that this node's value was assigned to (if the node has a value)
 	 */
-	virtual std::string llvm(LlvmManager* manager, std::string retName = "."){};
-
-	/**
-	 * Set the current local llvm variable name of a variable in this scope (example: x is x.5)
-	 *
-	 * @param var The vsop variable to set the llvm name of
-	 * @param llvmName The llvm variable name
-	 */
-	virtual void setLlvmNameInScope(std::string var, std::string llvmName);
+	virtual std::string llvm(LlvmManager* manager){return "";};
 
 	/**
 	 * Get the current local llvm variable name of a variable in this scope
 	 *
 	 * @param var The vsop variable name
+	 * @param manager The LlvmManager
 	 *
 	 * @return The current llvm variable name in this scope
 	 */
-	virtual std::string getLlvmNameInScope(std::string var);
+	virtual std::string getLlvmVariable(std::string var, LlvmManager* manager);
 
 protected:
 	int line; /**< The line number where this node's vsop code begins */

@@ -45,13 +45,13 @@ ExprType* StringLitNode::getType()
 {
 	return new ExprType("string");
 }
-std::string StringLitNode::llvm(LlvmManager* manager, std::string retName)
+std::string StringLitNode::llvm(LlvmManager* manager)
 {
 	std::stringstream ss;
 	ss << "constant [" << llvmStrSize << " x i8] c\"" << llvmStr << "\\00\"";
 	std::string stringCst = manager->addCst(ss.str(), ".");
 	ss.str("");
 	ss << "getelementptr [" << llvmStrSize << " x i8]* " << stringCst << ", i32 0, i32 0";
-	std::string stringPtr = manager->write(ss.str(), retName);
+	std::string stringPtr = manager->write(ss.str(), ".");
 	return stringPtr;
 }

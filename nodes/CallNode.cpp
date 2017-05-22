@@ -98,7 +98,7 @@ ExprType* CallNode::getType()
 	return exprType;
 }
 
-std::string CallNode::llvm(LlvmManager* manager, std::string retName)
+std::string CallNode::llvm(LlvmManager* manager)
 {
 	// Get the method and parameters node of the method that is being called
 	MethodNode* methodNode = Types::getNode(objExpr->getComputedType())->getMethod(name);
@@ -118,8 +118,6 @@ std::string CallNode::llvm(LlvmManager* manager, std::string retName)
 	}
 
 	// llvm calling code
-	if (methodNode->getReturnType() == "unit")
-		retName = ""; // Void method do not return anything
 	std::string llvm = "call fastcc "+LlvmManager::llvmType(methodNode->getReturnType())+" "+function+"(%class."+objptrType+"* "+objptr;
 	for (int i=0; i<args.size(); i++)
 	{
@@ -128,5 +126,7 @@ std::string CallNode::llvm(LlvmManager* manager, std::string retName)
 		llvm += LlvmManager::llvmType(args[i]->getComputedType())+" "+argLlvm;
 	}
 	llvm += ")";
-	return manager->write(llvm, retName);
+	if (methodNode->getReturnType() == "unit")
+		return manager->write(llvm, ""); // Void methods do not return anything
+	return manager->write(llvm, ".");
 }

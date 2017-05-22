@@ -19,3 +19,11 @@ std::string ExprNode::getComputedType()
 {
 	return type;
 }
+
+std::string ExprNode::getLlvmVariable(std::string var, LlvmManager* manager)
+{
+	if (parent)
+		return parent->getLlvmVariable(var, manager);
+	else
+		return "";
+}

@@ -17,7 +17,7 @@ ExprType* BoolLitNode::getType()
 	return exprType;
 }
 
-std::string BoolLitNode::llvm(LlvmManager* manager, std::string retName)
+std::string BoolLitNode::llvm(LlvmManager* manager)
 {
 	if(this->value == "false")
 		return "0";

@@ -112,18 +112,7 @@ std::vector<SemErr*> MethodNode::semCheck()
 	return errors;
 }
 
-void MethodNode::setLlvmNameInScope(std::string var, std::string llvmName)
-{
-	for (int i=0; i<params.size(); i++)
-	{
-		if (params[i]->getName() == var)
-		{
-			params[i]->setLlvmNameInScope(var, llvmName);
-		}
-	}
-}
-
-std::string MethodNode::getLlvmNameInScope(std::string var)
+std::string MethodNode::getLlvmVariable(std::string var, LlvmManager* manager)
 {
 	if (var == "self" || var == "obj.ptr")
 		return objPtr;
@@ -131,7 +120,7 @@ std::string MethodNode::getLlvmNameInScope(std::string var)
 	{
 		if (params[i]->getName() == var)
 		{
-			return params[i]->getLlvmNameInScope(var);
+			return params[i]->getLlvmVariable(var, manager);
 		}
 	}
 	return "";
@@ -163,23 +152,33 @@ std::string MethodNode::getLlvmName()
 	return llvmName;
 }
 
-std::string MethodNode::llvm(LlvmManager* manager, std::string retName)
+std::string MethodNode::llvm(LlvmManager* manager)
 {
 	std::string className = classNode->getName();
 	objPtr = manager->getNewVarName("obj.ptr");
 	//define fastcc <retType> @method.<className>.<methodName>(<paramType> <paramName>,..)
 	std::string definition = "define fastcc "+LlvmManager::llvmType(returnType)+" @method."+className+"."+name+"(%class."+className+"* "+objPtr;
+	std::vector<std::string> paramNames(params.size());
 	for (int i=0; i<params.size(); i++)
 	{
 		definition += ", ";
-		std::string varName = manager->getNewVarName(params[i]->getName());
-		params[i]->setLlvmNameInScope(params[i]->getName(), varName);
-		definition += LlvmManager::llvmType(params[i]->getType())+" "+varName;
+		paramNames[i] = manager->getNewVarName(params[i]->getName());
+		definition += LlvmManager::llvmType(params[i]->getType())+" "+paramNames[i];
 	}
 	definition += ")";
 	manager->write(definition);
 	manager->write("{");
 	manager->incIndent();
+
+	// Store parameters in memory to be able to modify them by pointer
+	for (int i=0; i<params.size(); i++)
+	{
+		std::string llvmVarType = LlvmManager::llvmType(params[i]->getType());
+		std::string llvmVarName = manager->write("alloca "+llvmVarType, params[i]->getName());
+		manager->write("store "+llvmVarType+" "+paramNames[i]+", "+llvmVarType+"* "+llvmVarName);
+		params[i]->setLlvmNameInScope(params[i]->getName(), llvmVarName);
+	}
+
 	std::string bodyRet = body->llvm(manager);
 	manager->write("ret "+LlvmManager::llvmType(returnType)+" "+bodyRet);
 	manager->decIndent();

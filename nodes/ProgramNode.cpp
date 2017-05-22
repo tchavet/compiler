@@ -55,7 +55,7 @@ void ProgramNode::llvmMain(LlvmManager* manager)
 	}*/
 }
 
-std::string ProgramNode::llvm(LlvmManager* manager, std::string retName)
+std::string ProgramNode::llvm(LlvmManager* manager)
 {
 	for (int i=0; i<classes.size(); i++)
 	{

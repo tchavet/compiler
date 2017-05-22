@@ -61,9 +61,7 @@ public:
 
 	std::string getReturnType();
 
-	void setLlvmNameInScope(std::string var, std::string llvmName);
-
-	std::string getLlvmNameInScope(std::string var);
+	std::string getLlvmVariable(std::string var, LlvmManager* manager);
 
 	/**
 	 * Write the llvm header for this method.
@@ -87,7 +85,7 @@ public:
 	 */
 	std::string getLlvmName();
 
-	std::string llvm(LlvmManager* manager, std::string retName=".");
+	std::string llvm(LlvmManager* manager);
 
 	/**
 	 * Write the code to declare the function

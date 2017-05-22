@@ -191,17 +191,16 @@ public:
 	 */
 	void llvmMain(LlvmManager* manager);
 
-	std::string llvm(LlvmManager *manager, std::string retName=".");
+	std::string llvm(LlvmManager *manager);
 
 	/**
 	 * Write the llvm code to allocate and initialize this class
 	 * 
 	 * @param manager The llvm manager
-	 * @param retName The name of the llvm variable to put the result into
 	 * 
 	 * @return The llvm variable pointing to the allocated class
 	 */
-	std::string llvmAllocate(LlvmManager *manager, std::string retName=".");
+	std::string llvmAllocate(LlvmManager *manager);
 
 	/**
 	 * Write the llvm code to declare the methods of this class

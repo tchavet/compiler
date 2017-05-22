@@ -79,7 +79,7 @@ std::string FieldNode::getTypeInScope(std::string id)
 	return "";
 }
 
-std::string FieldNode::llvm(LlvmManager* manager, std::string retName)
+std::string FieldNode::llvm(LlvmManager* manager)
 {
 	if (init)
 		return init->llvm(manager);

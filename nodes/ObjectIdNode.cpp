@@ -24,13 +24,13 @@ ExprType* ObjectIdNode::getType()
 	return exprType;
 }
 
-std::string ObjectIdNode::llvm(LlvmManager* manager, std::string retName)
+std::string ObjectIdNode::llvm(LlvmManager* manager)
 {
-	std::string var = getLlvmNameInScope(name);
+	std::string var = getLlvmVariable(name, manager);
 	if (var != "")
 		return var;
 	// If it isn't defined locally, then it is an object field
-	std::string objPtr = getLlvmNameInScope("obj.ptr");
+	std::string objPtr = getLlvmVariable("obj.ptr", manager);
 	std::string varPtr = manager->getField(getTypeInScope("self"), name, objPtr);
-	return manager->write("load "+LlvmManager::llvmType(type)+"* "+varPtr, retName);
+	return manager->write("load "+LlvmManager::llvmType(type)+"* "+varPtr, ".");
 }

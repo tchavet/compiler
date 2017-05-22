@@ -21,7 +21,7 @@ public:
 
 	ExprType* getType();
 
-	std::string llvm(LlvmManager* manager, std::string retName=".");
+	std::string llvm(LlvmManager* manager);
 protected:
 	int value; /**< The value of the literal */
 };

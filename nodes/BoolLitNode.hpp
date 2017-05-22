@@ -19,7 +19,7 @@ public:
 
 	ExprType* getType();
 
-	std::string llvm(LlvmManager* manager, std::string retName=".");
+	std::string llvm(LlvmManager* manager);
 
 protected:
 	std::string value; /**< The value of the boolean literal */

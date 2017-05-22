@@ -78,54 +78,48 @@ std::string LetNode::getTypeInScope(std::string id)
 	return AstNode::getTypeInScope(id);
 }
 
-void LetNode::setLlvmNameInScope(std::string var, std::string llvmName)
+std::string LetNode::getLlvmVariable(std::string var, LlvmManager* manager)
 {
 	if (var == name)
-		this->llvmName = llvmName;
+	{
+		return manager->write("load "+LlvmManager::llvmType(letType)+"* "+llvmName, name);
+	}
 	if (parent)
-		parent->setLlvmNameInScope(var, llvmName);
-}
-
-std::string LetNode::getLlvmNameInScope(std::string var)
-{
-	if (var == name)
-		return llvmName;
-	if (parent)
-		return parent->getLlvmNameInScope(var);
+		return parent->getLlvmVariable(var, manager);
 	else
 		return "";
 }
 
-std::string LetNode::llvm(LlvmManager* manager, std::string retName)
+std::string LetNode::llvm(LlvmManager* manager)
 {
 	std::string exprLlvmName;
+	std::string llvmLetType = LlvmManager::llvmType(letType);
 	if(init != NULL)	
 	{
-		std::string exprResult = init->llvm(manager, name);
+		exprLlvmName = init->llvm(manager);
 		// If needed, cast the expression result
 		if (init->getComputedType() != letType)
 		{
-			exprResult = manager->write("bitcast "+LlvmManager::llvmType(init->getComputedType())+" "+exprResult+" to "+LlvmManager::llvmType(letType)+" ", name);
+			exprLlvmName = manager->write("bitcast "+LlvmManager::llvmType(init->getComputedType())+" "+exprLlvmName+" to "+llvmLetType+" ", name);
 		}
-		if (init->getComputedType() == "int32")
-			exprResult = manager->write("add i32 "+exprResult+", 0", name);
-		if (init->getComputedType() == "bool")
-			exprResult = manager->write("add i1 "+exprResult+", 0", name);
-		llvmName = exprResult;
 	}
 	else 
 	{
 		if (letType == "int32")
-			llvmName = manager->write("add i32 0, 0",name);
+			exprLlvmName = "0";
 		if (letType == "bool")
-			llvmName = manager->write("add i1 0, 0",name);
+			exprLlvmName = "0";
 		else if (type == "string")
 		{
-			StringLitNode* emptyStr = new StringLitNode(0,0,"");
-			return emptyStr->llvm(manager, name);
+			exprLlvmName = "null";
 		}
 		else
-			llvmName = manager->write("getelementptr "+LlvmManager::llvmType(letType)+" null", name);
+			exprLlvmName = "null";
+//			llvmName = manager->write("getelementptr "+LlvmManager::llvmType(letType)+" null", name);
 	}
+
+	llvmName = manager->write("alloca "+llvmLetType, name);
+	manager->write("store "+llvmLetType+" "+exprLlvmName+", "+llvmLetType+"* "+llvmName);
+
 	return scope->llvm(manager);
 }

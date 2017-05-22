@@ -19,7 +19,7 @@ ExprType* IntLitNode::getType()
 	return new ExprType("int32");
 }
 
-std::string IntLitNode::llvm(LlvmManager* manager, std::string retName)
+std::string IntLitNode::llvm(LlvmManager* manager)
 {
 	std::stringstream ss;
 	ss << value;

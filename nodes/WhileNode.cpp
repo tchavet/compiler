@@ -35,7 +35,7 @@ ExprType* WhileNode::getType()
 	return exprType;
 }
 
-std::string WhileNode::llvm(LlvmManager* manager, std::string retName){
+std::string WhileNode::llvm(LlvmManager* manager){
 	std::string begin_label = manager->getNewLabel("while_cond");
 	std::string while_body = manager->getNewLabel("while_body");
 	std::string end_label = manager->getNewLabel("while_end");

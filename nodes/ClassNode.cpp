@@ -341,7 +341,7 @@ void ClassNode::llvmMain(LlvmManager* manager)
 	}
 }
 
-std::string ClassNode::llvm(LlvmManager *manager, std::string retName)
+std::string ClassNode::llvm(LlvmManager *manager)
 {
 	for (int i=0; i<methods.size(); i++)
 	{
@@ -350,10 +350,10 @@ std::string ClassNode::llvm(LlvmManager *manager, std::string retName)
 	return "";
 }
 
-std::string ClassNode::llvmAllocate(LlvmManager *manager, std::string retName)
+std::string ClassNode::llvmAllocate(LlvmManager *manager)
 {
 	/* Allocate the class struct */
-	std::string objPtr = manager->write("alloca %class."+name, retName);
+	std::string objPtr = manager->write("alloca %class."+name, ".");
 
 	/* Set the methods vector */
 	// %# = getelementpointer %class.<className>* %<objPtr>, i32 0, i32 0

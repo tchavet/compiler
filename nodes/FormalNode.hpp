@@ -36,7 +36,7 @@ public:
 
 	void setLlvmNameInScope(std::string var, std::string llvmName);
 
-	std::string getLlvmNameInScope(std::string var);
+	std::string getLlvmVariable(std::string var, LlvmManager* manager);
 
 protected:
 	std::string name; /**< The name of the formal */
