@@ -88,7 +88,7 @@ std::string LetNode::getLlvmVariable(std::string var, LlvmManager* manager, bool
 			return manager->write("load "+LlvmManager::llvmType(letType)+"* "+llvmName, name);
 	}
 	if (parent)
-		return parent->getLlvmVariable(var, manager);
+		return parent->getLlvmVariable(var, manager, pointer);
 	else
 		return "";
 }
