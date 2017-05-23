@@ -124,12 +124,8 @@ std::string IfNode::llvm(LlvmManager* manager)
 		elseResult = els->llvm(manager);
 		if (els->getComputedType() != type && type != "unit")
 			elseResult = manager->write("bitcast "+LlvmManager::llvmType(els->getComputedType())+" "+elseResult+" to "+LlvmManager::llvmType(type), ".");
-		manager->write("br label %"+if_end);//could be removed
 	}
-	else
-	{
-		elseResult = manager->write("void", ".");
-	}
+	manager->write("br label %"+if_end);//could be removed
 	manager->decIndent();
 	manager->writeLabel(if_end);
 	if(type == "unit")

@@ -67,11 +67,11 @@ define fastcc i32 @method.IO.inputInt32(%class.IO* %io.ptr.5)
 
 define fastcc i1 @method.IO.inputBool(%class.IO* %io.ptr.5)
 {
-	%io.7 = alloca i8*, align 8
-    %io.8 = load i8** %io.7, align 8
-    %io.9 = call i32 (i8*, ...)* @__isoc99_scanf(i8* getelementptr inbounds ([3 x i8]* @.iostr2, i32 0, i32 0), i8* %io.8)
-    %io.10 = load i8** %io.7, align 8
-    %io.11 = call i32 @strcmp(i8* %io.10, i8* getelementptr inbounds ([5 x i8]* @true.str, i32 0, i32 0)) #3
+	;Case for nor true nor false ? 
+
+
+    %io.9 = call i8* @method.IO.inputLine(%class.IO* %io.ptr.5)
+    %io.11 = call i32 @strcmp(i8* %io.9, i8* getelementptr inbounds ([5 x i8]* @true.str, i32 0, i32 0)) #3
     %io.12 = icmp ne i32 %io.11, 0
     br i1 %io.12, label %io.if_true, label %io.if_false
     io.if_true:
