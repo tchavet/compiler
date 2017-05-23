@@ -88,6 +88,10 @@ std::string BinOpNode::llvm(LlvmManager* manager)
 	std::string rightExprLlvm = rightExpr->llvm(manager);
 	if (op == "=")
 	{
+		if(rightExpr->getComputedType() =="unit")
+		{
+			return manager->write("icmp eq i32 1, 1",".");
+		}
 		if (rightExpr->getComputedType()!="string")
 			return manager->write("icmp eq "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 		std::string eq =  manager->write("call i32 @strcmp(i8* "+ leftExprLlvm +", i8* "+rightExprLlvm +")" ,".");
