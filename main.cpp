@@ -224,7 +224,7 @@ int main(int argc, char** argv)
 		if(system(command.c_str()) != 0)
 			return -8;
 	
-		command = "gcc "+programName+".s -o"+programName;
+		command = "gcc "+programName+".s -o"+programName+" -lm";
 		if(system(command.c_str()) != 0)
 			return -8;
 	

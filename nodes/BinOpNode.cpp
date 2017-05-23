@@ -1,5 +1,5 @@
 #include "BinOpNode.hpp"
-
+#include <iostream>
 BinOpNode::BinOpNode(int line, int column, std::string op, ExprNode* leftExpr, ExprNode* rightExpr) : ExprNode(line, column)
 {
 	this->op = op;
@@ -87,7 +87,12 @@ std::string BinOpNode::llvm(LlvmManager* manager)
 	}
 	std::string rightExprLlvm = rightExpr->llvm(manager);
 	if (op == "=")
-		return manager->write("icmp eq "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+	{
+		if (rightExpr->getComputedType()!="string")
+			return manager->write("icmp eq "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		std::string eq =  manager->write("call string @strcmp(string "+ leftExprLlvm +", string"+rightExprLlvm +")" ,".");
+		return manager->write("icmp eq i32 0, " + eq,".");
+	}
 	else if (op == "<")
 		return manager->write("icmp slt "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "<=")
@@ -101,7 +106,13 @@ std::string BinOpNode::llvm(LlvmManager* manager)
 	else if (op == "/")
 		return manager->write("sdiv "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	else if (op == "^")
-		return manager->write("prout "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+	{
+		std::string doubleLeft = manager->write("sitofp i32 "+leftExprLlvm+" to double",".");
+
+		std::string doubleRight = manager->write("sitofp i32 "+rightExprLlvm+" to double",".");
+		std::string tmp = manager->write("call double @pow(double "+doubleLeft+", double "+doubleRight+")",".");
+		return manager->write("fptosi double "+tmp+" to i32",".");
+	}
 	else
 		return "";
 }

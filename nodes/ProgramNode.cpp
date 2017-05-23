@@ -44,6 +44,7 @@ void ProgramNode::llvmHeader(LlvmManager* manager)
 		classes[i]->llvmHeader(manager);
 		manager->write("");
 	}
+	manager->write("declare double @pow(double, double)");
 } 
 
 void ProgramNode::llvmMain(LlvmManager* manager)

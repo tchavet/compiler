@@ -10,3 +10,4 @@ doxygen/latex/
 *.ll
 *-swp
 report/*.toc
+*.vsop
