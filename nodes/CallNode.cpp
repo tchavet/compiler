@@ -123,7 +123,12 @@ std::string CallNode::llvm(LlvmManager* manager)
 	{
 		llvm += ", ";
 		std::string argLlvm = args[i]->llvm(manager);
-		llvm += LlvmManager::llvmType(args[i]->getComputedType())+" "+argLlvm;
+		std::string argType = args[i]->getComputedType();
+		std::string paramType = methodParams[i]->getType();
+		/* Cast if needed */
+		if (argType != paramType)
+			argLlvm = manager->write("bitcast %class."+argType+"* "+argLlvm+" to %class."+paramType+"*", ".");
+		llvm += LlvmManager::llvmType(paramType)+" "+argLlvm;
 	}
 	llvm += ")";
 	if (methodNode->getReturnType() == "unit")
