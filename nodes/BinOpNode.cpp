@@ -90,7 +90,7 @@ std::string BinOpNode::llvm(LlvmManager* manager)
 	{
 		if (rightExpr->getComputedType()!="string")
 			return manager->write("icmp eq "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
-		std::string eq =  manager->write("call string @strcmp(string "+ leftExprLlvm +", string"+rightExprLlvm +")" ,".");
+		std::string eq =  manager->write("call i32 @strcmp(i8* "+ leftExprLlvm +", i8* "+rightExprLlvm +")" ,".");
 		return manager->write("icmp eq i32 0, " + eq,".");
 	}
 	else if (op == "<")

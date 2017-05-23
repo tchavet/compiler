@@ -45,6 +45,7 @@ void ProgramNode::llvmHeader(LlvmManager* manager)
 		manager->write("");
 	}
 	manager->write("declare double @pow(double, double)");
+	manager->write("declare i32 @strcmp(i8*, i8*)");
 } 
 
 void ProgramNode::llvmMain(LlvmManager* manager)
