@@ -53,6 +53,16 @@ public:
 	 */
 	static ClassNode* getNode(std::string id);
 
+	/**
+	 * Check if a type is a primitive type or not
+	 * 
+	 * @param id The name of the type
+	 * 
+	 * @return True if it is a primitive type, false otherwise
+	 */
+	static bool isPrimitive(std::string id);
+
 protected:
+	static std::vector<std::string> primitives;
 };
 #endif

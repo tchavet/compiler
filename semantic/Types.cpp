@@ -1,6 +1,8 @@
 #include "Types.hpp"
+#include <algorithm>
 
 std::unordered_map<std::string, ClassNode*> Types::table = std::unordered_map<std::string, ClassNode*>();
+std::vector<std::string> Types::primitives = std::vector<std::string>();
 
 void Types::init(std::vector<std::string> builtIns)
 {
@@ -8,6 +10,7 @@ void Types::init(std::vector<std::string> builtIns)
 	{
 		Types::table.insert({{builtIns[i], NULL}});
 	}
+	Types::primitives = builtIns;
 }
 
 bool Types::add(std::string id, ClassNode* node)
@@ -26,4 +29,9 @@ bool Types::defined(std::string id)
 ClassNode* Types::getNode(std::string id)
 {
 	return Types::table[id];
+}
+
+bool Types::isPrimitive(std::string id)
+{
+	return std::find(Types::primitives.begin(), Types::primitives.end(), id) != Types::primitives.end();
 }

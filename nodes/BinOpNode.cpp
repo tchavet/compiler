@@ -1,5 +1,6 @@
 #include "BinOpNode.hpp"
-#include <iostream>
+#include "../semantic/Types.hpp"
+
 BinOpNode::BinOpNode(int line, int column, std::string op, ExprNode* leftExpr, ExprNode* rightExpr) : ExprNode(line, column)
 {
 	this->op = op;
@@ -32,28 +33,41 @@ ExprType* BinOpNode::getType()
 	/* Check that the type of both operands is good */
 	if (leftType->type != "" && rightType->type != "")
 	{
-		std::string opType = "int32";
-		if (op == "and")
-			opType = "bool";
-		else if (op == "=")
-			opType = leftType->type;
-		/* Check that the type of both expression is consistant with the type required by the operand */
-		if (leftType->type != opType)
+		if (op == "=" && (!Types::isPrimitive(leftType->type) || !Types::isPrimitive(rightType->type)))
 		{
-			SemErr* semErr = new SemErr(line, column, "cannot do opperation " + op + " on left operand object of type " + leftType->type);
-			exprType->addError(semErr);
-		}
-		if (rightType->type != opType)
-		{
-			SemErr* semErr = new SemErr(line, column, "cannot do opperation " + op + " on right operand object of type " + rightType->type);
-			exprType->addError(semErr);
-		}
-		if (leftType->type == opType && rightType->type == opType)
-		{
-			if (op == "and" || op == "=" || op == "<" || op == "<=")
+			if (Types::isPrimitive(leftType->type) || Types::isPrimitive(rightType->type))
+			{
+				SemErr* semErr = new SemErr(line, column, "cannot do opperation = between operands of primitive and class types");
+				exprType->addError(semErr);
+			}
+			else
 				exprType->type = "bool";
-			else if (op == "+" || op == "-" || op == "*" || op == "/" || op == "^")
-				exprType->type = "int32";
+		}
+		else
+		{
+			std::string opType = "int32";
+			if (op == "and")
+				opType = "bool";
+			else if (op == "=")
+				opType = leftType->type;
+			/* Check that the type of both expression is consistant with the type required by the operand */
+			if (leftType->type != opType)
+			{
+				SemErr* semErr = new SemErr(line, column, "cannot do opperation " + op + " on left operand object of type " + leftType->type);
+				exprType->addError(semErr);
+			}
+			if (rightType->type != opType)
+			{
+				SemErr* semErr = new SemErr(line, column, "cannot do opperation " + op + " on right operand object of type " + rightType->type);
+				exprType->addError(semErr);
+			}
+			if (leftType->type == opType && rightType->type == opType)
+			{
+				if (op == "and" || op == "=" || op == "<" || op == "<=")
+					exprType->type = "bool";
+				else if (op == "+" || op == "-" || op == "*" || op == "/" || op == "^")
+					exprType->type = "int32";
+			}
 		}
 	}
 	type = exprType->type;
@@ -88,14 +102,28 @@ std::string BinOpNode::llvm(LlvmManager* manager)
 	std::string rightExprLlvm = rightExpr->llvm(manager);
 	if (op == "=")
 	{
-		if(rightExpr->getComputedType() =="unit")
+		std::string leftType = leftExpr->getComputedType();
+		std::string rightType = rightExpr->getComputedType();
+		if (leftType == "unit")
 		{
 			return manager->write("icmp eq i32 1, 1",".");
 		}
-		if (rightExpr->getComputedType()!="string")
-			return manager->write("icmp eq "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
-		std::string eq =  manager->write("call i32 @strcmp(i8* "+ leftExprLlvm +", i8* "+rightExprLlvm +")" ,".");
-		return manager->write("icmp eq i32 0, " + eq,".");
+		if (leftType == "string")
+		{
+			std::string eq =  manager->write("call i32 @strcmp(i8* "+ leftExprLlvm +", i8* "+rightExprLlvm +")" , ".");
+			return manager->write("icmp eq i32 0, " + eq, ".");
+		}
+		/* Cast if needed */
+		if (leftType != rightType)
+		{
+			std::string ancestor = Types::getNode(leftType)->commonAncestor(Types::getNode(rightType));
+			if (leftType != ancestor)
+				leftExprLlvm = manager->write("bitcast %class."+leftType+"* "+leftExprLlvm+" to %class."+ancestor+"*", ".");
+			if (rightType != ancestor)
+				rightExprLlvm = manager->write("bitcast %class."+rightType+"* "+rightExprLlvm+" to %class."+ancestor+"*", ".");
+			return manager->write("icmp eq "+LlvmManager::llvmType(ancestor)+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		}
+		return manager->write("icmp eq "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
 	}
 	else if (op == "<")
 		return manager->write("icmp slt "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
