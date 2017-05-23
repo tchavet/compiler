@@ -95,6 +95,12 @@ std::string LetNode::getLlvmVariable(std::string var, LlvmManager* manager, bool
 
 std::string LetNode::llvm(LlvmManager* manager)
 {
+	if(letType == "unit")
+	{
+		if(init)
+			init->llvm(manager);
+	}
+
 	std::string exprLlvmName;
 	std::string llvmLetType = LlvmManager::llvmType(letType);
 	if(init != NULL)	

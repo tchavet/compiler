@@ -61,6 +61,11 @@ ExprType* AssignNode::getType()
 
 std::string AssignNode::llvm(LlvmManager* manager)
 {
+	if(type == "unit")
+	{
+		expr->llvm(manager);
+	}
+	
 	std::string exprLlvmName = expr->llvm(manager); // Convert the expression to llvm and get the unnamed variable where the result is stored
 	std::string llvmType = LlvmManager::llvmType(type);
 	// Cast if needed

@@ -111,8 +111,9 @@ std::string IfNode::llvm(LlvmManager* manager)
 	manager->write("br i1 "+ cond  + ", label %"+if_true +", label %"+if_false);
 	manager->writeLabel(if_true);
 	std::string thenResult = then->llvm(manager);
-	// Cast if necessary
-	if (then->getComputedType() != type)
+	
+	// Cast if necessary and return type different than unit 
+	if (then->getComputedType() != type && type != "unit")
 		thenResult = manager->write("bitcast "+LlvmManager::llvmType(then->getComputedType())+" "+thenResult+" to "+LlvmManager::llvmType(type), ".");
 	manager->write("br label %"+if_end);
 	manager->decIndent();
@@ -121,7 +122,7 @@ std::string IfNode::llvm(LlvmManager* manager)
 	if(els != NULL)
 	{
 		elseResult = els->llvm(manager);
-		if (els->getComputedType() != type)
+		if (els->getComputedType() != type && type != "unit")
 			elseResult = manager->write("bitcast "+LlvmManager::llvmType(els->getComputedType())+" "+elseResult+" to "+LlvmManager::llvmType(type), ".");
 		manager->write("br label %"+if_end);//could be removed
 	}
@@ -131,6 +132,8 @@ std::string IfNode::llvm(LlvmManager* manager)
 	}
 	manager->decIndent();
 	manager->writeLabel(if_end);
+	if(type == "unit")
+		return "";
 	std::string ret = manager->write("phi "+LlvmManager::llvmType(type)+" ["+thenResult+", %"+if_true+"], ["+elseResult+", %"+if_false+"]", ".");
 	manager->decIndent();
 	return ret;
