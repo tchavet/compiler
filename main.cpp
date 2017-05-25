@@ -59,6 +59,7 @@ bool llvm =false;
 int main(int argc, char** argv)
 {
 	bool err_sem = false;
+	bool emitLlvm = false;
 	try
 	{
 		if(argc < 2 | argc > 5)
@@ -85,6 +86,8 @@ int main(int argc, char** argv)
 				check =true;
 			if(strcmp(argv[i], "-llvm") == 0)
 				llvm =true;
+			if(strcmp(argv[i], "-emit-llvm") == 0)
+				emitLlvm =true;
 		}
 		if(argc == 2)
 			completeCompile = true;
@@ -237,8 +240,11 @@ int main(int argc, char** argv)
 			return -8;
 	}
 
-	command = "rm "+programName+".ll";
-	system(command.c_str());
+	if (!emitLlvm)
+	{
+		command = "rm "+programName+".ll";
+		system(command.c_str());
+	}
 
 	//std::cout << "Your program is called "<< programName <<std::endl; 
 	return 0;
