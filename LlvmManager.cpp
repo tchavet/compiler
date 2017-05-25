@@ -143,13 +143,13 @@ std::string LlvmManager::getFunction(std::string className, std::string methodNa
 	std::string ptr2vector = write("getelementptr %class."+className+"* "+object+", i32 0, i32 0", ".");
 	std::string vector = write("load %methods.type."+className+"** "+ptr2vector, ".");
 	std::string ptr2ptr2method = write("getelementptr %methods.type."+className+"* "+vector+", i32 0, i32 "+to_string(methodPos), ".");
-	return write("load %method.type."+methodClassName+"."+methodName+"* "+ptr2ptr2method, ".");
+	return write("load %method.type."+methodClassName+"."+methodName+"* "+ptr2ptr2method, className+"."+methodName);
 }
 
 std::string LlvmManager::getField(std::string className, std::string fieldName, std::string object)
 {
 	int fieldPos = fieldsMap[className][fieldName]+1; // +1 because the struct start with a pointer to the methods
-	return write("getelementptr %class."+className+"* "+object+", i32 0, i32 "+to_string(fieldPos), ".");
+	return write("getelementptr %class."+className+"* "+object+", i32 0, i32 "+to_string(fieldPos), className+"."+fieldName);
 }
 
 void LlvmManager::addClass(std::string className, stringmap methods, stringmap fields)
@@ -168,7 +168,7 @@ void LlvmManager::beginMain()
 void LlvmManager::endMain()
 {
 	std::string mainObj = Types::getNode("Main")->llvmAllocate(this);
-	std::string mainRet = write("call fastcc i32 @method.Main.main(%class.Main* "+mainObj+")", ".");
+	std::string mainRet = write("call fastcc i32 @method.Main.main(%class.Main* "+mainObj+")", ".main_result");
 	write("ret i32 "+mainRet);
 	decIndent();
 	write("}");

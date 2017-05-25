@@ -95,7 +95,7 @@ std::string BinOpNode::llvm(LlvmManager* manager)
 		manager->write("br label %"+and_end);
 		manager->decIndent();
 		manager->writeLabel(and_end);
-		std::string result = manager->write("phi i1 [1, %"+and_true+"], [0, %"+and_false+"]",".");
+		std::string result = manager->write("phi i1 [1, %"+and_true+"], [0, %"+and_false+"]",".and_result");
 		manager->decIndent();
 		return result;
 	}
@@ -106,44 +106,44 @@ std::string BinOpNode::llvm(LlvmManager* manager)
 		std::string rightType = rightExpr->getComputedType();
 		if (leftType == "unit")
 		{
-			return manager->write("icmp eq i32 1, 1",".");
+			return manager->write("icmp eq i32 1, 1",".equal_result");
 		}
 		if (leftType == "string")
 		{
-			std::string eq =  manager->write("call i32 @strcmp(i8* "+ leftExprLlvm +", i8* "+rightExprLlvm +")" , ".");
-			return manager->write("icmp eq i32 0, " + eq, ".");
+			std::string eq =  manager->write("call i32 @strcmp(i8* "+ leftExprLlvm +", i8* "+rightExprLlvm +")" , ".equal_result");
+			return manager->write("icmp eq i32 0, " + eq, ".equal_result");
 		}
 		/* Cast if needed */
 		if (leftType != rightType)
 		{
 			std::string ancestor = Types::getNode(leftType)->commonAncestor(Types::getNode(rightType));
 			if (leftType != ancestor)
-				leftExprLlvm = manager->write("bitcast %class."+leftType+"* "+leftExprLlvm+" to %class."+ancestor+"*", ".");
+				leftExprLlvm = manager->write("bitcast %class."+leftType+"* "+leftExprLlvm+" to %class."+ancestor+"*", ".cast_left");
 			if (rightType != ancestor)
-				rightExprLlvm = manager->write("bitcast %class."+rightType+"* "+rightExprLlvm+" to %class."+ancestor+"*", ".");
-			return manager->write("icmp eq "+LlvmManager::llvmType(ancestor)+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+				rightExprLlvm = manager->write("bitcast %class."+rightType+"* "+rightExprLlvm+" to %class."+ancestor+"*", ".cast_right");
+			return manager->write("icmp eq "+LlvmManager::llvmType(ancestor)+" "+leftExprLlvm+", "+rightExprLlvm, ".equal_result");
 		}
-		return manager->write("icmp eq "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("icmp eq "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".equal_result");
 	}
 	else if (op == "<")
-		return manager->write("icmp slt "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("icmp slt "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".lt_result");
 	else if (op == "<=")
-		return manager->write("icmp sle "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("icmp sle "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".leq_result");
 	else if (op == "+")
-		return manager->write("add "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("add "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".add_result");
 	else if (op == "-")
-		return manager->write("sub "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("sub "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".sub_result");
 	else if (op == "*")
-		return manager->write("mul "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("mul "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".mult_result");
 	else if (op == "/")
-		return manager->write("sdiv "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".");
+		return manager->write("sdiv "+LlvmManager::llvmType(leftExpr->getComputedType())+" "+leftExprLlvm+", "+rightExprLlvm, ".div_result");
 	else if (op == "^")
 	{
-		std::string doubleLeft = manager->write("sitofp i32 "+leftExprLlvm+" to double",".");
+		std::string doubleLeft = manager->write("sitofp i32 "+leftExprLlvm+" to double",".cast_left");
 
-		std::string doubleRight = manager->write("sitofp i32 "+rightExprLlvm+" to double",".");
-		std::string tmp = manager->write("call double @pow(double "+doubleLeft+", double "+doubleRight+")",".");
-		return manager->write("fptosi double "+tmp+" to i32",".");
+		std::string doubleRight = manager->write("sitofp i32 "+rightExprLlvm+" to double",".cast_right");
+		std::string tmp = manager->write("call double @pow(double "+doubleLeft+", double "+doubleRight+")",".pow_double");
+		return manager->write("fptosi double "+tmp+" to i32",".pow_result");
 	}
 	else
 		return "";

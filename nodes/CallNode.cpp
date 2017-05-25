@@ -113,7 +113,7 @@ std::string CallNode::llvm(LlvmManager* manager)
 	// If needed, cast the object pointer
 	if (classNode->getName() != objExpr->getComputedType())
 	{
-		objptr = manager->write("bitcast %class."+objptrType+"* "+objptr+" to %class."+classNode->getName()+"*", ".");
+		objptr = manager->write("bitcast %class."+objptrType+"* "+objptr+" to %class."+classNode->getName()+"*", ".cast_expr");
 		objptrType = classNode->getName();
 	}
 
@@ -127,11 +127,11 @@ std::string CallNode::llvm(LlvmManager* manager)
 		std::string paramType = methodParams[i]->getType();
 		/* Cast if needed */
 		if (argType != paramType)
-			argLlvm = manager->write("bitcast %class."+argType+"* "+argLlvm+" to %class."+paramType+"*", ".");
+			argLlvm = manager->write("bitcast %class."+argType+"* "+argLlvm+" to %class."+paramType+"*", ".cast_arg");
 		llvm += LlvmManager::llvmType(paramType)+" "+argLlvm;
 	}
 	llvm += ")";
 	if (methodNode->getReturnType() == "unit")
 		return manager->write(llvm, ""); // Void methods do not return anything
-	return manager->write(llvm, ".");
+	return manager->write(llvm, ".call_result");
 }

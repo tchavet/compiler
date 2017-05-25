@@ -125,7 +125,7 @@ std::string IfNode::llvm(LlvmManager* manager)
 	std::string thenType = then->getComputedType();
 	std::string thenLlvmType = LlvmManager::llvmType(thenType);
 	if (thenType != type && type != "unit")
-		thenResult = manager->write("bitcast "+thenLlvmType+" "+thenResult+" to "+retLlvmType, ".");
+		thenResult = manager->write("bitcast "+thenLlvmType+" "+thenResult+" to "+retLlvmType, ".cast_then");
 	if (type != "unit")
 		manager->write("store "+retLlvmType+" "+thenResult+", "+retLlvmType+"* "+resultPtr);
 	manager->write("br label %"+if_end);
@@ -140,7 +140,7 @@ std::string IfNode::llvm(LlvmManager* manager)
 		std::string elseType = els->getComputedType();
 		std::string elseLlvmType = LlvmManager::llvmType(elseType);
 		if (elseType != type && type != "unit")
-			elseResult = manager->write("bitcast "+elseLlvmType+" "+elseResult+" to "+retLlvmType, ".");
+			elseResult = manager->write("bitcast "+elseLlvmType+" "+elseResult+" to "+retLlvmType, ".cast_else");
 		if (type != "unit")
 			manager->write("store "+retLlvmType+" "+elseResult+", "+retLlvmType+"* "+resultPtr);
 	}
@@ -151,7 +151,7 @@ std::string IfNode::llvm(LlvmManager* manager)
 	manager->writeLabel(if_end);
 	if(type == "unit")
 		return "";
-	std::string ret = manager->write("load "+retLlvmType+"* "+resultPtr, ".");
+	std::string ret = manager->write("load "+retLlvmType+"* "+resultPtr, ".if_result");
 	manager->decIndent();
 	return ret;
 }

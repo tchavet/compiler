@@ -32,5 +32,5 @@ std::string ObjectIdNode::llvm(LlvmManager* manager)
 	// If it isn't defined locally, then it is an object field
 	std::string objPtr = getLlvmVariable("obj.ptr", manager);
 	std::string varPtr = manager->getField(getTypeInScope("self"), name, objPtr);
-	return manager->write("load "+LlvmManager::llvmType(type)+"* "+varPtr, ".");
+	return manager->write("load "+LlvmManager::llvmType(type)+"* "+varPtr, name);
 }

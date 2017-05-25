@@ -352,7 +352,7 @@ std::string ClassNode::llvm(LlvmManager *manager)
 std::string ClassNode::llvmAllocate(LlvmManager *manager)
 {
 	/* Allocate the class struct */
-	std::string objPtr = manager->write("alloca %class."+name, ".");
+	std::string objPtr = manager->write("alloca %class."+name, ".new_"+name);
 
 	/* Set the methods vector */
 	// %# = getelementpointer %class.<className>* %<objPtr>, i32 0, i32 0

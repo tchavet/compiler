@@ -52,6 +52,6 @@ std::string StringLitNode::llvm(LlvmManager* manager)
 	std::string stringCst = manager->addCst(ss.str(), ".");
 	ss.str("");
 	ss << "getelementptr [" << llvmStrSize << " x i8]* " << stringCst << ", i32 0, i32 0";
-	std::string stringPtr = manager->write(ss.str(), ".");
+	std::string stringPtr = manager->write(ss.str(), ".string");
 	return stringPtr;
 }

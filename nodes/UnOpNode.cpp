@@ -62,11 +62,11 @@ std::string UnOpNode::llvm(LlvmManager* manager)
 {
 	std::string exprLlvm = expr->llvm(manager);
 	if (op == "not")
-		return manager->write("xor i1 1, "+exprLlvm, ".");
+		return manager->write("xor i1 1, "+exprLlvm, ".not_result");
 	else if (op == "-")
-		return manager->write("sub i32 0, "+exprLlvm, ".");
+		return manager->write("sub i32 0, "+exprLlvm, ".neg_result");
 	else if (op == "isnull")
-		return manager->write("icmp eq "+LlvmManager::llvmType(expr->getComputedType())+" null, "+exprLlvm, ".");
+		return manager->write("icmp eq "+LlvmManager::llvmType(expr->getComputedType())+" null, "+exprLlvm, ".isnull_result");
 	else
 		return "";
 }
