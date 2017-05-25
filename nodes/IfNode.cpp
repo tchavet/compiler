@@ -108,29 +108,50 @@ std::string IfNode::llvm(LlvmManager* manager)
 	std::string if_false = manager->getNewLabel("if_false");
 	std::string if_end = manager->getNewLabel("if_end");
 	std::string cond = this->cond->llvm(manager);
+	std::string retLlvmType = LlvmManager::llvmType(type);
+
+	/* Create pointer where to put the result */
+	std::string resultPtr="";
+	if (type != "unit")
+		resultPtr = manager->write("alloca "+retLlvmType, ".if_result_ptr");
+
+	/* Condition */
 	manager->write("br i1 "+ cond  + ", label %"+if_true +", label %"+if_false);
+
+	/* Then */
 	manager->writeLabel(if_true);
 	std::string thenResult = then->llvm(manager);
-	
-	// Cast if necessary and return type different than unit 
-	if (then->getComputedType() != type && type != "unit")
-		thenResult = manager->write("bitcast "+LlvmManager::llvmType(then->getComputedType())+" "+thenResult+" to "+LlvmManager::llvmType(type), ".");
+	// Cast if necessary and if return type different than unit 
+	std::string thenType = then->getComputedType();
+	std::string thenLlvmType = LlvmManager::llvmType(thenType);
+	if (thenType != type && type != "unit")
+		thenResult = manager->write("bitcast "+thenLlvmType+" "+thenResult+" to "+retLlvmType, ".");
+	if (type != "unit")
+		manager->write("store "+retLlvmType+" "+thenResult+", "+retLlvmType+"* "+resultPtr);
 	manager->write("br label %"+if_end);
 	manager->decIndent();
+
+	/* Else */
 	manager->writeLabel(if_false);
 	std::string elseResult = "";
 	if(els != NULL)
 	{
 		elseResult = els->llvm(manager);
-		if (els->getComputedType() != type && type != "unit")
-			elseResult = manager->write("bitcast "+LlvmManager::llvmType(els->getComputedType())+" "+elseResult+" to "+LlvmManager::llvmType(type), ".");
+		std::string elseType = els->getComputedType();
+		std::string elseLlvmType = LlvmManager::llvmType(elseType);
+		if (elseType != type && type != "unit")
+			elseResult = manager->write("bitcast "+elseLlvmType+" "+elseResult+" to "+retLlvmType, ".");
+		if (type != "unit")
+			manager->write("store "+retLlvmType+" "+elseResult+", "+retLlvmType+"* "+resultPtr);
 	}
-	manager->write("br label %"+if_end);//could be removed
+	manager->write("br label %"+if_end);
 	manager->decIndent();
+
+	/* Get value */
 	manager->writeLabel(if_end);
 	if(type == "unit")
 		return "";
-	std::string ret = manager->write("phi "+LlvmManager::llvmType(type)+" ["+thenResult+", %"+if_true+"], ["+elseResult+", %"+if_false+"]", ".");
+	std::string ret = manager->write("load "+retLlvmType+"* "+resultPtr, ".");
 	manager->decIndent();
 	return ret;
 }
