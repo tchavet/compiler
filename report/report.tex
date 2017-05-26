@@ -107,75 +107,61 @@ Our compiler generates LLVM code which is then compiled to machine code using ll
 
 \subsection{Lexical Analysis}
   \label{sec:lexana}
-  The lexical analysis is used to make sure the words inside the code to be compiled are allowed by the language, and parse the vsop file.
-  The goal of the scanner we are then able to generate, is to create tokens to be translated into tree nodes at the next steps. 
-  We generate the tokens using the \href{https://github.com/westes/flex}{GNU Flex} program. Flex will generate a .c and a .h files 
-  which will be compiled and do the parsin.
+  The lexical analysis is used to make sure the words inside the code to be compiled are allowed by the language, and to parse the vsop file.
+  The goal of the scanner that is then generated, is to create tokens for the grammar, which will create tree nodes at the next steps. 
+  We generate the tokens using the \href{https://github.com/westes/flex}{GNU Flex} program. Flex will generate a .c and a .h files which will be compiled and do the parsing.
 
-  %%% What
-  From the moment, we implemented the syntax analysis, the yylex() function is called from the yyparse() which is used in the second step.
-  It has the drawback of not allowing the simple tests performed in the first step as both errors coming from Lexical and Syntax analysis
-  will be displayed as the file is analyzed. 
-
-  We had an issue with this lexical part. As our C++ Bison yyparse() calls yylex itself, when the input of this part is not correct 
-  in the vsop formalism, all the tokens are not read until the end, but only until the syntax error. 
-  %We could have a first parsing phase that would be done twice but for performances, it is not a good option. 
-  We thought about a simple solution which was to do the first phase(GNU FLex) until the end. Then launch do the second phase(GNU Bison) 
-  which would also redo the first one. It is not that efficient after all but it would be useful to pass your automated tests.
-  
-
-
+  The yylex() function is called from yyparse() which is used in the second step, so it has the drawback of not allowing the automatic tests performed in the first step to go through if there are syntax errors. Errors coming from lexical analysis will be displayed as the file is parsed using the grammar.\\
+  We thought about a simple solution which was to do the first phase (GNU FLex) until the end, then launch do the second phase (GNU Bison), which would also redo the first one. It is not that efficient after all but it would be useful to pass the automated tests.
 
   \subsubsection{Tokens}
-    The tokens that we defined are explained in Table \ref{tab:listToken}.
-
-    Those tokens will be used by \href{http://www.gnu.org/software/bison/}{GNU Bison}.
+    The tokens that we defined are explained in Table \ref{tab:listToken}. Those tokens will be used by \href{http://www.gnu.org/software/bison/}{GNU Bison}.
 
     \begin{table}[hp]
       \centering
       \begin{tabular}{|r|p{10cm}|}
       \hline
       Token & Description\\\hline
-      INT\_LIT & Represents a integer literal\\
-      AND & Represents the and boolean operator\\
-      BOOL &Represents the type definition of boolean \\
-      CLASS & Represents the class definition keyword\\
-      DO & Represents the beginning of a while repeated routine\\
-      ELSE & Represents the else keyword in the if statement\\
-      EXTENDS & Represents the inheritance keyword performed in class definition\\
-      FALSE & Represents the false boolean literal \\
-      IF & Represents the if statement keyword\\
-      IN & Represents the in keyword used in  the let statement\\
-      INT32 & Represents the type definition of an integer on 32 bits\\
-      ISNULL & Represents the isnull conditional keyword\\
-      LET & Represents the definition of local variables\\
-      NEW & Represents the object instantiation keyword\\
-      NOT & Represents the negation in conditions keyword\\
-      STRING & Represents the keyword defining a string element\\
-      THEN & Represents the keyword introducing the affirmative part of the condition contained in the if statement\\
-      TRUE & Represents the true boolean literal\\
-      UNIT & Represents the unit type (similar to void in C)\\
-      WHILE & Represents the loop keyword\\
-      $<$strval$>$ TYPE\_ID & Represents a Type identifier \\
-      $<$strval$>$ OBJECT\_ID & Represents an object identifier\\
-      $<$strval$>$ STRING\_LIT & Represents a string literal \\
-      LBRACE & Represents the beginning of a block\\
-      RBRACE& Represents the end of a block\\
-      LPAR & Represents the beginning of a parenthesis used in function calls and functions declaration\\
-      RPAR & Represents the end of a parenthesis\\
-      COLON & Represents the colon symbols delimiting type definitions\\
-      SEMICOLON & Represents the semi colon symbol at the end of a non-returned function instruction \\
-      COMMA & Represents the comma symbol to separate parts \\
-      PLUS & Represents the plus symbol to perform the addition\\
-      MINUS & Represents the minus symbol to perform the subtraction\\
-      TIMES & Represents the star symbol to perform multiplications\\
-      DIV & Represents the division symbol to perform divisions\\
-      POW & Represents the power symbol to perform the power\\
-      DOT & Represents the dot symbol used for accessing object elements\\
-      EQUAL & Represents the equal symbol used in conditional comparison\\
-      LOWER & Represents the lower symbol used in conditional comparison\\
-      LOWER\_EQ & Represents lower or equal symbol used in conditional comparisons\\
-      ASSIGN & Represents the local variables assignments\\
+      INT\_LIT & Represents a number\\
+      AND & Represents the and keyword\\
+      BOOL &Represents the bool keyword\\
+      CLASS & Represents the class keyword\\
+      DO & Represents the do keyword\\
+      ELSE & Represents the else keyword\\
+      EXTENDS & Represents the extends keyword\\
+      FALSE & Represents the false keyword \\
+      IF & Represents the if keyword\\
+      IN & Represents the in keyword\\
+      INT32 & Represents the int32 keyword\\
+      ISNULL & Represents the isnull keyword\\
+      LET & Represents the let keyword\\
+      NEW & Represents the new keyword\\
+      NOT & Represents the not keyword\\
+      STRING & Represents the string keyword\\
+      THEN & Represents the then keyword\\
+      TRUE & Represents the true keyword\\
+      UNIT & Represents the unit keyword\\
+      WHILE & Represents the while keyword\\
+      TYPE\_ID & Represents a Type identifier (string beginning with a capital letter)\\
+      OBJECT\_ID & Represents an object identifier (string beginning with a lowercase letter)\\
+      STRING\_LIT & Represents a string literal (text between quotes)\\
+      LBRACE & Represents an opening bracket\\
+      RBRACE& Represents a closing bracket\\
+      LPAR & Represents an oping parenthesis\\
+      RPAR & Represents a closing parenthesis\\
+      COLON & Represents the colon symbols\\
+      SEMICOLON & Represents the semi colon symbol\\
+      COMMA & Represents the comma symbol\\
+      PLUS & Represents the plus symbol\\
+      MINUS & Represents the minus symbol\\
+      TIMES & Represents the star symbol\\
+      DIV & Represents the division symbol\\
+      POW & Represents the power symbol\\
+      DOT & Represents the dot symbol\\
+      EQUAL & Represents the equal symbol\\
+      LOWER & Represents the lower symbol\\
+      LOWER\_EQ & Represents lower or equal symbol\\
+      ASSIGN & Represents the -> symbol\\
       \hline
       \end{tabular}
       \caption{List of Tokens\label{tab:listToken}}
@@ -185,29 +171,17 @@ Our compiler generates LLVM code which is then compiled to machine code using ll
   \label{sec:syntax}
   To build a parser for our language, we used \href{https://www.gnu.org/software/bison/}{GNU Bison} 
 
-  The parser is built from a grammar that is defined in the assignment.
-
-  Each function is contained in the class. Each block contained in a function has as parent that particular function.
-
-
-  For this part, we succeeded in all automated tests.
+  The parser is built from a grammar that is defined in the assignment. At each definition in the grammar, the appropriate node is created, using the previously created nodes as children, and returning the created node for the next grammar entry, as it is performed top-down.
 
   \subsubsection{Building the tree}
     \label{sec:tree}
-    The tree is composed of classes inheriting from AstNodes classes. The root node is a ProgramNode which contains a ClassNode for each class. 
-	Each AstNode has a pointer to their parent, and to their children. We first used a single AstNode class, with an attribute indicating what type of node it was, but while that worked for syntax analysis part, we soon realized that it was not flexible enough for the next parts. So each type of node has functions that are needed for any node, such as \texttt{printTree} (print the syntactic tree) \texttt{getType} (for semantic analysis) and \texttt{llvm} (generate the llvm code for that node, but also specific functions depending on what node it is (\texttt{getMethods} for the classes for example).
-
-    This tree will be used differently in the following steps.
-    %the printTree, then the second (only for types and checks good types)
-
-    Each class is defined in a file given in the \texttt{nodes/} directory.
-
+    The tree is composed of classes inheriting from the AstNode class. The root node is a ProgramNode which contains a ClassNode for each class. 
+	Each AstNode has a pointer to their parent, and to their children. At first we used a single AstNode class, with an attribute indicating what type of node it was, but while that worked for the syntax analysis part, we soon realized that it was not flexible enough for the next parts. So each type of node has functions that are needed for all nodes, such as \texttt{printTree} (print the syntactic tree), \texttt{getType} (for semantic analysis) and \texttt{llvm} (generate the llvm code for that node), but also specific functions depending on what node it is (\texttt{getMethods} for ClassNodes for example).\\
+	This tree will be used differently in the following steps.
 
 \subsection{Semantic checking}
   \label{sec:semantic}
   Semantic checking is done through the \texttt{Semantic} class.\\
-  We also use the \texttt{Types} class, which defines a hash table that maps the type (primitive type such as \texttt{int32} or types defined through classes), and the ClassNode associated to it (or null pointer for primitive types), and contains functions to make operations on that table.
-	This table is useful to know if this type has already been declared in the next class that will be analyzed, to know if all classes extending others are all declared, and later to get the \texttt{ClassNode} of a type.
 
   \subsubsection{Class checking}
   	This part checks:
@@ -217,53 +191,83 @@ Our compiler generates LLVM code which is then compiled to machine code using ll
     \item Inheritance cycles
     \item Main class and method prototype existence
     \end{itemize}
-	Inheritance cycles checking is done by looking if the parent of class A is not an ancestor of class A. This works to check that A is not in a cycle, but if the parent of A is in a cycle, it will recursively call the parent, until a stack overflow occurs, so that it a flaw of our compiler.
+  We also use the \texttt{Types} class, which defines a hash table that maps the type (primitive types such as \texttt{int32} or types defined through classes), and the ClassNode associated to it (or null pointer for primitive types), and contains functions to make operations on that table.
+	This table is useful to know if a type has already been declared (class redefinition), to know if all classes extending others are all declared (parent definition), and later to get the \texttt{ClassNode} of a type, when we only have a string of the type name.
+
+	Inheritance cycles checking is done by looking if the parent of class A is not a descendant of class A. This works to check that A is not in a cycle, but if the parent of A is in a cycle, it will recursively call the parent, until a stack overflow occurs, so that it a flaw of our compiler.
 
 	\subsubsection{Scope checking}
 	During this part we check everything else, mainly if the types agree, and if variables, fields and methods used are defined.\\
 	This is done by going through the tree and performing semantic checking on each node, according to what type of node it is. To display the errors, we contained that into the \texttt{Semantic} class, for more flexibility. All errors that occur are passed along using a vector. The errors are represented using the \texttt{SemErr} structure: it contains the line and column where the error occurred, and the error message to be displayed.
       
-  \subsubsection{Types retrieving and checking}
-    The second time we go through the tree, we needed mechanisms to know the closest common parent that we use to determine the output 
-    of a dynamic instantiation. 
-    This step has the purpose of checking that all types are correctly implemented, and that all expressions have the correct type. This is done using the existing tree of nodes, instead of building a separate scope tree.
+	\subsubsection{Methods}
+	Semantic checking for the methods is done by checking that:
+	\begin{itemize}
+		\item The return type is valid (primitive type or defined using a class), this is done using the \texttt{Types} class.
+		\item The method has not already been defined
+		\item Parameters checking:
+			\begin{itemize}
+				\item The name of the parameter is not 'self'
+				\item The type is valid
+				\item There are no other parameters with the same name
+			\end{itemize}
+		\item The return type of the body of the method is the same as the method's return type
+	\end{itemize}
 
-  \subsubsection{Redefinition}
-    We have to determine if the  fields are not redefined. 
-    The methods can be overwritten if they agree to certain conditions. We implemented this by going through the nodes
-    and asking the parent classes (if needed) to find out if it is a redefinition.
-    We also check the arguments of the methods during this step.
+	\subsubsection{Fields}
+	\begin{itemize}
+		\item The field has not already been defined
+		\item The type is valid
+		\item If there is an initialization expression, its type is the same as the field's type.
+	\end{itemize}
 
+	\subsubsection{Expressions}
+	Semantic checking for the expressions is done using the \texttt{getType} method, which computes the type of the expression (and of the subexpressions) and checks for semantic errors. It returns an \texttt{ExprType} structure, which contains the computed type of the expression, a boolean indicating if an error occurred, and the vector of \texttt{SemErr}. It tries to check as much as it can even if there is an error, in order to report as many errors as possible.\\
+	When checking if the types agree, it uses the \texttt{isA} method of \texttt{ClassNode} to check if a class inherits from another, as well as the \texttt{commonAncestor} method to find the common ancestor of two classes, for example to determine the type of an if statement.
 
+	\subsubsection{Scope table}
+	We first thought of using a scope table to store the variables defined in the current scope, to check if each used variable is defined, but we realized that it would add too much complexity, and that it is easier to simply go up the tree and look if we can find a node that defines that variable.
+ 
+  \subsubsection{Vsopl}
+  Vsopl is the vsop library that contains the built in classes and methods, such as IO. We create nodes for the classes and the methods, that contain nothing in them, their implementation is directly done in llvm. Those nodes are not contained in the main tree, but still exist so that their functionalities can be accessed (for example a class that inherits from IO can get its parent class node and have access to the methods defined by IO).
 
 \subsection{Code Generation}
   \label{sec:codeGeneration}
 
-  We learned that a LLVM library existed. However, it was quite difficult to handle so we decided to develop 
-  our own version LlvmManager. At first, we were using a llvm tutorial which had the version 4 or 3.8. 
-  However, we realized we needed to use version 3.5. This is why we used 
+  We learned that a LLVM library existed. However, it was quite difficult to handle so we decided to directly generate the llvm code ourselves. It provides more flexibility\\
+  At first, we were using llvm 4, however we realized we needed to use version 3.5.
 
-    \subsubsection{How it works}
-    First, the LLVM will generate the header of the code. It writes down the methods types declarations. 
+  \subsubsection{Classes}
+  The classes are implemented in llvm using a structure that contains the methods vector, and the fields of the class. We get the fields by going through the class, then putting them into a hash table, and then do the same for the class parent, and so on. If a field is redefined in a parent class, it is already in the table, and won't be added again. They are given a number, which is their order in the structure, that way we can access any field in the structure later, by looking up their place using their name.\\
+  The same is done for the methods, except that we do not put them directly in the class structure, but in a separate one, which will then be placed at the beginning of the structure.
 
-    Then, the LLVM will generate the class declaration.
+  \subsubsection{Vsopl}
+  The llvm code of the vsop library is in the file \texttt{vsopl.ll}. We mainly generated it using clang.
 
-    After that it declares the Main class and allocates the methods variables.
+  \subsubsection{LLvmManager}
+  This class is used to do the common llvm operations, such as getting a pointer to a method, or writing llvm code and get a unique variable name. When instantiating it, multiple output streams can be given, that way it can write the llvm output code to the screen and in a file at the same time. This manager is passed along each node during llvm generation.
 
-    It finishes by going through the tree to get the llvm translation of each node and it finishes by declaring the strings as global variables.
-  \subsubsection{Choices and / or constraints}
+    \subsubsection{Header}
+    First we generate the header of the code, which declares all the types that we use, as well as declarations of the vsopl methods, which are defined in another file.
+
+	\subsubsection{Main}
+	The llvm main class instantiates the vsop Main class, then calls the main method.
+
+	\subsubsection{Llvm code generation}
+	The llvm code is generated by going through the tree and generating the appropriate llvm code for that node, usually by first generating the code for the sub node, and using the result.\\
+	That function returns a string which is the name of the llvm variable in which the result of the expression is contained.\\
+	Once again, we did not use a table to contain all the currently defined variables, but simply go up the tree until we get to the node that defines the variable (using the method \texttt{getLlvmVariable}). At first we used simple llvm variables for each vsop variable, but we realized that it would not work for loops for example, where at each loop the same statements are called, therefore they would always do the same thing, unless we used pointers. So now each vsop variable is represented using a llvm pointer, so that when a llvm statement is executed multiple times, the value pointed by the variable changes, instead of just redefining the same variable using the same statement.
+
+	\subsubsection{strings}
+	For strings it is much easier to define them as constant than to allocate them in the middle of the code. But we are only aware of the existence of a string while we are already in a function, so it cannot be declared as a constant there, and declaring them at the beginning would require scanning the whole tree just to get the strings. So what we did is to put the string in a vector managed by \texttt{LlvmManager}, and declare all the strings at the end of the file.
+
+  \subsubsection{Choices and/or constraints}
     \begin{itemize}
-    \item We saw that when we try to use \%0, llvm wants to use it for its own purpose (maybe in version 4). So we chose to begin
-    giving names to our temporary variables beginning to \%1.
-    \item We first implemented the instantiation of a new object as a block of operations allocating and initializing the objects. 
-    At that time, we weren't really aware of the technique of using a knit method to do so. We then decided not to implement it
-    since the main purpose of llvm code is not to have the greatest readibility. The only drawback of keeping or first idea is just making the llvm file a bit heavier
-    \item We saw that getelemntptr in LLVM requires a load just afterwards. So we did it every time.
-    \item The functions always takes as first argument the element on which they act. It allows us to use the keyword `self` accordingly.
-    \item The number of the variables does not start back to 0 when the program changes function.
-    We first thought that it was module dependant but we decided for debugging and code understanding not to reset that counter variable.
-    \item We realized that the declare statements in llvm language can refer to functions declared in other modules. We then used them at the end of our code.
-    \item When calling a function, the arguments are given as values and not as references. This has some drawbacks but we had to make up our choice.
+		\item At first we wanted to use \%\textit{number} for unnamed variables, but there were too many constraint in llvm for that (requiring that we always start at 1 for each new function for example), so instead we chose to use \%.\textit{number}.
+    \item We implemented the instantiation of a new object as a block of operations allocating and initializing the objects directly in place in the llvm code, instead of a separate method to do so. It does not really change llvm performance, it only makes the file a little less readable.
+    \item The functions always take as first argument a pointer to the object to which they belong, to be able to access the fields and methods of that object.
+    \item When calling a function, the arguments are given as values and not as pointers. This was simply a choice we had to make, but seemed more practical when using vsop.
+	\item At first we implemented the if instructions using the llvm phi instruction, but it caused problems for nested ifs, because in that case the previous label we branched from was not the right one. So we chose to use pointers instead.
     \end{itemize}
 
   \section{Code structure}
@@ -271,39 +275,33 @@ Our compiler generates LLVM code which is then compiled to machine code using ll
 
 \subsection{Doxygen}
   \label{Doxygen}
-  We were able to generate Doxygen files. You are able to generate it using \texttt{make doc}. This command also displays the documentation directly in Firefox.
-  Please have a look at \url{../doxygen/html/index.html} from the \texttt{report/} folder.
+  We commented the code using doxygen format. The doxygen documentation can be generated using \texttt{make doc}. This command also displays the documentation directly in Firefox.
   \subsection{Folders}
-    The table \ref{fig:folders} reflects the folders distribution.
+    The table \ref{fig:folders} describes each folder of the project.
     \begin{table}[H]
       \begin{tabular}{|c|p{10cm}|}
       \hline
       Folder & Description\\
       \hline\hline
-      . &  Default folder containing the files for Flex, GNU Bison and LLvmManager class  \\\hline
-      doxygen/ & The documentation (please see subsection \ref{Doxygen}) \\\hline
+      . &  Root folder containing the files for Flex, GNU Bison and the LLvmManager class  \\\hline
+      doxygen/ & The documentation (see subsection \ref{Doxygen}) \\\hline
       nodes/ & The classes used to build the tree (cf. \ref{sec:tree})\\\hline
-      report/ & Contains the report pdf\\\hline
-      semantic/ & Contains the Semantic class and the different declarations required in step \ref{sec:semantic}\\\hline
-      vsopl/ & Embeds the additional elements for code generation \\\hline
+      report/ & Contains the report\\\hline
+      semantic/ & Contains the classes used for semantic analysis \ref{sec:semantic}\\\hline
+      vsopl/ & Contains the required class for the vsop library as well as the llvm code of the library\\\hline
       \end{tabular}
       \caption{\label{fig:folders}Folders descriptions}
     \end{table}
     
 \section{Improvements}
   \label{sec:improvements}
-  %Le problème héritage d'un cycle
   \begin{itemize}
-  \item Add an initial function : Init. It will make program heavier because it requires saving registries, ... 
-  due to yet another function call. We had to know if the LLVM compiler would optimize it so that we do not 
-  do something that will be removed just after.
-  \item We have a problem with the inheritance of classes cycling. We tried to limit this problematic but we need to find
-  a more elegant solution.
+  \item Add a function for class allocation. Right now it is done in the middle of the llvm code, where we need it. The llvm code would be more readable if it is done in a separate function.
+  \item Correct the inheritance cycles problem mentioned earlier.
   \end{itemize}
 
 
 \section{Conclusion}
-
-  We know that our implementation is not perfect. In section \ref{sec:improvements}, you could find the improvements that we made.
+We have a basic compiler that, for all we are aware, can compile vsop code, but some problems and bugs could still exist for cases we did not test. It could be improved for optimization, but would required more knowledge of how llvm works and how the code needs to be structured to allow more llvm optimizations. We could also easily add extensions, due to the modularity of the code. It would only require adding some tokens, grammar rules, and nodes for which we would write their semantic checking and llvm functions.
 
 \end{document}
