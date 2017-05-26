@@ -9,6 +9,10 @@
 typedef std::unordered_map<std::string,int> stringmap;
 typedef std::unordered_map<std::string,stringmap> classmap;
 
+/**
+ * This class is used to do the common llvm operations, such as getting a pointer to a method, or writing llvm code and get a unique variable name.
+ * When instantiating it, multiple output streams can be given, that way it can write the llvm output code to the screen and in a file at the same time. This manager is passed along each node during llvm code generation.
+ */
 class LlvmManager
 {
 	public:
@@ -122,16 +126,21 @@ class LlvmManager
 		 */
 		static std::string llvmType(std::string type);
 
+		/** Increment the indendation of the output
+		 */
 		void incIndent();
+
+		/** decrement the indendation of the output
+		 */
 		void decIndent();
 
 	protected:
-		int indent;
-		classmap methodsMap; //for the functions
-		classmap fieldsMap; //for the fields//
-		stringmap llvmVars; 
-		stringmap llvmLabels; 
-		std::vector<std::ostream*> outputs;
-		std::vector<std::string> constants;
+		int indent; /**< The current number of tabs to use to indent the output */
+		classmap methodsMap; /**< The map between each class and its methods */
+		classmap fieldsMap; /**< The map between each class and its fields */
+		stringmap llvmVars; /**< The current number of each llvm variable */
+		stringmap llvmLabels; /**< The current number of each llvm label */
+		std::vector<std::ostream*> outputs; /**< The streams where to output the llvm code */
+		std::vector<std::string> constants; /**< The constants to write at the end of the llvm file */
 };
 #endif
