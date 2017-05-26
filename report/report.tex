@@ -101,19 +101,18 @@ The implementation was divided into 4 main steps:
  \item the Code Generation (cf \ref{sec:codeGeneration}) 
 \end{itemize}
 
-
-
 \subsection*{Status of the compiler}
 
-Our compiler computes the LLVM which is then being compiled to machine code using llvm compiler version 3.5.
+Our compiler generates LLVM code which is then compiled to machine code using llvm compiler version 3.5.
 
 \subsection{Lexical Analysis}
   \label{sec:lexana}
-  The lexical analysis is used to make sure the words inside the code to be compiled are allowed by the language, parse the vsop file.
-  The goal of the scanner we are then able to generate, is to create tokens to be translated into tree nodes in the next steps. 
+  The lexical analysis is used to make sure the words inside the code to be compiled are allowed by the language, and parse the vsop file.
+  The goal of the scanner we are then able to generate, is to create tokens to be translated into tree nodes at the next steps. 
   We generate the tokens using the \href{https://github.com/westes/flex}{GNU Flex} program. Flex will generate a .c and a .h files 
-  which will be used to compile our complete compiler.
+  which will be compiled and do the parsin.
 
+  %%% What
   From the moment, we implemented the syntax analysis, the yylex() function is called from the yyparse() which is used in the second step.
   It has the drawback of not allowing the simple tests performed in the first step as both errors coming from Lexical and Syntax analysis
   will be displayed as the file is analyzed. 
@@ -128,7 +127,7 @@ Our compiler computes the LLVM which is then being compiled to machine code usin
 
 
   \subsubsection{Tokens}
-    The tokens that we used are explained in Table \ref{tab:listToken}.
+    The tokens that we defined are explained in Table \ref{tab:listToken}.
 
     Those tokens will be used by \href{http://www.gnu.org/software/bison/}{GNU Bison}.
 
@@ -138,12 +137,12 @@ Our compiler computes the LLVM which is then being compiled to machine code usin
       \hline
       Token & Description\\\hline
       INT\_LIT & Represents a integer literal\\
-      AND & Represents and boolean operation\\
+      AND & Represents the and boolean operator\\
       BOOL &Represents the type definition of boolean \\
       CLASS & Represents the class definition keyword\\
       DO & Represents the beginning of a while repeated routine\\
       ELSE & Represents the else keyword in the if statement\\
-      EXTENDS & Represents the inheritance performed in class definition\\
+      EXTENDS & Represents the inheritance keyword performed in class definition\\
       FALSE & Represents the false boolean literal \\
       IF & Represents the if statement keyword\\
       IN & Represents the in keyword used in  the let statement\\
@@ -184,7 +183,7 @@ Our compiler computes the LLVM which is then being compiled to machine code usin
 
 \subsection{Syntax Analysis}
   \label{sec:syntax}
-  We will build a parser for our language. To do that, we will use \href{https://www.gnu.org/software/bison/}{GNU Bison} 
+  To build a parser for our language, we used \href{https://www.gnu.org/software/bison/}{GNU Bison} 
 
   The parser is built from a grammar that is defined in the assignment.
 
@@ -196,7 +195,7 @@ Our compiler computes the LLVM which is then being compiled to machine code usin
   \subsubsection{Building the tree}
     \label{sec:tree}
     The tree is composed of classes inheriting from AstNodes classes. The root node is a ProgramNode which contains a ClassNode for each class. 
-    Each AstNode has a pointer pointing to their parent.
+	Each AstNode has a pointer to their parent, and to their children. We first used a single AstNode class, with an attribute indicating what type of node it was, but while that worked for syntax analysis part, we soon realized that it was not flexible enough for the next parts. So each type of node has functions that are needed for any node, such as \texttt{printTree} (print the syntactic tree) \texttt{getType} (for semantic analysis) and \texttt{llvm} (generate the llvm code for that node, but also specific functions depending on what node it is (\texttt{getMethods} for the classes for example).
 
     This tree will be used differently in the following steps.
     %the printTree, then the second (only for types and checks good types)
@@ -206,27 +205,23 @@ Our compiler computes the LLVM which is then being compiled to machine code usin
 
 \subsection{Semantic checking}
   \label{sec:semantic}
-  We implemented this step in three phases. 
-  First we implemented the Classes checking, then the types checking while retrieving them. After that, we determined the non-redefinition of methods or variables.
+  Semantic checking is done through the \texttt{Semantic} class.\\
+  We also use the \texttt{Types} class, which defines a hash table that maps the type (primitive type such as \texttt{int32} or types defined through classes), and the ClassNode associated to it (or null pointer for primitive types), and contains functions to make operations on that table.
+	This table is useful to know if this type has already been declared in the next class that will be analyzed, to know if all classes extending others are all declared, and later to get the \texttt{ClassNode} of a type.
 
-  The implementation is done in the Semantic class which is in the \texttt{semantic/} folder.
-
-  The errors are held in the structure SemErr and ExprType which carries the required information about semantic checking.
-
-  We passed all the automated tests.
-
-  \subsubsection{Classes checking}
-    In this part, we will check: 
+  \subsubsection{Class checking}
+  	This part checks:
     \begin{itemize}
     \item Class redefinition
     \item Parent definition
     \item Inheritance cycles
     \item Main class and method prototype existence
-
     \end{itemize}
-    To do so, we will use a 2D array that contains the Class ID (string), and the ClassNode associated to it. 
-    This array is useful to know if this type has already been declared in the next class that will be analyzed. 
-    know if all classes extending others are all declared.
+	Inheritance cycles checking is done by looking if the parent of class A is not an ancestor of class A. This works to check that A is not in a cycle, but if the parent of A is in a cycle, it will recursively call the parent, until a stack overflow occurs, so that it a flaw of our compiler.
+
+	\subsubsection{Scope checking}
+	During this part we check everything else, mainly if the types agree, and if variables, fields and methods used are defined.\\
+	This is done by going through the tree and performing semantic checking on each node, according to what type of node it is. To display the errors, we contained that into the \texttt{Semantic} class, for more flexibility. All errors that occur are passed along using a vector. The errors are represented using the \texttt{SemErr} structure: it contains the line and column where the error occurred, and the error message to be displayed.
       
   \subsubsection{Types retrieving and checking}
     The second time we go through the tree, we needed mechanisms to know the closest common parent that we use to determine the output 
