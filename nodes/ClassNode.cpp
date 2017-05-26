@@ -320,26 +320,6 @@ void ClassNode::llvmHeader(LlvmManager* manager)
 	manager->write(classType);
 }
 
-void ClassNode::llvmMain(LlvmManager* manager)
-{
-	std::vector<std::string> methodNames(allMethods.size()); // Names of the methods in the right order
-	/* Fill the methodNames vector in the right order */
-	for(stringmap::const_iterator it = allMethods.cbegin(); it != allMethods.cend(); ++it)
-	{
-		methodNames[it->second] = it->first;
-	}
-
-	/* Fill the methods structure */
-	for (int i=0; i<methodNames.size(); i++)
-	{
-		MethodNode* methodNode = getMethod(methodNames[i]);
-		// %# = getelementpointer %methods.type.<className>* @methods.<className>, i32 0, i32 #
-		std::string ptr = manager->write("getelementptr %methods.type."+name+"* @methods."+name+", i32 0, i32 "+std::to_string(i), ".");
-		// store <methodType> @method.<className>.<methodName>, <methodType>* %#
-		manager->write("store "+methodNode->getLlvmType()+" @method."+methodNode->getClass()->getName()+"."+methodNode->getName()+", "+methodNode->getLlvmType()+"* "+ptr);
-	}
-}
-
 std::string ClassNode::llvm(LlvmManager *manager)
 {
 	for (int i=0; i<methods.size(); i++)

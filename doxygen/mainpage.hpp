@@ -2,7 +2,7 @@
 
 # Compiler steps
 ## Parsing
-The vsop source code is first parsed by flex to generate tokens. This is done in the file vsop.lex
+The vsop source code is first parsed by flex to generate tokens. This is done in the file vsop.lex.
 If the parameter -lex was provided during compilation, the tokens will be printed.
 Those tokens are then passed to bison.
 ## Grammar

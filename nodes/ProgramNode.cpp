@@ -48,15 +48,6 @@ void ProgramNode::llvmHeader(LlvmManager* manager)
 	manager->write("declare i32 @strcmp(i8*, i8*)");
 } 
 
-void ProgramNode::llvmMain(LlvmManager* manager)
-{
-	/*for (int i=0; i<classes.size(); i++)
-	{
-		classes[i]->llvmMain(manager);
-		manager->write("");
-	}*/
-}
-
 std::string ProgramNode::llvm(LlvmManager* manager)
 {
 	for (int i=0; i<classes.size(); i++)

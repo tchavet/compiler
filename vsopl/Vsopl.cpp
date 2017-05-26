@@ -27,15 +27,6 @@ void Vsopl::llvmHeader(LlvmManager* manager)
 	}
 }
 
-void Vsopl::llvmMain(LlvmManager* manager)
-{
-	for (int i=0; i<classes.size(); i++)
-	{
-		classes[i]->llvmMain(manager);
-		manager->write("");
-	}
-}
-
 void Vsopl::createObjectClass()
 {
 	ClassNode* classNode = new ClassNode(0,0,"Object");

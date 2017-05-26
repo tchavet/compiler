@@ -158,15 +158,11 @@ void LlvmManager::addClass(std::string className, stringmap methods, stringmap f
 	fieldsMap.emplace(className, fields);
 }
 
-void LlvmManager::beginMain()
+void LlvmManager::main()
 {
 	write("define fastcc i32 @main()");
 	write("{");
 	incIndent();
-}
-
-void LlvmManager::endMain()
-{
 	std::string mainObj = Types::getNode("Main")->llvmAllocate(this);
 	std::string mainRet = write("call fastcc i32 @method.Main.main(%class.Main* "+mainObj+")", ".main_result");
 	write("ret i32 "+mainRet);

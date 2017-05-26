@@ -109,14 +109,9 @@ class LlvmManager
 		void addClass(std::string className, stringmap methods, stringmap fields);
 
 		/**
-		 * Write the code to begin the llvm main function
+		 * Write the code of the llvm main function
 		 */
-		void beginMain();
-
-		/**
-		 * Write the code to end the llvm main function
-		 */
-		void endMain();
+		void main();
 
 		/**
 		 * Get the corresponding llvm type of a vsop type

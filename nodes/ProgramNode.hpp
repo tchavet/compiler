@@ -60,14 +60,6 @@ public:
 	void llvmHeader(LlvmManager *manager);
 
 	/**
-	 * Write the llvm instanciation of the method structures.
-	 * This needs to be done inside the llvm main function
-	 * 
-	 * @param llvmManager The llvm manager
-	 */
-	void llvmMain(LlvmManager* manager);
-
-	/**
 	 * Write the llvm of the program.
 	 * Calls LlvmHeader and llvm for each class
 	 * 

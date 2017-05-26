@@ -182,11 +182,8 @@ int main(int argc, char** argv)
 		Vsopl::llvmHeader(llvmManager);
 		//declares classes and methodds
 		root->llvmHeader(llvmManager);
-		//Writes the main and methods allocations
-		llvmManager->beginMain();
-		Vsopl::llvmMain(llvmManager);
-		root->llvmMain(llvmManager);
-		llvmManager->endMain();
+		//Writes the main
+		llvmManager->main();
 		//Write the code down
 		root->llvm(llvmManager);
 		llvmManager->writeConstants();
